@@ -3,6 +3,8 @@ ARG VERSION=14
 FROM postgres:${VERSION}
 
 ARG VERSION
+
+ENV POSTGRESQL_USER postgres
 ENV POSTGRES_PASSWORD password
 
 RUN apt-get update \
@@ -17,6 +19,8 @@ RUN mkdir -p /docker-entrypoint-initdb.d/sqls
 
 COPY ./initdb/*.sh /docker-entrypoint-initdb.d/
 COPY ./initdb/sqls/* /docker-entrypoint-initdb.d/sqls/
+
+RUN chgrp -R 0 /var/lib/postgresql && chmod -R g=u /var/lib/postgresql
 
 USER postgres
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
