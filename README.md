@@ -1,1 +1,1 @@
-# panda-database
+# Container image for PandaDB
