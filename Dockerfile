@@ -2,8 +2,8 @@ ARG VERSION=14
 
 FROM postgres:${VERSION}
 
-
 ARG VERSION
+ENV POSTGRES_PASSWORD password
 
 RUN apt-get update \
       && apt-get install -y postgresql-${VERSION}-cron \
