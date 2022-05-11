@@ -22,4 +22,5 @@ COPY ./initdb/sqls/* /docker-entrypoint-initdb.d/sqls/
 
 RUN chgrp -R 0 /var/lib/postgresql && chmod -R g=u /var/lib/postgresql
 
+ENTRYPOINT ["gosu", "postgres", "docker-entrypoint.sh"]
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
