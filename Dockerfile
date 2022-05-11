@@ -9,7 +9,7 @@ ENV POSTGRES_PASSWORD password
 
 RUN apt-get update \
       && apt-get install -y postgresql-${VERSION}-cron \
-      postgresql-${VERSION}-partman \
+      postgresql-${VERSION}-partman procps \
       && rm -rf /var/lib/apt/lists/*
 
 
@@ -22,5 +22,4 @@ COPY ./initdb/sqls/* /docker-entrypoint-initdb.d/sqls/
 
 RUN chgrp -R 0 /var/lib/postgresql && chmod -R g=u /var/lib/postgresql
 
-USER postgres
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
