@@ -6,6 +6,8 @@ ARG VERSION
 
 ENV POSTGRESQL_USER postgres
 ENV POSTGRES_PASSWORD password
+
+# to run with non-root PID
 ENV PGDATA /temp/data
 
 RUN apt-get update \
@@ -14,14 +16,15 @@ RUN apt-get update \
       && rm -rf /var/lib/apt/lists/*
 
 
-COPY ./etc/postgresql.conf /etc/postgresql/postgresql.conf
+COPY ./etc/*.conf /etc/postgresql/
 
 RUN mkdir -p /docker-entrypoint-initdb.d/sqls
 
 COPY ./initdb/*.sh /docker-entrypoint-initdb.d/
 COPY ./initdb/sqls/* /docker-entrypoint-initdb.d/sqls/
 
+# to run with non-root PID
 RUN mkdir /temp
 RUN chmod 777 /temp
 
-CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf", "-c", "hba_file=/etc/postgresql/pg_hba.conf"]
