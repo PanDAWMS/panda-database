@@ -6,6 +6,7 @@ ARG VERSION
 
 ENV POSTGRESQL_USER postgres
 ENV POSTGRES_PASSWORD password
+ENV PGDATA /temp/data
 
 RUN apt-get update \
       && apt-get install -y postgresql-${VERSION}-cron \
@@ -20,7 +21,7 @@ RUN mkdir -p /docker-entrypoint-initdb.d/sqls
 COPY ./initdb/*.sh /docker-entrypoint-initdb.d/
 COPY ./initdb/sqls/* /docker-entrypoint-initdb.d/sqls/
 
-RUN chgrp -R 0 /var/lib/postgresql && chmod -R g=u /var/lib/postgresql
+RUN mkdir /temp
+RUN chmod 777 /temp
 
-ENTRYPOINT ["gosu", "postgres", "docker-entrypoint.sh"]
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
