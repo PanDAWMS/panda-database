@@ -1,5 +1,5 @@
 CREATE DATABASE panda_db;
-CREATE USER panda PASSWORD '${PANDA_PASSWORD}';
+CREATE USER panda PASSWORD '${PANDA_DB_PASSWORD}';
 ALTER ROLE panda SET search_path = doma_panda,public;
 CREATE EXTENSION pg_cron;
 GRANT USAGE ON SCHEMA cron TO panda;
