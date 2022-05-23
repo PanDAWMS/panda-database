@@ -75,6 +75,17 @@ COMMENT ON COLUMN config.vo IS E'VO/Experiment, e.g. atlas, ams, compass...';
 ALTER TABLE config OWNER TO panda;
 ALTER TABLE config ADD PRIMARY KEY (app,component,key,vo);
 
+CREATE TABLE config_copy (
+	app varchar(64) NOT NULL,
+	component varchar(64) NOT NULL,
+	key varchar(64) NOT NULL,
+	value varchar(256) NOT NULL,
+	type varchar(64) NOT NULL,
+	vo varchar(16),
+	descr varchar(256) NOT NULL
+) ;
+ALTER TABLE config_copy OWNER TO panda;
+
 CREATE TABLE datasets (
 	vuid varchar(40) NOT NULL,
 	name varchar(255) NOT NULL,
@@ -378,7 +389,11 @@ CREATE TABLE harvester_workers (
 	submissionhost varchar(128),
 	harvesterhost varchar(128),
 	jdl varchar(250),
-	jobtype varchar(52)
+	jobtype varchar(52),
+	pilotstarttime timestamp,
+	pilotendtime timestamp,
+	pilotstatus varchar(80),
+	pilotstatussynctime timestamp
 ) PARTITION BY RANGE (lastupdate) ;
 COMMENT ON TABLE harvester_workers IS E'for workers submitted by harvesters. Combination of INSTANCEID and WORKERID is unique. Deletion policy is to delete all records with LASTUPDATE<NOW-N_days. To be enforced a data sliding window by partition removal although the PK has a global index (The ALTER TABLE ... DROP PARTITION ... UPDATE GLOBAL INDEXES)  to be used. ';
 COMMENT ON COLUMN harvester_workers.batchid IS E'Unique ID in the batch system';
@@ -409,6 +424,7 @@ COMMENT ON COLUMN harvester_workers.submittime IS E'Set when the worker is submi
 COMMENT ON COLUMN harvester_workers.workerid IS E'Identifier of the worker';
 ALTER TABLE harvester_workers OWNER TO panda;
 CREATE INDEX harvester_workers_compsite_idx ON harvester_workers (computingsite);
+CREATE INDEX harvester_workers_status_idx ON harvester_workers (status, pilotstatus);
 CREATE INDEX harv_workers_harv_submtime_idx ON harvester_workers (harvesterid, submittime);
 CREATE INDEX harv_workers_lastupd_idx ON harvester_workers (lastupdate);
 CREATE INDEX harv_workers_submittime_idx ON harvester_workers (submittime);
@@ -511,6 +527,44 @@ CREATE INDEX jedi_dataset_dnametypetid_idx ON jedi_datasets (datasetname, type, 
 CREATE INDEX jedi_dataset_lockedby_idx ON jedi_datasets (lockedby);
 CREATE INDEX jedi_dataset_statecheckexp_idx ON jedi_datasets (statecheckexpiration);
 ALTER TABLE jedi_datasets ADD PRIMARY KEY (jeditaskid,datasetid);
+
+CREATE TABLE jedi_datasets_copy (
+	jeditaskid bigint NOT NULL,
+	datasetid bigint NOT NULL,
+	datasetname varchar(255) NOT NULL,
+	type varchar(20) NOT NULL,
+	creationtime timestamp NOT NULL,
+	modificationtime timestamp NOT NULL,
+	vo varchar(16),
+	cloud varchar(10),
+	site varchar(60),
+	masterid bigint,
+	provenanceid bigint,
+	containername varchar(255),
+	status varchar(20),
+	state varchar(20),
+	statechecktime timestamp,
+	statecheckexpiration timestamp,
+	frozentime timestamp,
+	nfiles bigint,
+	nfilestobeused bigint,
+	nfilesused bigint,
+	nfilesonhold bigint,
+	nevents bigint,
+	neventstobeused bigint,
+	neventsused bigint,
+	lockedby varchar(40),
+	lockedtime timestamp,
+	nfilesfinished bigint,
+	nfilesfailed bigint,
+	attributes varchar(100),
+	streamname varchar(20),
+	storagetoken varchar(100),
+	destination varchar(60),
+	templateid bigint,
+	nfileswaiting bigint
+) ;
+ALTER TABLE jedi_datasets_copy OWNER TO panda;
 
 CREATE TABLE jedi_dataset_contents (
 	jeditaskid bigint NOT NULL,
@@ -1117,7 +1171,7 @@ CREATE TABLE jobsactive4 (
 	resource_type varchar(56),
 	diskio integer,
 	memory_leak bigint,
-	memory_leak_x2 bigint,
+	memory_leak_x2 decimal(11,2),
 	container_name varchar(200),
 	job_label varchar(20),
 	meancorecount decimal(8,2)
@@ -1375,7 +1429,7 @@ CREATE TABLE jobsarchived4 (
 	resource_type varchar(56),
 	diskio integer,
 	memory_leak bigint,
-	memory_leak_x2 bigint,
+	memory_leak_x2 decimal(11,2),
 	container_name varchar(200),
 	job_label varchar(20),
 	meancorecount decimal(8,2)
@@ -1647,7 +1701,7 @@ CREATE TABLE jobsdefined4 (
 	resource_type varchar(56),
 	diskio integer,
 	memory_leak bigint,
-	memory_leak_x2 bigint,
+	memory_leak_x2 decimal(11,2),
 	container_name varchar(200),
 	job_label varchar(20),
 	meancorecount decimal(8,2)
@@ -1913,7 +1967,7 @@ CREATE TABLE jobswaiting4 (
 	resource_type varchar(56),
 	diskio integer,
 	memory_leak bigint,
-	memory_leak_x2 bigint,
+	memory_leak_x2 decimal(11,2),
 	container_name varchar(200),
 	job_label varchar(20),
 	meancorecount decimal(8,2)
@@ -2093,6 +2147,15 @@ COMMENT ON COLUMN jobs_statuslog.prodsourcelabel IS E'activity name of the name 
 ALTER TABLE jobs_statuslog OWNER TO panda;
 CREATE INDEX jobs_statuslog_pandaid_idx ON jobs_statuslog (pandaid);
 
+CREATE TABLE job_nevents (
+	pandaid bigint,
+	nevents_before bigint,
+	nevents_after bigint,
+	mt text
+) ;
+ALTER TABLE job_nevents OWNER TO panda;
+--ALTER TABLE job_nevents ADD CONSTRAINT ensure_json CHECK ((CASE WHEN mt::coalesce(json::text, '') = '' THEN true ELSE true END));
+
 CREATE TABLE job_output_report (
 	pandaid bigint NOT NULL,
 	prodsourcelabel varchar(20),
@@ -2147,6 +2210,17 @@ COMMENT ON COLUMN metatable.pandaid IS E'PandaID of the job';
 ALTER TABLE metatable OWNER TO panda;
 ALTER TABLE metatable ADD PRIMARY KEY (pandaid,modificationtime);
 
+CREATE TABLE metrics (
+	computingsite varchar(128),
+	gshare varchar(32),
+	metric varchar(128),
+	value_json text,
+	timestamp timestamp
+) ;
+ALTER TABLE metrics OWNER TO panda;
+ALTER TABLE metrics ADD UNIQUE (computingsite,gshare,metric);
+--ALTER TABLE metrics ADD CONSTRAINT ensure_json_metrics CHECK ((CASE WHEN value_json::coalesce(json::text, '') = '' THEN true ELSE true END));
+
 CREATE TABLE mv_jobsactive4_stats (
 	cur_date timestamp,
 	cloud varchar(50),
@@ -2175,6 +2249,29 @@ COMMENT ON COLUMN mv_jobsactive4_stats.prodsourcelabel IS E'activity name of the
 COMMENT ON COLUMN mv_jobsactive4_stats.relocationflag IS E'flag for submitting jobs to a single site. I.e. the brokerage is bypassed';
 COMMENT ON COLUMN mv_jobsactive4_stats.workinggroup IS E'working group name';
 ALTER TABLE mv_jobsactive4_stats OWNER TO panda;
+
+CREATE TABLE mv_running_jumbo_task_count (
+	cur_date timestamp,
+	vo varchar(16),
+	cloud varchar(10),
+	prodsourcelabel varchar(20),
+	usejumbo char(1),
+	status varchar(64),
+	gshare varchar(32),
+	workqueue_id integer,
+	task_count bigint
+) ;
+COMMENT ON TABLE mv_running_jumbo_task_count IS E'Table (simulating a Materialized View) which collects count for Jumbo Job tasks.';
+COMMENT ON COLUMN mv_running_jumbo_task_count.cloud IS E'cloud (associated with Tier 1) where the job is submitted to';
+COMMENT ON COLUMN mv_running_jumbo_task_count.cur_date IS E'The timestamp of the Materialized view refresh';
+COMMENT ON COLUMN mv_running_jumbo_task_count.gshare IS E'Global share of the task';
+COMMENT ON COLUMN mv_running_jumbo_task_count.prodsourcelabel IS E'activity name of the name such as managed, user, and ddm';
+COMMENT ON COLUMN mv_running_jumbo_task_count.status IS E'Task status. Only active tasks are considered';
+COMMENT ON COLUMN mv_running_jumbo_task_count.task_count IS E'Number of tasks';
+COMMENT ON COLUMN mv_running_jumbo_task_count.usejumbo IS E'Internal status for Jumbo jobs';
+COMMENT ON COLUMN mv_running_jumbo_task_count.vo IS E'Virtual organization owning the task';
+COMMENT ON COLUMN mv_running_jumbo_task_count.workqueue_id IS E'JEDI Workqueue of the task';
+ALTER TABLE mv_running_jumbo_task_count OWNER TO panda;
 
 CREATE TABLE network_matrix_kv (
 	src varchar(256) NOT NULL,
@@ -2352,6 +2449,15 @@ COMMENT ON COLUMN schedconfig_json.last_update IS E'Last time the PanDA queue wa
 COMMENT ON COLUMN schedconfig_json.panda_queue IS E'PanDA queue name';
 ALTER TABLE schedconfig_json OWNER TO panda;
 ALTER TABLE schedconfig_json ADD PRIMARY KEY (panda_queue);
+--ALTER TABLE schedconfig_json ADD CONSTRAINT data_json CHECK ((CASE WHEN data::coalesce(json::text, '') = '' THEN true ELSE true END));
+
+CREATE TABLE secrets (
+	owner varchar(60) NOT NULL,
+	updated_at timestamp NOT NULL,
+	data text
+) ;
+ALTER TABLE secrets OWNER TO panda;
+ALTER TABLE secrets ADD PRIMARY KEY (owner);
 
 CREATE TABLE site (
 	site_name varchar(52) NOT NULL,
@@ -2413,6 +2519,17 @@ COMMENT ON TABLE tasks_statuslog IS E'Table to track status changes for tasks';
 ALTER TABLE tasks_statuslog OWNER TO panda;
 CREATE INDEX task_statuslog_jeditaskid_idx ON tasks_statuslog (jeditaskid);
 
+CREATE TABLE task_attempts (
+	jeditaskid bigint NOT NULL,
+	attemptnr integer NOT NULL,
+	starttime timestamp,
+	endtime timestamp,
+	startstatus varchar(32),
+	endstatus varchar(32)
+) PARTITION BY RANGE (starttime) ;
+ALTER TABLE task_attempts OWNER TO panda;
+ALTER TABLE task_attempts ADD PRIMARY KEY (jeditaskid,attemptnr,starttime);
+
 CREATE TABLE tmp_pandaids_relations (
 	pandaid bigint NOT NULL,
 	newjobid bigint NOT NULL
@@ -2464,12 +2581,3 @@ COMMENT ON COLUMN ups_stats.resource_type IS E'Resource type (SCORE, MCORE...)';
 COMMENT ON COLUMN ups_stats.ts IS E'Timestamp for the entry';
 COMMENT ON COLUMN ups_stats.vo IS E'Virtual organization';
 ALTER TABLE ups_stats OWNER TO panda;
-
-CREATE TABLE network_matrix_kv_temp (
-	src varchar(256) NOT NULL,
-	dst varchar(256) NOT NULL,
-	key varchar(256) NOT NULL,
-	value bigint,
-    ts timestamp
-) ;
-ALTER TABLE network_matrix_kv_temp OWNER TO panda;
