@@ -4,12 +4,12 @@ set -e
 DIR=/docker-entrypoint-initdb.d/sqls
 
 PANDA_DB_PASSWORD=${PANDA_DB_PASSWORD:-password}
-sed 's/${PANDA_DB_PASSWORD}/'"${PANDA_DB_PASSWORD}"'/g' ${DIR}/init_database.sql > /tmp/init_database.sql
-psql -U postgres -v ON_ERROR_STOP=1 -f /tmp/init_database.sql
+sed 's/${PANDA_DB_PASSWORD}/'"${PANDA_DB_PASSWORD}"'/g' ${DIR}/init_step.sql > /tmp/init_step.sql
+psql -U postgres -v ON_ERROR_STOP=1 -f /tmp/init_step.sql
 
 for COMP in PANDA PANDAMETA PANDAARCH PANDABIGMON DEFT PARTITION
 do
-    FILE=${DIR}/pg_${COMP}_${SUB}.sql
+    FILE=${DIR}/pg_${COMP}.sql
         if [ -f "$FILE" ]; then
             psql -U postgres -d panda_db -f ${FILE}
         fi
@@ -21,3 +21,5 @@ do
         fi
     done
 done
+
+psql -U postgres -d panda_db -f $DIR/post_step.sql
