@@ -22,4 +22,5 @@ do
     done
 done
 
-psql -U postgres -d panda_db -f $DIR/post_step.sql
+psql -U postgres -d panda_db -f $DIR/post_step_panda.sql
+psql -U postgres -f $DIR/post_step_cron.sql
