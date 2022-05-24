@@ -854,17 +854,12 @@ ALTER PROCEDURE harvester_workers_sl_window (DAYS_OFFSET bigint) owner TO panda;
 CREATE OR REPLACE PROCEDURE doma_panda.jedi_refr_mintaskids_bystatus () AS $body$
 BEGIN
 
- -- ver 1.0, last update 2th July 2013
-MERGE INTO JEDI_AUX_STATUS_MINTASKID tab
-USING(SELECT status, MIN(jeditaskid) min_taskid from JEDI_TASKS WHERE status NOT IN ('broken', 'aborted', 'finished', 'failed') GROUP By status) sub
-ON (tab.STATUS = sub.STATUS)
-WHEN MATCHED THEN UPDATE SET
-MIN_JEDITASKID = sub.min_taskid
-WHEN NOT MATCHED THEN INSERT(tab.status, tab.min_jeditaskid)
-VALUES (sub.status, sub.min_taskid);
-
---COMMIT;
-
+INSERT INTO JEDI_AUX_STATUS_MINTASKID
+(status, min_jeditaskid)
+SELECT status, MIN(jeditaskid) min_taskid from JEDI_TASKS WHERE status NOT IN ('broken', 'aborted', 'finished', 'failed') GROUP By status
+ON CONFLICT (status)
+DO
+  UPDATE SET min_jeditaskid=EXCLUDED.min_jeditaskid;
 END;
 $body$
 LANGUAGE PLPGSQL
