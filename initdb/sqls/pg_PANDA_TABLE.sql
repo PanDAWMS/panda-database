@@ -2151,7 +2151,7 @@ CREATE TABLE job_nevents (
 	pandaid bigint,
 	nevents_before bigint,
 	nevents_after bigint,
-	mt text
+	mt json
 ) ;
 ALTER TABLE job_nevents OWNER TO panda;
 --ALTER TABLE job_nevents ADD CONSTRAINT ensure_json CHECK ((CASE WHEN mt::coalesce(json::text, '') = '' THEN true ELSE true END));
@@ -2214,7 +2214,7 @@ CREATE TABLE metrics (
 	computingsite varchar(128),
 	gshare varchar(32),
 	metric varchar(128),
-	value_json text,
+	value_json json,
 	timestamp timestamp
 ) ;
 ALTER TABLE metrics OWNER TO panda;
@@ -2440,7 +2440,7 @@ ALTER TABLE retryerrors ADD PRIMARY KEY (retryerror_id);
 
 CREATE TABLE schedconfig_json (
 	panda_queue varchar(50) NOT NULL,
-	data text,
+	data json,
 	last_update timestamp
 ) ;
 COMMENT ON TABLE schedconfig_json IS E'Table to store the AGIS''s JSON configuration for each panda queue';
