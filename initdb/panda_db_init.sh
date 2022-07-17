@@ -3,7 +3,7 @@ set -e
 
 # redirect stdout to log file
 exec 6>&1
-exec > /var/log/initdb.log
+exec > /var/log/initdb.log 2>&1
 
 DIR=/docker-entrypoint-initdb.d/sqls
 
