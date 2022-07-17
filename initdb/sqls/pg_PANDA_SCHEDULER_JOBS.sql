@@ -1492,7 +1492,7 @@ FROM (
                WHERE
                   queue_function = 'Resource'
          )
-      GROUP BY vo, gshare, prodsourcelabel, resource_type, agg_typegshare
+      GROUP BY vo, agg_key, prodsourcelabel, resource_type, agg_type
       
 UNION
 
@@ -1513,7 +1513,7 @@ UNION
                WHERE
                   queue_function = 'Resource'
          )
-      GROUP BY vo, gshare, prodsourcelabel, resource_type, agg_typegshare
+      GROUP BY vo, agg_key, prodsourcelabel, resource_type, agg_type
    ) alias22
 
 UNION
@@ -1537,7 +1537,7 @@ FROM (
                queue_function = 'Resource'
          )
       GROUP BY
-         vo, workqueue_id::varchar, prodsourcelabel, resource_type, agg_typeworkqueue
+         vo, agg_key, prodsourcelabel, resource_type, agg_type
       
 UNION
 
@@ -1556,7 +1556,7 @@ UNION
                queue_function = 'Resource'
          )
       GROUP BY
-         vo, workqueue_id::varchar, prodsourcelabel, resource_type, agg_typeworkqueue
+         vo, agg_key, prodsourcelabel, resource_type, agg_type
    ) alias44
 ;
 
