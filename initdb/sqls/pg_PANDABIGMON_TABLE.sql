@@ -72,7 +72,7 @@ CREATE INDEX auth_group_permission_84c5c92e ON auth_group_permissions (permissio
 ALTER TABLE auth_group_permissions ADD PRIMARY KEY (id);
 
 CREATE TABLE auth_user (
-	id bigserial NOT NULL,
+	id bigint NOT NULL,
 	password varchar(128),
 	last_login timestamp,
 	is_superuser boolean,
@@ -237,7 +237,7 @@ CREATE INDEX social_aut_token_3017fea3 ON social_auth_partial (token);
 ALTER TABLE social_auth_partial ADD PRIMARY KEY (id);
 
 CREATE TABLE social_auth_usersocialauth (
-	id bigserial NOT NULL,
+	id bigint NOT NULL,
 	provider varchar(32),
 	uid varchar(255),
 	extra_data text,
