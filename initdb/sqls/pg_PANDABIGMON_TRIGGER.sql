@@ -46,7 +46,7 @@ CREATE TRIGGER all_requests_trg
 DROP TRIGGER IF EXISTS auth_group_tr ON auth_group CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_auth_group_tr() RETURNS trigger AS $BODY$
 BEGIN
-        SELECT auth_group_id_seq.nextval
+        SELECT nextval('auth_group_id_seq')
         INTO STRICT NEW.id;
 RETURN NEW;
 END;
@@ -78,7 +78,7 @@ CREATE TRIGGER auth_group_tr
 DROP TRIGGER IF EXISTS auth_user_tr ON auth_user CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_auth_user_tr() RETURNS trigger AS $BODY$
 BEGIN
-        SELECT auth_user_tr_seq.nextval
+        SELECT nextval('auth_user_tr_seq')
         INTO STRICT NEW.id;
 RETURN NEW;
 END
@@ -94,7 +94,7 @@ CREATE TRIGGER auth_user_tr
 DROP TRIGGER IF EXISTS auth_user_user_id_p_trg ON auth_user_user_permissions CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_auth_user_user_id_p_trg() RETURNS trigger AS $BODY$
 BEGIN
-        SELECT auth_user_user_id_p_seq.nextval
+        SELECT nextval('auth_user_user_id_p_seq')
         INTO STRICT NEW.id;
 RETURN NEW;
 END
@@ -181,7 +181,7 @@ CREATE TRIGGER rucio_accounts_trigger
 DROP TRIGGER IF EXISTS social_auth_association_tr ON social_auth_association CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_social_auth_association_tr() RETURNS trigger AS $BODY$
 BEGIN
-        SELECT social_auth_association_sq.nextval
+        SELECT nextval('social_auth_association_sq')
         INTO STRICT NEW.id;
     RETURN NEW;
 END
@@ -197,7 +197,7 @@ CREATE TRIGGER social_auth_association_tr
 DROP TRIGGER IF EXISTS social_auth_code_tr ON social_auth_code CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_social_auth_code_tr() RETURNS trigger AS $BODY$
 BEGIN
-        SELECT social_auth_code_sq.nextval
+        SELECT nextval('social_auth_code_sq')
         INTO STRICT NEW.id;
     RETURN NEW;
 END
@@ -213,7 +213,7 @@ CREATE TRIGGER social_auth_code_tr
 DROP TRIGGER IF EXISTS social_auth_nonce_tr ON social_auth_nonce CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_social_auth_nonce_tr() RETURNS trigger AS $BODY$
 BEGIN
-        SELECT social_auth_nonce_sq.nextval
+        SELECT nextval('social_auth_nonce_sq')
         INTO STRICT NEW.id;
     RETURN NEW;
 END
@@ -229,7 +229,7 @@ CREATE TRIGGER social_auth_nonce_tr
 DROP TRIGGER IF EXISTS social_auth_partial_tr ON social_auth_partial CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_social_auth_partial_tr() RETURNS trigger AS $BODY$
 BEGIN
-        SELECT social_auth_partial_sq.nextval
+        SELECT nextval('social_auth_partial_sq')
         INTO STRICT NEW.id;
     RETURN NEW;
 END
@@ -245,7 +245,7 @@ CREATE TRIGGER social_auth_partial_tr
 DROP TRIGGER IF EXISTS social_auth_usersociala1245 ON social_auth_usersocialauth CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_social_auth_usersociala1245() RETURNS trigger AS $BODY$
 BEGIN
-        SELECT social_auth_usersociala0419.nextval
+        SELECT nextval('social_auth_usersociala0419')
         INTO STRICT NEW.id;
     RETURN NEW;
 END
@@ -261,7 +261,7 @@ CREATE TRIGGER social_auth_usersociala1245
 DROP TRIGGER IF EXISTS user_settings_tr ON user_settings CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_user_settings_tr() RETURNS trigger AS $BODY$
 BEGIN
-        SELECT user_settings_sq.nextval
+        SELECT nextval('user_settings_sq')
         INTO STRICT NEW.id;
     RETURN NEW;
 END
