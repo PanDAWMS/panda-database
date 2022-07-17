@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+# redirect stdout to log file
+exec 6>&1
+exec > /var/log/initdb.log
+
 DIR=/docker-entrypoint-initdb.d/sqls
 
 PANDA_DB_PASSWORD=${PANDA_DB_PASSWORD:-password}
@@ -17,7 +21,7 @@ do
             psql -U postgres -d panda_db -f ${FILE}
             echo INFO done  ${FILE}
         fi
-    for SUB in TABLE VIEW TYPE SEQUENCE FUNCTION SCHEDULER_JOBS
+    for SUB in TABLE VIEW TYPE SEQUENCE FUNCTION TRIGGER SCHEDULER_JOBS
     do
         FILE=${DIR}/pg_${COMP}_${SUB}.sql
         if [ -f "$FILE" ]; then
@@ -33,3 +37,6 @@ psql -U postgres -d panda_db -f $DIR/post_step_panda.sql
 
 echo INFO install cron
 psql -U postgres -f $DIR/post_step_cron.sql
+
+# restore stdout
+exec 1>&6 6>&-

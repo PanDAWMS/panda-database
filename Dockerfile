@@ -26,7 +26,7 @@ COPY ./initdb/sqls/* /docker-entrypoint-initdb.d/sqls/
 # to run with non-root PID
 RUN mkdir /temp
 RUN chmod 777 /temp
+RUN chmod -R 777 /var/log
 RUN mkdir -p /var/run/postgresql && chmod -R 777 /var/run
-RUN chmod -R 777 /docker-entrypoint-initdb.d
 
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf", "-c", "hba_file=/etc/postgresql/pg_hba.conf"]
