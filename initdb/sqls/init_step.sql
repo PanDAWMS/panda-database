@@ -6,3 +6,9 @@ GRANT USAGE ON SCHEMA cron TO panda;
 \c panda_db;
 CREATE SCHEMA IF NOT EXISTS partman;
 CREATE EXTENSION IF NOT EXISTS pg_partman SCHEMA partman;
+
+--- schema version
+CREATE TABLE IF NOT EXISTS  panda_db_info (
+	schema_version varchar(100)
+) ;
+
