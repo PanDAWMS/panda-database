@@ -39,7 +39,7 @@ else
     for patchname in $(find "$DIR" -name "*.patch.sql" -printf "%f\n" | sort -V); do
         if ver_let ${LAST_PATCH} ${patchname} ; then
             echo ========== patch "$patchname"
-            psql -d panda_db -U postgres -f "$DIR/$patchname"
+            psql -d panda_db -U postgres -v ON_ERROR_STOP=1 -f "$DIR/$patchname"
         fi
     done
     # update version
