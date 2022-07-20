@@ -28,6 +28,7 @@ if [ -z "$CURRENT_VERSION" ]; then
     # new database
     psql -d panda_db -U postgres -c "INSERT INTO panda_db_info (schema_version) VALUES('${LATEST_VERSION}')"
 else
+    echo "Latest: $LATEST_VERSION   Current: $CURRENT_VERSION"
     # exit if already latest
     if ver_let "$LATEST_VERSION" "$CURRENT_VERSION"; then
         echo ========== alrady using the latest schema "$LATEST_VERSION"
