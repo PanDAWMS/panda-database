@@ -21,7 +21,7 @@ psql -U postgres -v ON_ERROR_STOP=1 -f /tmp/init_step.sql
 echo
 
 # check schema version
-LATEST_VERSION=$(cat ${DIR}/../version)
+LATEST_VERSION=$(cat ${DIR}/version)
 CURRENT_VERSION=$(psql -d panda_db -U postgres -tc "SELECT schema_version FROM panda_db_info")
 
 if [ -z "$CURRENT_VERSION" ]; then
@@ -35,10 +35,10 @@ else
     fi
     # patch
     LAST_PATCH="$CURRENT_VERSION".patch.sql
-    for patchname in $(ls "$DIR"/patches/*.patch.sql | sort -V); do
+    for patchname in $(find "$DIR" --name "*.patch.sql" -printf "%\n" | sort -V); do
         if ver_let "LAST_PATCH" "$patchname"; then
             echo ========== patch "$patchname"
-            psql -d panda_db -U postgres -c "$DIR"/patches/"$patchname"
+            psql -d panda_db -U postgres -c "$DIR/$patchname"
         fi
     done
     # update version
