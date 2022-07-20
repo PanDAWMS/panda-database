@@ -22,7 +22,7 @@ echo
 
 # check schema version
 LATEST_VERSION=$(cat ${DIR}/version)
-CURRENT_VERSION=$(psql -d panda_db -U postgres -tc "SELECT schema_version FROM panda_db_info")
+CURRENT_VERSION=$(psql -d panda_db -U postgres -tc "SELECT schema_version FROM panda_db_info" | xargs)
 
 if [ -z "$CURRENT_VERSION" ]; then
     # new database
@@ -31,7 +31,7 @@ else
     echo "Latest: $LATEST_VERSION   Current: $CURRENT_VERSION"
     # exit if already latest
     if ver_let "$LATEST_VERSION" "$CURRENT_VERSION"; then
-        echo ========== alrady using the latest schema "$LATEST_VERSION"
+        echo ========== already using the latest schema "$LATEST_VERSION"
         exit 0
     fi
     # patch
