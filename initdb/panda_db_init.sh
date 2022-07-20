@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# compare version strings
+ver_let() {
+    [  "$1" = "$(printf "%s\n%s" "$1" "$2" | sort -V | head -n1)" ]
+}
+
 # redirect stdout to log file
 exec 6>&1
 exec 7>&2
@@ -15,6 +20,35 @@ echo ========== init database
 psql -U postgres -v ON_ERROR_STOP=1 -f /tmp/init_step.sql
 echo
 
+# check schema version
+LATEST_VERSION=$(cat ${DIR}/version)
+CURRENT_VERSION=$(psql -d panda_db -U postgres -tc "SELECT schema_version FROM panda_db_info")
+
+if [ -z "$CURRENT_VERSION" ]; then
+    # new database
+    psql -d panda_db -U postgres -c "INSERT INTO panda_db_info (schema_version) VALUES('${LATEST_VERSION}')"
+else
+    echo "Latest: $LATEST_VERSION   Current: $CURRENT_VERSION"
+    # exit if already latest
+    if ver_let ${LATEST_VERSION} ${CURRENT_VERSION} ; then
+        echo ========== already using the latest schema "$LATEST_VERSION"
+        exit 0
+    fi
+    # patch
+    LAST_PATCH="$CURRENT_VERSION".patch.sql
+    for patchname in $(find "$DIR" -name "*.patch.sql" -printf "%f\n" | sort -V); do
+        if ver_let ${LAST_PATCH} ${patchname} ; then
+            echo ========== patch "$patchname"
+            psql -d panda_db -U postgres -v ON_ERROR_STOP=1 -f "$DIR/$patchname"
+        fi
+    done
+    # update version
+    psql -d panda_db -U postgres -c "UPDATE panda_db_info set schema_version='${LATEST_VERSION}'"
+    echo ========== updated to the latest schema "$LATEST_VERSION"
+    exit 0
+fi
+
+# define database objects for new database
 for COMP in PANDA PANDAMETA PANDAARCH PANDABIGMON DEFT PARTITION
 do
     FILE=${DIR}/pg_${COMP}.sql

@@ -483,7 +483,8 @@ CREATE TABLE jedi_datasets (
 	storagetoken varchar(100),
 	destination varchar(60),
 	templateid bigint,
-	nfileswaiting bigint
+	nfileswaiting bigint,
+	nfilesmissing bigint
 ) PARTITION BY RANGE (jeditaskid) ;
 COMMENT ON COLUMN jedi_datasets.attributes IS E'describes how the dataset is split. e,g, the ratio to the number of master files, no-split, repeat, etc';
 COMMENT ON COLUMN jedi_datasets.cloud IS E'The replica in the cloud is used. Set manually or by the task brokerage';
