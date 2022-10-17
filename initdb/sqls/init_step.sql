@@ -8,7 +8,10 @@ CREATE SCHEMA IF NOT EXISTS partman;
 CREATE EXTENSION IF NOT EXISTS pg_partman SCHEMA partman;
 
 --- schema version
-CREATE TABLE IF NOT EXISTS  panda_db_info (
-	schema_version varchar(100)
+CREATE TABLE IF NOT EXISTS  pandadb_version (
+	component varchar(100) NOT NULL,
+	major INT NOT NULL,
+	minor INT NOT NULL,
+	patch INT NOT NULL
 ) ;
 
