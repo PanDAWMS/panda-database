@@ -14,4 +14,4 @@ CREATE TABLE IF NOT EXISTS  pandadb_version (
 	minor INT NOT NULL,
 	patch INT NOT NULL
 ) ;
-
+GRANT ALL ON pandadb_version TO panda;
