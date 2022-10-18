@@ -22,13 +22,13 @@ echo
 
 # check schema version
 LATEST_VERSION=$(cat ${DIR}/version)
-CURRENT_VERSION=$(psql -d panda_db -U postgres -tc "SELECT major || '.' ||  minor || '.' || patch FROM pandadb_version WHERE component = 'SERVER'")
+CURRENT_VERSION=$(psql -d panda_db -U postgres -tc "SELECT major || '.' ||  minor || '.' || patch FROM pandadb_version WHERE component = 'SCHEMA'")
 
 IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_VERSION"
 
 if [ -z "$CURRENT_VERSION" ]; then
     # new database
-    psql -d panda_db -U postgres -c "INSERT INTO pandadb_version (component, major, minor, patch) VALUES('SERVER', '${MAJOR}', '${MINOR}', '${PATCH}')"
+    psql -d panda_db -U postgres -c "INSERT INTO pandadb_version (component, major, minor, patch) VALUES('SCHEMA', '${MAJOR}', '${MINOR}', '${PATCH}')"
 else
     echo "Latest: $LATEST_VERSION   Current: $CURRENT_VERSION"
     # exit if already latest
@@ -45,7 +45,7 @@ else
         fi
     done
     # update version
-    psql -d panda_db -U postgres -c "UPDATE pandadb_version set major='${MAJOR}', minor='${MINOR}', patch='${PATCH}' WHERE component = 'SERVER'"
+    psql -d panda_db -U postgres -c "UPDATE pandadb_version set major='${MAJOR}', minor='${MINOR}', patch='${PATCH}' WHERE component = 'SCHEMA'"
     echo ========== updated to the latest schema "$LATEST_VERSION"
     exit 0
 fi
