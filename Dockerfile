@@ -20,9 +20,9 @@ COPY ./etc/*.conf /etc/postgresql/
 
 RUN mkdir -p /docker-entrypoint-initdb.d/sqls
 
-COPY ./initdb/*.sh /docker-entrypoint-initdb.d/
-COPY ./initdb/sqls/* /docker-entrypoint-initdb.d/sqls/
-COPY ./initdb/version /docker-entrypoint-initdb.d/sqls/
+COPY ./schema/postgres/*.sh /docker-entrypoint-initdb.d/
+COPY ./schema/postgres/sqls/* /docker-entrypoint-initdb.d/sqls/
+COPY ./schema/postgres/version /docker-entrypoint-initdb.d/sqls/
 
 # to run with non-root PID
 RUN mkdir /temp
