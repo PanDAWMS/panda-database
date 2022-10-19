@@ -1,6 +1,41 @@
 --------------------------------------------------------
---  File created - Wednesday-March-18-2020   
+--  File created - Wednesday-October-19-2022   
+--  Schema version: 0.0.12
+--  IMPORTANT: Please always update version below 
+--  to match the current DB schema
 --------------------------------------------------------
+--------------------------------------------------------
+--  DDL for Table PANDADB_VERSION
+--------------------------------------------------------
+
+  CREATE TABLE "ATLAS_PANDA"."PANDADB_VERSION" 
+   (	"COMPONENT" VARCHAR2(100 BYTE) NOT NULL, 
+	"MAJOR" NUMBER(6,0) NOT NULL, 
+	"MINOR" NUMBER(6,0) NOT NULL, 
+	"PATCH" NUMBER(6,0) NOT NULL
+   ) ;
+
+--------------------------------------------------------
+--  DDL for Index PANDADB_VERSION_COMPONENT_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "ATLAS_PANDA"."PANDADB_VERSION_COMPONENT_PK" ON "ATLAS_PANDA"."PANDADB_VERSION" ("COMPONENT") 
+  ;
+
+--------------------------------------------------------
+--  Constraints for Table PANDADB_VERSION
+--------------------------------------------------------
+
+  ALTER TABLE "ATLAS_PANDA"."PANDADB_VERSION" ADD CONSTRAINT "PANDADB_VERSION_COMPONENT_PK" PRIMARY KEY ("COMPONENT")
+  USING INDEX  ENABLE;
+
+--------------------------------------------------------
+--  Schema version for Table PANDADB_VERSION
+--  IMPORTANT: Please always update to up2date version
+--------------------------------------------------------
+  
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SCHEMA', 0, 0, 12);
+
 --------------------------------------------------------
 --  DDL for Sequence CLOUDTASKS_ID_SEQ
 --------------------------------------------------------
