@@ -7,6 +7,11 @@ GRANT USAGE ON SCHEMA cron TO panda;
 CREATE SCHEMA IF NOT EXISTS partman;
 CREATE EXTENSION IF NOT EXISTS pg_partman SCHEMA partman;
 
+CREATE SCHEMA IF NOT EXISTS doma_panda;
+ALTER SCHEMA doma_panda OWNER TO panda;
+
+SET search_path = doma_panda,public;
+
 --- schema version
 CREATE TABLE IF NOT EXISTS  pandadb_version (
 	component varchar(100) NOT NULL,
