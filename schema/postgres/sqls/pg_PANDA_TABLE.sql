@@ -14,7 +14,7 @@ ALTER SCHEMA doma_panda OWNER TO panda;
 SET search_path = doma_panda,public;
 
 --- schema version
-CREATE TABLE IF NOT EXISTS  pandadb_version (
+CREATE TABLE pandadb_version (
 	component varchar(100) NOT NULL,
 	major INT NOT NULL,
 	minor INT NOT NULL,
