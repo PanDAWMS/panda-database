@@ -13,6 +13,17 @@ ALTER SCHEMA doma_panda OWNER TO panda;
 
 SET search_path = doma_panda,public;
 
+--- schema version
+CREATE TABLE IF NOT EXISTS  pandadb_version (
+	component varchar(100) NOT NULL,
+	major INT NOT NULL,
+	minor INT NOT NULL,
+	patch INT NOT NULL
+) ;
+ALTER TABLE pandadb_version TO panda;
+--GRANT ALL ON pandadb_version TO postgres;
+ALTER TABLE pandadb_version ADD PRIMARY KEY (component);
+
 CREATE TABLE cache (
 	main_key varchar(56) NOT NULL,
 	sub_key varchar(56) NOT NULL,
