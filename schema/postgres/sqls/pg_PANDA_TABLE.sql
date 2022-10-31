@@ -20,7 +20,7 @@ CREATE TABLE pandadb_version (
 	minor INT NOT NULL,
 	patch INT NOT NULL
 ) ;
-ALTER TABLE pandadb_version TO panda;
+ALTER TABLE pandadb_version OWNER TO panda;
 --GRANT ALL ON pandadb_version TO postgres;
 ALTER TABLE pandadb_version ADD PRIMARY KEY (component);
 
