@@ -28,7 +28,7 @@ IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_VERSION"
 
 if [ -z "$CURRENT_VERSION" ]; then
     # new database
-    psql -d panda_db -U postgres -c "INSERT INTO doma_panda.pandadb_version (component, major, minor, patch) VALUES('SCHEMA', '${MAJOR}', '${MINOR}', '${PATCH}')"
+    echo ========== this is a new database, we will proceed with the creation of the schema "$LATEST_VERSION"
 else
     echo "Latest: $LATEST_VERSION   Current: $CURRENT_VERSION"
     # exit if already latest
@@ -69,6 +69,9 @@ do
         fi
     done
 done
+
+echo ========== adding the schema version "$LATEST_VERSION"
+psql -d panda_db -U postgres -c "INSERT INTO doma_panda.pandadb_version (component, major, minor, patch) VALUES('SCHEMA', '${MAJOR}', '${MINOR}', '${PATCH}')"
 
 echo ========== post step
 psql -U postgres -d panda_db -f $DIR/post_step_panda.sql
