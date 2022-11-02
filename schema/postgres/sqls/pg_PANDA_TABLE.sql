@@ -25,6 +25,20 @@ ALTER TABLE pandadb_version OWNER TO panda;
 ALTER TABLE pandadb_version ADD PRIMARY KEY (component);
 
 
+CREATE TABLE cache (
+	main_key varchar(56) NOT NULL,
+	sub_key varchar(56) NOT NULL,
+	data text,
+	last_update timestamp
+) ;
+COMMENT ON TABLE cache IS E'Table to store arbitrary CLOBs';
+COMMENT ON COLUMN cache.data IS E'Information to cache';
+COMMENT ON COLUMN cache.last_update IS E'Timestamp value was last updated';
+COMMENT ON COLUMN cache.main_key IS E'Main key';
+COMMENT ON COLUMN cache.sub_key IS E'Sub key';
+ALTER TABLE cache OWNER TO panda;
+ALTER TABLE cache ADD PRIMARY KEY (main_key,sub_key);
+
 CREATE TABLE cloudtasks (
 	id integer NOT NULL,
 	taskname varchar(128),
