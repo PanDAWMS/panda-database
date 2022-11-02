@@ -61,78 +61,7 @@
 --------------------------------------------------------
 
    CREATE SEQUENCE  "ATLAS_PANDAMETA"."USERS_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 32435 NOCACHE  NOORDER  NOCYCLE ;
---------------------------------------------------------
---  DDL for Table CACHE
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."CACHE" 
-   (	"TYPE" VARCHAR2(250 CHAR), 
-	"VALUE" VARCHAR2(250 CHAR), 
-	"QURL" VARCHAR2(250 CHAR), 
-	"MODTIME" DATE DEFAULT SYSDATE, 
-	"USETIME" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"UPDMIN" NUMBER(7,0), 
-	"DATA" CLOB
-   ) ;
---------------------------------------------------------
---  DDL for Table CACHE_OLD
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."CACHE_OLD" 
-   (	"TYPE" VARCHAR2(250 CHAR), 
-	"VALUE" VARCHAR2(250 CHAR), 
-	"QURL" VARCHAR2(250 CHAR), 
-	"MODTIME" DATE DEFAULT SYSDATE, 
-	"USETIME" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"UPDMIN" NUMBER(7,0), 
-	"DATA" CLOB
-   ) ;
---------------------------------------------------------
---  DDL for Table CACHE_OLD_2
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."CACHE_OLD_2" 
-   (	"TYPE" VARCHAR2(250 CHAR), 
-	"VALUE" VARCHAR2(250 CHAR), 
-	"QURL" VARCHAR2(250 CHAR), 
-	"MODTIME" DATE DEFAULT SYSDATE, 
-	"USETIME" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"UPDMIN" NUMBER(7,0), 
-	"DATA" CLOB
-   ) ;
---------------------------------------------------------
---  DDL for Table CACHE_TRACK_NEW
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."CACHE_TRACK_NEW" 
-   (	"TRACK_TIME" TIMESTAMP (3) DEFAULT SYSTIMESTAMP, 
-	"TYPE" VARCHAR2(250 BYTE), 
-	"VALUE" VARCHAR2(250 BYTE), 
-	"LOB_LEN_OLD" NUMBER, 
-	"LOB_LEN_NEW" NUMBER, 
-	"USERHOST" VARCHAR2(250 BYTE)
-   ) ;
---------------------------------------------------------
---  DDL for Table CERTIFICATES
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."CERTIFICATES" 
-   (	"ID" NUMBER(7,0), 
-	"CERT" VARCHAR2(4000 CHAR)
-   ) ;
---------------------------------------------------------
---  DDL for Table CLASSLIST
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."CLASSLIST" 
-   (	"CLASS" VARCHAR2(30 CHAR), 
-	"NAME" VARCHAR2(60 CHAR), 
-	"RIGHTS" VARCHAR2(30 CHAR), 
-	"PRIORITY" NUMBER(7,0), 
-	"QUOTA1" NUMBER(19,0), 
-	"QUOTA7" NUMBER(19,0), 
-	"QUOTA30" NUMBER(19,0)
-   ) ;
 --------------------------------------------------------
 --  DDL for Table CLOUDCONFIG
 --------------------------------------------------------
@@ -166,109 +95,7 @@
    ) ;
 
    COMMENT ON COLUMN "ATLAS_PANDAMETA"."CLOUDCONFIG"."COMMENT_" IS 'ORIGINAL NAME:comment';
---------------------------------------------------------
---  DDL for Table CLOUDSPACE
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."CLOUDSPACE" 
-   (	"CLOUD" VARCHAR2(20 CHAR), 
-	"STORE" VARCHAR2(50 CHAR), 
-	"SPACE" NUMBER(10,0) DEFAULT '0', 
-	"FREESPACE" NUMBER(10,0) DEFAULT '0', 
-	"MODUSER" VARCHAR2(30 CHAR), 
-	"MODTIME" DATE DEFAULT SYSDATE
-   ) ;
---------------------------------------------------------
---  DDL for Table DSLIST
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."DSLIST" 
-   (	"ID" NUMBER(7,0), 
-	"DUID" VARCHAR2(40 CHAR), 
-	"NAME" VARCHAR2(200 CHAR), 
-	"UGID" NUMBER(7,0), 
-	"PRIORITY" NUMBER(7,0), 
-	"STATUS" VARCHAR2(10 CHAR), 
-	"LASTUSE" DATE DEFAULT SYSDATE, 
-	"PINSTATE" VARCHAR2(10 CHAR), 
-	"PINTIME" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"LIFETIME" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"SITE" VARCHAR2(60 CHAR), 
-	"PAR1" VARCHAR2(30 CHAR), 
-	"PAR2" VARCHAR2(30 CHAR), 
-	"PAR3" VARCHAR2(30 CHAR), 
-	"PAR4" VARCHAR2(30 CHAR), 
-	"PAR5" VARCHAR2(30 CHAR), 
-	"PAR6" VARCHAR2(30 CHAR)
-   ) ;
---------------------------------------------------------
---  DDL for Table GROUPS
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."GROUPS" 
-   (	"ID" NUMBER(7,0), 
-	"NAME" VARCHAR2(60 CHAR), 
-	"DESCRIPTION" VARCHAR2(120 CHAR), 
-	"URL" VARCHAR2(100 CHAR), 
-	"CLASSA" VARCHAR2(30 CHAR), 
-	"CLASSP" VARCHAR2(30 CHAR), 
-	"CLASSXP" VARCHAR2(30 CHAR), 
-	"NJOBS1" NUMBER(10,0), 
-	"NJOBS7" NUMBER(10,0), 
-	"NJOBS30" NUMBER(10,0), 
-	"CPUA1" NUMBER(19,0), 
-	"CPUA7" NUMBER(19,0), 
-	"CPUA30" NUMBER(19,0), 
-	"CPUP1" NUMBER(19,0), 
-	"CPUP7" NUMBER(19,0), 
-	"CPUP30" NUMBER(19,0), 
-	"CPUXP1" NUMBER(19,0), 
-	"CPUXP7" NUMBER(19,0), 
-	"CPUXP30" NUMBER(19,0), 
-	"ALLCPUA1" NUMBER(19,0), 
-	"ALLCPUA7" NUMBER(19,0), 
-	"ALLCPUA30" NUMBER(19,0), 
-	"ALLCPUP1" NUMBER(19,0), 
-	"ALLCPUP7" NUMBER(19,0), 
-	"ALLCPUP30" NUMBER(19,0), 
-	"ALLCPUXP1" NUMBER(19,0), 
-	"ALLCPUXP7" NUMBER(19,0), 
-	"ALLCPUXP30" NUMBER(19,0), 
-	"QUOTAA1" NUMBER(19,0), 
-	"QUOTAA7" NUMBER(19,0), 
-	"QUOTAA30" NUMBER(19,0), 
-	"QUOTAP1" NUMBER(19,0), 
-	"QUOTAP7" NUMBER(19,0), 
-	"QUOTAP30" NUMBER(19,0), 
-	"QUOTAXP1" NUMBER(19,0), 
-	"QUOTAXP7" NUMBER(19,0), 
-	"QUOTAXP30" NUMBER(19,0), 
-	"ALLQUOTAA1" NUMBER(19,0), 
-	"ALLQUOTAA7" NUMBER(19,0), 
-	"ALLQUOTAA30" NUMBER(19,0), 
-	"ALLQUOTAP1" NUMBER(19,0), 
-	"ALLQUOTAP7" NUMBER(19,0), 
-	"ALLQUOTAP30" NUMBER(19,0), 
-	"ALLQUOTAXP1" NUMBER(19,0), 
-	"ALLQUOTAXP7" NUMBER(19,0), 
-	"ALLQUOTAXP30" NUMBER(19,0), 
-	"SPACE1" NUMBER(10,0), 
-	"SPACE7" NUMBER(10,0), 
-	"SPACE30" NUMBER(10,0)
-   ) ;
---------------------------------------------------------
---  DDL for Table HISTORY
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."HISTORY" 
-   (	"ID" NUMBER(7,0), 
-	"ENTRYTIME" DATE DEFAULT SYSDATE, 
-	"STARTTIME" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"ENDTIME" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"CPU" NUMBER(19,0), 
-	"CPUXP" NUMBER(19,0), 
-	"SPACE" NUMBER(7,0)
-   ) ;
 --------------------------------------------------------
 --  DDL for Table INCIDENTS
 --------------------------------------------------------
@@ -325,16 +152,7 @@
 	"LOG3" CLOB, 
 	"LOG4" CLOB
    ) ;
---------------------------------------------------------
---  DDL for Table MEMBERS
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."MEMBERS" 
-   (	"UNAME" VARCHAR2(30 CHAR), 
-	"GNAME" VARCHAR2(30 CHAR), 
-	"RIGHTS" VARCHAR2(30 CHAR), 
-	"SINCE" DATE DEFAULT SYSDATE
-   ) ;
 --------------------------------------------------------
 --  DDL for Table MULTICLOUD_HISTORY
 --------------------------------------------------------
@@ -353,115 +171,7 @@
 	"CONTROLLER" VARCHAR2(20 CHAR), 
 	"PATHENA" VARCHAR2(20 CHAR)
    ) ;
---------------------------------------------------------
---  DDL for Table PASSWORDS
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."PASSWORDS" 
-   (	"ID" NUMBER(7,0), 
-	"PASS" VARCHAR2(60 CHAR)
-   ) ;
---------------------------------------------------------
---  DDL for Table PILOTQUEUE
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" 
-   (	"JOBID" VARCHAR2(100 CHAR), 
-	"TPID" VARCHAR2(60 CHAR), 
-	"URL" VARCHAR2(200 CHAR), 
-	"NICKNAME" VARCHAR2(60 CHAR), 
-	"SYSTEM" VARCHAR2(20 CHAR), 
-	"USER_" VARCHAR2(60 CHAR), 
-	"HOST" VARCHAR2(60 CHAR), 
-	"SUBMITHOST" VARCHAR2(60 CHAR), 
-	"QUEUEID" VARCHAR2(60 CHAR), 
-	"TYPE" VARCHAR2(20 CHAR), 
-	"PANDAID" NUMBER(10,0), 
-	"TCHECK" DATE DEFAULT SYSDATE, 
-	"STATE" VARCHAR2(30 CHAR), 
-	"TSTATE" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TENTER" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TSUBMIT" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TACCEPT" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TSCHEDULE" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TSTART" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TEND" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TDONE" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TRETRIEVE" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"STATUS" VARCHAR2(20 CHAR), 
-	"ERRCODE" NUMBER(10,0) DEFAULT '0', 
-	"ERRINFO" VARCHAR2(150 CHAR), 
-	"MESSAGE" VARCHAR2(4000 CHAR), 
-	"SCHEDD_NAME" VARCHAR2(60 CHAR), 
-	"WORKERNODE" VARCHAR2(60 CHAR)
-   ) ;
-
-   COMMENT ON COLUMN "ATLAS_PANDAMETA"."PILOTQUEUE"."USER_" IS 'ORIGINAL NAME:user';
---------------------------------------------------------
---  DDL for Table PILOTQUEUE_BNL
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" 
-   (	"JOBID" VARCHAR2(100 CHAR), 
-	"TPID" VARCHAR2(60 CHAR), 
-	"URL" VARCHAR2(200 CHAR), 
-	"NICKNAME" VARCHAR2(60 CHAR), 
-	"SYSTEM" VARCHAR2(20 CHAR), 
-	"USER_" VARCHAR2(60 CHAR), 
-	"HOST" VARCHAR2(60 CHAR), 
-	"SUBMITHOST" VARCHAR2(60 CHAR), 
-	"SCHEDD_NAME" VARCHAR2(60 CHAR), 
-	"QUEUEID" VARCHAR2(60 CHAR), 
-	"TYPE" VARCHAR2(20 CHAR), 
-	"PANDAID" NUMBER(10,0), 
-	"TCHECK" DATE DEFAULT SYSDATE, 
-	"STATE" VARCHAR2(30 CHAR), 
-	"TSTATE" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TENTER" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TSUBMIT" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TACCEPT" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TSCHEDULE" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TSTART" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TEND" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TDONE" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TRETRIEVE" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"STATUS" VARCHAR2(20 CHAR), 
-	"ERRCODE" NUMBER(10,0) DEFAULT '0', 
-	"ERRINFO" VARCHAR2(150 CHAR), 
-	"MESSAGE" VARCHAR2(4000 CHAR), 
-	"WORKERNODE" VARCHAR2(60 CHAR)
-   ) ;
-
-   COMMENT ON COLUMN "ATLAS_PANDAMETA"."PILOTQUEUE_BNL"."USER_" IS 'ORIGINAL NAME:user';
---------------------------------------------------------
---  DDL for Table PILOTTYPE
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."PILOTTYPE" 
-   (	"NAME" VARCHAR2(60 CHAR), 
-	"SCRIPT" VARCHAR2(60 CHAR), 
-	"URL" VARCHAR2(150 CHAR), 
-	"SYSTEM" VARCHAR2(60 CHAR)
-   ) ;
---------------------------------------------------------
---  DDL for Table PRODUCTIONDATASETS
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."PRODUCTIONDATASETS" 
-   (	"NAME" VARCHAR2(120 CHAR), 
-	"VERSION" NUMBER(10,0), 
-	"VUID" VARCHAR2(40 CHAR), 
-	"FILES" NUMBER(7,0), 
-	"GB" NUMBER(7,0), 
-	"EVENTS" NUMBER(7,0), 
-	"SITE" VARCHAR2(60 BYTE), 
-	"SW_RELEASE" VARCHAR2(20 CHAR), 
-	"GEOMETRY" VARCHAR2(20 CHAR), 
-	"JOBID" NUMBER(10,0), 
-	"PANDAID" NUMBER(10,0), 
-	"PRODTIME" DATE, 
-	"TIMESTAMP" NUMBER(10,0)
-   ) ;
 --------------------------------------------------------
 --  DDL for Table PROXYKEY
 --------------------------------------------------------
@@ -475,39 +185,7 @@
 	"ORIGIN" VARCHAR2(80 CHAR), 
 	"MYPROXY" VARCHAR2(80 CHAR)
    ) ;
---------------------------------------------------------
---  DDL for Table REDIRECT
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."REDIRECT" 
-   (	"SERVICE" VARCHAR2(30 CHAR), 
-	"TYPE" VARCHAR2(30 CHAR), 
-	"SITE" VARCHAR2(60 BYTE), 
-	"DESCRIPTION" VARCHAR2(120 CHAR), 
-	"URL" VARCHAR2(250 CHAR), 
-	"TESTURL" VARCHAR2(250 CHAR), 
-	"RESPONSE" VARCHAR2(30 CHAR), 
-	"ALIVERESPONSE" VARCHAR2(30 CHAR), 
-	"RESPONSETIME" NUMBER(7,0), 
-	"RANK" NUMBER(7,0), 
-	"PERFORMANCE" NUMBER(7,0), 
-	"STATUS" VARCHAR2(30 CHAR), 
-	"LOG" VARCHAR2(250 CHAR), 
-	"STATUSTIME" DATE DEFAULT SYSDATE, 
-	"USETIME" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss')
-   ) ;
---------------------------------------------------------
---  DDL for Table SAVEDPAGES
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."SAVEDPAGES" 
-   (	"NAME" VARCHAR2(30 CHAR), 
-	"FLAG" VARCHAR2(20 CHAR), 
-	"HOURS" NUMBER(7,0) DEFAULT '0', 
-	"HTML" CLOB, 
-	"LASTMOD" DATE, 
-	"INTERVAL" NUMBER(5,0)
-   ) ;
 --------------------------------------------------------
 --  DDL for Table SCHEDCONFIG
 --------------------------------------------------------
@@ -776,34 +454,7 @@
    ) ;
 
    COMMENT ON COLUMN "ATLAS_PANDAMETA"."SCHEDINSTANCE"."COMMENT_" IS 'ORIGINAL NAME:comment';
---------------------------------------------------------
---  DDL for Table SERVICELIST
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."SERVICELIST" 
-   (	"ID" NUMBER(10,0), 
-	"NAME" VARCHAR2(60 CHAR) DEFAULT 'default', 
-	"HOST" VARCHAR2(100 CHAR), 
-	"PID" NUMBER(10,0), 
-	"USERID" VARCHAR2(40 CHAR), 
-	"TYPE" VARCHAR2(30 CHAR), 
-	"GRP" VARCHAR2(20 CHAR), 
-	"DESCRIPTION" VARCHAR2(200 CHAR), 
-	"URL" VARCHAR2(200 CHAR), 
-	"TESTURL" VARCHAR2(200 CHAR), 
-	"RESPONSE" VARCHAR2(200 CHAR), 
-	"TRESPONSE" NUMBER(10,0), 
-	"TSTART" DATE DEFAULT SYSDATE, 
-	"TSTOP" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"TCHECK" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"CYCLESEC" NUMBER(10,0), 
-	"STATUS" VARCHAR2(20 CHAR), 
-	"LASTMOD" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"CONFIG" VARCHAR2(200 CHAR), 
-	"MESSAGE" VARCHAR2(4000 CHAR), 
-	"RESTARTCMD" VARCHAR2(4000 CHAR), 
-	"DOACTION" VARCHAR2(4000 CHAR)
-   ) ;
 --------------------------------------------------------
 --  DDL for Table SITEACCESS
 --------------------------------------------------------
@@ -865,136 +516,7 @@
    COMMENT ON COLUMN "ATLAS_PANDAMETA"."SITEDATA"."GETJOBABS" IS 'Absolute number of getJobs requests';
    COMMENT ON COLUMN "ATLAS_PANDAMETA"."SITEDATA"."UPDATEJOBABS" IS 'Absolute number of updateJobs';
    COMMENT ON COLUMN "ATLAS_PANDAMETA"."SITEDATA"."NOJOBABS" IS 'Absolute number of getJobs requests that did not get a Job';
---------------------------------------------------------
---  DDL for Table SITEDDM
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."SITEDDM" 
-   (	"NAME" VARCHAR2(60 CHAR), 
-	"INCMD" VARCHAR2(60 CHAR), 
-	"INPATH" VARCHAR2(200 CHAR), 
-	"INOPTS" VARCHAR2(60 CHAR), 
-	"OUTCMD" VARCHAR2(60 CHAR), 
-	"OUTOPTS" VARCHAR2(60 CHAR), 
-	"OUTPATH" VARCHAR2(200 CHAR)
-   ) ;
---------------------------------------------------------
---  DDL for Table SITEHISTORY
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."SITEHISTORY" 
-   (	"SITE" VARCHAR2(60 BYTE), 
-	"FLAG" VARCHAR2(20 CHAR), 
-	"TIME" DATE DEFAULT SYSDATE, 
-	"HOURS" NUMBER(7,0) DEFAULT '0', 
-	"NWN" NUMBER(7,0), 
-	"MEMMIN" NUMBER(7,0), 
-	"MEMMAX" NUMBER(7,0), 
-	"SI2000MIN" NUMBER(7,0), 
-	"SI2000MAX" NUMBER(7,0), 
-	"SI2000A" NUMBER(7,0), 
-	"SI2000P" NUMBER(7,0), 
-	"WALLA" NUMBER(7,0), 
-	"WALLP" NUMBER(7,0), 
-	"OS" VARCHAR2(30 CHAR), 
-	"SPACE" VARCHAR2(30 CHAR), 
-	"MINJOBS" NUMBER(7,0), 
-	"MAXJOBS" NUMBER(7,0), 
-	"LASTSTART" DATE, 
-	"LASTEND" DATE, 
-	"LASTFAIL" DATE, 
-	"LASTPILOT" DATE, 
-	"LASTPID" NUMBER(7,0), 
-	"NSTART" NUMBER(7,0) DEFAULT '0', 
-	"FINISHED" NUMBER(7,0) DEFAULT '0', 
-	"FAILED" NUMBER(7,0) DEFAULT '0', 
-	"DEFINED" NUMBER(7,0) DEFAULT '0', 
-	"ASSIGNED" NUMBER(7,0) DEFAULT '0', 
-	"WAITING" NUMBER(7,0) DEFAULT '0', 
-	"ACTIVATED" NUMBER(7,0) DEFAULT '0', 
-	"RUNNING" NUMBER(7,0) DEFAULT '0', 
-	"GETJOB" NUMBER(7,0) DEFAULT '0', 
-	"UPDATEJOB" NUMBER(7,0) DEFAULT '0', 
-	"SUBTOT" NUMBER(7,0) DEFAULT '0', 
-	"SUBDEF" NUMBER(7,0) DEFAULT '0', 
-	"SUBDONE" NUMBER(7,0) DEFAULT '0', 
-	"FILEMODS" NUMBER(7,0) DEFAULT '0', 
-	"NCPU" NUMBER(5,0), 
-	"NSLOT" NUMBER(5,0)
-   ) ;
---------------------------------------------------------
---  DDL for Table SITESINFO
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."SITESINFO" 
-   (	"NAME" VARCHAR2(120 CHAR), 
-	"NICK" VARCHAR2(20 CHAR), 
-	"CONTACT" VARCHAR2(30 CHAR), 
-	"EMAIL" VARCHAR2(30 CHAR), 
-	"STATUS" VARCHAR2(12 CHAR), 
-	"LRC" VARCHAR2(120 CHAR), 
-	"GRIDCAT" NUMBER(7,0), 
-	"MONALISA" VARCHAR2(20 CHAR), 
-	"COMPUTINGSITE" VARCHAR2(20 CHAR), 
-	"MAINSITE" VARCHAR2(20 CHAR), 
-	"HOME" VARCHAR2(120 CHAR), 
-	"GANGLIA" VARCHAR2(120 CHAR), 
-	"GOC" VARCHAR2(20 CHAR), 
-	"GOCCONFIG" NUMBER(3,0), 
-	"PRODSYS" VARCHAR2(20 CHAR), 
-	"DQ2SVC" VARCHAR2(20 CHAR), 
-	"USAGE" VARCHAR2(40 CHAR), 
-	"UPDTIME" NUMBER(10,0), 
-	"NDATASETS" NUMBER(7,0), 
-	"NFILES" NUMBER(7,0), 
-	"TIMESTAMP" NUMBER(10,0)
-   ) ;
---------------------------------------------------------
---  DDL for Table SITESTATS
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."SITESTATS" 
-   (	"CLOUD" VARCHAR2(10 BYTE), 
-	"SITE" VARCHAR2(60 BYTE), 
-	"AT_TIME" DATE, 
-	"TWIDTH" NUMBER(6,0), 
-	"TJOB" NUMBER(6,0), 
-	"TGETJOB" NUMBER(6,0), 
-	"TSTAGEIN" NUMBER(6,0), 
-	"TRUN" NUMBER(6,0), 
-	"TSTAGEOUT" NUMBER(6,0), 
-	"TWAIT" NUMBER(6,0), 
-	"NUSERS" NUMBER(6,0), 
-	"NWN" NUMBER(6,0), 
-	"NJOBS" NUMBER(6,0), 
-	"NFINISHED" NUMBER(6,0), 
-	"NFAILED" NUMBER(6,0), 
-	"NFAILAPP" NUMBER(6,0), 
-	"NFAILSYS" NUMBER(6,0), 
-	"NFAILDAT" NUMBER(6,0), 
-	"NTIMEOUT" NUMBER(6,0), 
-	"EFFICIENCY" NUMBER(6,0), 
-	"SITEUTIL" NUMBER(6,0), 
-	"JOBTYPE" VARCHAR2(30 BYTE), 
-	"PROCTYPE" VARCHAR2(90 BYTE), 
-	"USERNAME" VARCHAR2(90 BYTE), 
-	"NGETJOB" NUMBER(6,0), 
-	"NUPDATEJOB" NUMBER(6,0), 
-	"RELEASE" VARCHAR2(90 BYTE), 
-	"NEVENTS" NUMBER(11,0), 
-	"SPECTYPE" VARCHAR2(90 BYTE), 
-	"TSETUP" NUMBER(6,0) DEFAULT -1
-   ) 
-  PARTITION BY RANGE ("AT_TIME") 
- (PARTITION "SITESTATS_2010"  VALUES LESS THAN (TO_DATE(' 2011-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) , 
- PARTITION "SITESTATS_2011"  VALUES LESS THAN (TO_DATE(' 2012-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) , 
- PARTITION "SITESTATS_2012"  VALUES LESS THAN (TO_DATE(' 2013-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) , 
- PARTITION "SITESTATS_2013"  VALUES LESS THAN (TO_DATE(' 2014-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) , 
- PARTITION "SITESTATS_2014"  VALUES LESS THAN (TO_DATE(' 2015-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) , 
- PARTITION "SITESTATS_2015"  VALUES LESS THAN (TO_DATE(' 2016-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) , 
- PARTITION "SITESTATS_2016"  VALUES LESS THAN (TO_DATE(' 2017-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) , 
- PARTITION "SITESTATS_2017"  VALUES LESS THAN (TO_DATE(' 2018-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) , 
- PARTITION "SITESTATS_2018"  VALUES LESS THAN (TO_DATE(' 2019-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) ) ;
 --------------------------------------------------------
 --  DDL for Table SITES_MATRIX_DATA
 --------------------------------------------------------
@@ -1017,30 +539,7 @@
 	"PERFSONARAVG_LAST_UPDATE" DATE, 
 	"XRDCP_LAST_UPDATE" DATE
    ) ;
---------------------------------------------------------
---  DDL for Table SUBMITHOSTS
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."SUBMITHOSTS" 
-   (	"NAME" VARCHAR2(60 CHAR), 
-	"NICKNAME" VARCHAR2(20 CHAR), 
-	"HOST" VARCHAR2(60 CHAR), 
-	"SYSTEM" VARCHAR2(60 CHAR), 
-	"RUNDIR" VARCHAR2(200 CHAR), 
-	"RUNURL" VARCHAR2(200 CHAR), 
-	"JDLTXT" VARCHAR2(4000 CHAR), 
-	"PILOTQUEUE" VARCHAR2(20 CHAR), 
-	"OUTURL" VARCHAR2(200 CHAR)
-   ) ;
---------------------------------------------------------
---  DDL for Table SYSCONFIG
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."SYSCONFIG" 
-   (	"NAME" VARCHAR2(60 CHAR), 
-	"SYSTEM" VARCHAR2(20 CHAR), 
-	"CONFIG" VARCHAR2(4000 CHAR)
-   ) ;
 --------------------------------------------------------
 --  DDL for Table TAGINFO
 --------------------------------------------------------
@@ -1051,33 +550,7 @@
 	"NQUEUES" NUMBER(10,0) DEFAULT '0', 
 	"QUEUES" VARCHAR2(4000 CHAR)
    ) ;
---------------------------------------------------------
---  DDL for Table TAGS
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."TAGS" 
-   (	"ID" NUMBER(7,0), 
-	"NAME" VARCHAR2(20 CHAR), 
-	"DESCRIPTION" VARCHAR2(60 CHAR), 
-	"UGID" NUMBER(7,0), 
-	"TYPE" VARCHAR2(10 CHAR), 
-	"ITEMID" NUMBER(7,0), 
-	"CREATED" DATE DEFAULT SYSDATE
-   ) ;
---------------------------------------------------------
---  DDL for Table USAGEREPORT
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."USAGEREPORT" 
-   (	"ENTRY" NUMBER(7,0), 
-	"FLAG" VARCHAR2(20 CHAR), 
-	"HOURS" NUMBER(7,0), 
-	"TSTART" DATE, 
-	"TEND" DATE, 
-	"TINSERT" DATE DEFAULT SYSDATE, 
-	"SITE" VARCHAR2(60 BYTE), 
-	"NWN" NUMBER(7,0)
-   ) ;
 --------------------------------------------------------
 --  DDL for Table USERCACHEUSAGE
 --------------------------------------------------------
@@ -1165,75 +638,8 @@
 	"STATE" VARCHAR2(30 BYTE) DEFAULT 'subscribed', 
 	 CONSTRAINT "USERSUBS_PK" PRIMARY KEY ("DATASETNAME", "SITE") ENABLE
    ) ORGANIZATION INDEX COMPRESS 1 ;
---------------------------------------------------------
---  DDL for Table VORSPASSFAIL
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."VORSPASSFAIL" 
-   (	"SITE_NAME" VARCHAR2(32 CHAR), 
-	"PASSFAIL" CHAR(4 CHAR), 
-	"LAST_CHECKED" DATE
-   ) ;
---------------------------------------------------------
---  DDL for Table VO_TO_SITE
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."VO_TO_SITE" 
-   (	"SITE_NAME" VARCHAR2(32 CHAR), 
-	"QUEUE" VARCHAR2(64 CHAR), 
-	"VO_NAME" VARCHAR2(32 CHAR)
-   ) ;
---------------------------------------------------------
---  DDL for Table WNDATA
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."WNDATA" 
-   (	"SITE" VARCHAR2(60 BYTE), 
-	"WN" VARCHAR2(50 CHAR), 
-	"FLAG" VARCHAR2(20 CHAR), 
-	"HOURS" NUMBER(7,0) DEFAULT '0', 
-	"MEM" NUMBER(7,0), 
-	"SI2000" NUMBER(7,0), 
-	"OS" VARCHAR2(30 CHAR), 
-	"SPACE" VARCHAR2(30 CHAR), 
-	"MAXJOBS" NUMBER(7,0), 
-	"LASTSTART" DATE, 
-	"LASTEND" DATE, 
-	"LASTFAIL" DATE, 
-	"LASTPILOT" DATE, 
-	"LASTPID" NUMBER(7,0), 
-	"NSTART" NUMBER(7,0) DEFAULT '0', 
-	"FINISHED" NUMBER(7,0) DEFAULT '0', 
-	"FAILED" NUMBER(7,0) DEFAULT '0', 
-	"HOLDING" NUMBER(7,0) DEFAULT '0', 
-	"RUNNING" NUMBER(7,0) DEFAULT '0', 
-	"TRANSFERRING" NUMBER(7,0) DEFAULT '0', 
-	"GETJOB" NUMBER(7,0) DEFAULT '0', 
-	"UPDATEJOB" NUMBER(7,0) DEFAULT '0', 
-	"LASTMOD" DATE DEFAULT SYSDATE, 
-	"NCPU" NUMBER(5,0), 
-	"NCPUCURRENT" NUMBER(5,0), 
-	"NSLOT" NUMBER(5,0), 
-	"NSLOTCURRENT" NUMBER(5,0)
-   ) ;
---------------------------------------------------------
---  DDL for Index PRIMARY_PILOTQUEUE
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_PILOTQUEUE" ON "ATLAS_PANDAMETA"."PILOTQUEUE" ("JOBID", "NICKNAME") 
-  ;
---------------------------------------------------------
---  DDL for Index PILOTQUEUE_STATE_IDX
---------------------------------------------------------
-
-  CREATE INDEX "ATLAS_PANDAMETA"."PILOTQUEUE_STATE_IDX" ON "ATLAS_PANDAMETA"."PILOTQUEUE" ("STATE") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_SUBMITHOST
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_SUBMITHOST" ON "ATLAS_PANDAMETA"."SUBMITHOSTS" ("HOST") 
-  ;
 --------------------------------------------------------
 --  DDL for Index INSTALLEDSW_SITERELCACHECMT_UK
 --------------------------------------------------------
@@ -1247,12 +653,6 @@
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_JOBCLASS" ON "ATLAS_PANDAMETA"."JOBCLASS" ("ID") 
   ;
 --------------------------------------------------------
---  DDL for Index SERVICELIST_NAME_IDX
---------------------------------------------------------
-
-  CREATE INDEX "ATLAS_PANDAMETA"."SERVICELIST_NAME_IDX" ON "ATLAS_PANDAMETA"."SERVICELIST" ("NAME", "HOST", "CONFIG") 
-  ;
---------------------------------------------------------
 --  DDL for Index USERSUBS_PK
 --------------------------------------------------------
 
@@ -1264,48 +664,14 @@
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_PROXYKEY" ON "ATLAS_PANDAMETA"."PROXYKEY" ("ID") 
   ;
---------------------------------------------------------
---  DDL for Index DSLIST_NAME_IDX
---------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDAMETA"."DSLIST_NAME_IDX" ON "ATLAS_PANDAMETA"."DSLIST" ("NAME", "SITE") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_REDIRECT
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_REDIRECT" ON "ATLAS_PANDAMETA"."REDIRECT" ("URL") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_CACHE_NEW
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_CACHE_NEW" ON "ATLAS_PANDAMETA"."CACHE_OLD_2" ("TYPE", "VALUE") 
-  ;
---------------------------------------------------------
---  DDL for Index PILOTQUEUE_PANDAID_IDX
---------------------------------------------------------
-
-  CREATE INDEX "ATLAS_PANDAMETA"."PILOTQUEUE_PANDAID_IDX" ON "ATLAS_PANDAMETA"."PILOTQUEUE" ("PANDAID") 
-  ;
 --------------------------------------------------------
 --  DDL for Index PRIMARY_LOGSTABLE
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_LOGSTABLE" ON "ATLAS_PANDAMETA"."LOGSTABLE" ("PANDAID") 
   ;
---------------------------------------------------------
---  DDL for Index PILOTQUEUE_QUEUEID_IDX
---------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDAMETA"."PILOTQUEUE_QUEUEID_IDX" ON "ATLAS_PANDAMETA"."PILOTQUEUE" ("QUEUEID") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_WNDATA
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_WNDATA" ON "ATLAS_PANDAMETA"."WNDATA" ("SITE", "WN", "FLAG", "HOURS") 
-  ;
 --------------------------------------------------------
 --  DDL for Index USERCACHEUSAGE_USR_CRDATE_INDX
 --------------------------------------------------------
@@ -1313,12 +679,7 @@
   CREATE INDEX "ATLAS_PANDAMETA"."USERCACHEUSAGE_USR_CRDATE_INDX" ON "ATLAS_PANDAMETA"."USERCACHEUSAGE" ("USERNAME", "CREATIONTIME") 
    LOCAL
  (PARTITION "DATA_BEFORE_01062012" ) COMPRESS 1 ;
---------------------------------------------------------
---  DDL for Index GROUPS_NAME_IDX
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."GROUPS_NAME_IDX" ON "ATLAS_PANDAMETA"."GROUPS" ("NAME") 
-  ;
 --------------------------------------------------------
 --  DDL for Index INSTALLEDSW_RELID_SITE_INDX
 --------------------------------------------------------
@@ -1331,84 +692,28 @@
 
   CREATE INDEX "ATLAS_PANDAMETA"."USERS_NAME_IDX" ON "ATLAS_PANDAMETA"."USERS" ("NAME", "VO") 
   ;
---------------------------------------------------------
---  DDL for Index PRIMARY_SITEHIST
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_SITEHIST" ON "ATLAS_PANDAMETA"."SITEHISTORY" ("SITE", "FLAG", "TIME", "HOURS") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_MEMBERS
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_MEMBERS" ON "ATLAS_PANDAMETA"."MEMBERS" ("UNAME", "GNAME") 
-  ;
 --------------------------------------------------------
 --  DDL for Index PRIMARY_SITEDATA
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_SITEDATA" ON "ATLAS_PANDAMETA"."SITEDATA" ("SITE", "FLAG", "HOURS") 
   ;
---------------------------------------------------------
---  DDL for Index TAGS_NAME_IDX
---------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDAMETA"."TAGS_NAME_IDX" ON "ATLAS_PANDAMETA"."TAGS" ("NAME", "UGID") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_CACHE
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_CACHE" ON "ATLAS_PANDAMETA"."CACHE_OLD" ("TYPE", "VALUE") 
-  ;
 --------------------------------------------------------
 --  DDL for Index JOBCLASS_NAME_IDX
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."JOBCLASS_NAME_IDX" ON "ATLAS_PANDAMETA"."JOBCLASS" ("NAME") 
   ;
---------------------------------------------------------
---  DDL for Index SERVICELIST_NAMEUSERID_IDX
---------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDAMETA"."SERVICELIST_NAMEUSERID_IDX" ON "ATLAS_PANDAMETA"."SERVICELIST" ("NAME", "HOST", "CONFIG", "USERID") 
-  ;
---------------------------------------------------------
---  DDL for Index PILOTQUEUEBNL_STATE_IDX
---------------------------------------------------------
-
-  CREATE INDEX "ATLAS_PANDAMETA"."PILOTQUEUEBNL_STATE_IDX" ON "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" ("STATE") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_VORSPASSFAIL
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_VORSPASSFAIL" ON "ATLAS_PANDAMETA"."VORSPASSFAIL" ("SITE_NAME") 
-  ;
 --------------------------------------------------------
 --  DDL for Index PRIMARY_CLOUDCFG
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_CLOUDCFG" ON "ATLAS_PANDAMETA"."CLOUDCONFIG" ("NAME") 
   ;
---------------------------------------------------------
---  DDL for Index PILOTQUEUE_TPID_IDX
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PILOTQUEUE_TPID_IDX" ON "ATLAS_PANDAMETA"."PILOTQUEUE" ("TPID") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_PASWD
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_PASWD" ON "ATLAS_PANDAMETA"."PASSWORDS" ("ID") 
-  ;
---------------------------------------------------------
---  DDL for Index DSLIST_DUID_IDX
---------------------------------------------------------
-
-  CREATE INDEX "ATLAS_PANDAMETA"."DSLIST_DUID_IDX" ON "ATLAS_PANDAMETA"."DSLIST" ("DUID", "SITE") 
-  ;
 --------------------------------------------------------
 --  DDL for Index CACHE_PK
 --------------------------------------------------------
@@ -1421,90 +726,22 @@
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_SCHEDINST" ON "ATLAS_PANDAMETA"."SCHEDINSTANCE" ("NICKNAME", "PANDASITE") 
   ;
---------------------------------------------------------
---  DDL for Index PRIMARY_SITEDDM
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_SITEDDM" ON "ATLAS_PANDAMETA"."SITEDDM" ("NAME") 
-  ;
---------------------------------------------------------
---  DDL for Index PILOTQUEUEBNL_QUEUEID_IDX
---------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDAMETA"."PILOTQUEUEBNL_QUEUEID_IDX" ON "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" ("QUEUEID") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_CERTIFICATES
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_CERTIFICATES" ON "ATLAS_PANDAMETA"."CERTIFICATES" ("ID") 
-  ;
 --------------------------------------------------------
 --  DDL for Index PRIMARY_TAGINFO
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_TAGINFO" ON "ATLAS_PANDAMETA"."TAGINFO" ("TAG") 
   ;
---------------------------------------------------------
---  DDL for Index PRIMARY_VOTOSITE
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_VOTOSITE" ON "ATLAS_PANDAMETA"."VO_TO_SITE" ("SITE_NAME", "QUEUE", "VO_NAME") 
-  ;
 --------------------------------------------------------
 --  DDL for Index SITEACCESS_ID_PRIMARY
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."SITEACCESS_ID_PRIMARY" ON "ATLAS_PANDAMETA"."SITEACCESS" ("ID") 
   ;
---------------------------------------------------------
---  DDL for Index PRIMARY_SYSCFG
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_SYSCFG" ON "ATLAS_PANDAMETA"."SYSCONFIG" ("NAME", "SYSTEM") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_DSLIST
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_DSLIST" ON "ATLAS_PANDAMETA"."DSLIST" ("ID") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_USAGEREPORT
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_USAGEREPORT" ON "ATLAS_PANDAMETA"."USAGEREPORT" ("ENTRY") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_PILOTTYPE
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_PILOTTYPE" ON "ATLAS_PANDAMETA"."PILOTTYPE" ("NAME") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_TAGS
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_TAGS" ON "ATLAS_PANDAMETA"."TAGS" ("ID") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_CLOUDSPACE
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_CLOUDSPACE" ON "ATLAS_PANDAMETA"."CLOUDSPACE" ("CLOUD", "STORE") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_SAVEDPAGES
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_SAVEDPAGES" ON "ATLAS_PANDAMETA"."SAVEDPAGES" ("NAME", "FLAG", "HOURS") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_SERVICELST
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_SERVICELST" ON "ATLAS_PANDAMETA"."SERVICELIST" ("ID") 
-  ;
 --------------------------------------------------------
 --  DDL for Index SITES_MATRIX_DATA_PK
 --------------------------------------------------------
@@ -1523,24 +760,14 @@
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_JDLLIST" ON "ATLAS_PANDAMETA"."JDLLIST" ("NAME") 
   ;
---------------------------------------------------------
---  DDL for Index PILOTQUEUE_NICKNAME_IDX
---------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDAMETA"."PILOTQUEUE_NICKNAME_IDX" ON "ATLAS_PANDAMETA"."PILOTQUEUE" ("NICKNAME") 
-  ;
 --------------------------------------------------------
 --  DDL for Index PRIMARY_USERS
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_USERS" ON "ATLAS_PANDAMETA"."USERS" ("ID") 
   ;
---------------------------------------------------------
---  DDL for Index PILOTQUEUEBNL_PANDAID_IDX
---------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDAMETA"."PILOTQUEUEBNL_PANDAID_IDX" ON "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" ("PANDAID") 
-  ;
 --------------------------------------------------------
 --  DDL for Index USERCACHEUSAGE_PK
 --------------------------------------------------------
@@ -1548,51 +775,21 @@
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."USERCACHEUSAGE_PK" ON "ATLAS_PANDAMETA"."USERCACHEUSAGE" ("FILENAME", "HOSTNAME", "CREATIONTIME") 
    LOCAL
  (PARTITION "DATA_BEFORE_01062012" ) COMPRESS 1 ;
---------------------------------------------------------
---  DDL for Index PRIMARY_HISTORY
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_HISTORY" ON "ATLAS_PANDAMETA"."HISTORY" ("ID") 
-  ;
 --------------------------------------------------------
 --  DDL for Index PRIMARY_PANDACFG
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_PANDACFG" ON "ATLAS_PANDAMETA"."PANDACONFIG" ("NAME") 
   ;
---------------------------------------------------------
---  DDL for Index PRIMARY_CLASSLIST
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_CLASSLIST" ON "ATLAS_PANDAMETA"."CLASSLIST" ("CLASS", "NAME") 
-  ;
---------------------------------------------------------
---  DDL for Index SITESTATS_TIME_INDX
---------------------------------------------------------
-
-  CREATE INDEX "ATLAS_PANDAMETA"."SITESTATS_TIME_INDX" ON "ATLAS_PANDAMETA"."SITESTATS" ("AT_TIME") 
-   LOCAL
- (PARTITION "SITESTATS_2010" , 
- PARTITION "SITESTATS_2011" , 
- PARTITION "SITESTATS_2012" , 
- PARTITION "SITESTATS_2013" , 
- PARTITION "SITESTATS_2014" , 
- PARTITION "SITESTATS_2015" , 
- PARTITION "SITESTATS_2016" , 
- PARTITION "SITESTATS_2017" , 
- PARTITION "SITESTATS_2018" ) COMPRESS 1 ;
 --------------------------------------------------------
 --  DDL for Index SITEACCESS_DNSITE_IDX
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."SITEACCESS_DNSITE_IDX" ON "ATLAS_PANDAMETA"."SITEACCESS" ("DN", "PANDASITE") 
   ;
---------------------------------------------------------
---  DDL for Index PRIMARY_PILOTQUEUEBNL
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_PILOTQUEUEBNL" ON "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" ("TPID") 
-  ;
 --------------------------------------------------------
 --  DDL for Index SCHEDINSTANCE_NICKNAME_IDX
 --------------------------------------------------------
@@ -1611,45 +808,7 @@
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_SCHEDCFG" ON "ATLAS_PANDAMETA"."SCHEDCONFIG" ("NICKNAME") 
   ;
---------------------------------------------------------
---  DDL for Index PILOTQUEUEBNL_NICKNAME_IDX
---------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDAMETA"."PILOTQUEUEBNL_NICKNAME_IDX" ON "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" ("NICKNAME") 
-  ;
---------------------------------------------------------
---  DDL for Trigger CERTIFICATES_ID_TRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."CERTIFICATES_ID_TRG" BEFORE INSERT OR UPDATE ON certificates
-FOR EACH ROW
-DECLARE
-v_newVal NUMBER(12) := 0;
-v_incval NUMBER(12) := 0;
-BEGIN
-  IF INSERTING AND :new.id IS NULL THEN
-    SELECT  certificates_id_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
-    -- If this is the first time this table have been inserted into (sequence == 1)
-    IF v_newVal = 1 THEN
-      --get the max indentity value from the table
-      SELECT max(id) INTO v_newVal FROM certificates;
-      v_newVal := v_newVal + 1;
-      --set the sequence to that value
-      LOOP
-           EXIT WHEN v_incval>=v_newVal;
-           SELECT certificates_id_SEQ.nextval INTO v_incval FROM dual;
-      END LOOP;
-    END IF;
-    -- save this to emulate @@identity
-   mysql_utilities.identity := v_newVal;
-   -- assign the value from the sequence to emulate the identity column
-   :new.id := v_newVal;
-  END IF;
-END;
-
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."CERTIFICATES_ID_TRG" ENABLE;
 --------------------------------------------------------
 --  DDL for Trigger CLOUDCONFIG_MODTIME_TRG
 --------------------------------------------------------
@@ -1663,65 +822,7 @@ END;
 
 /
 ALTER TRIGGER "ATLAS_PANDAMETA"."CLOUDCONFIG_MODTIME_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger CLOUDSPACE_MODTIME_TRG
---------------------------------------------------------
 
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."CLOUDSPACE_MODTIME_TRG" BEFORE insert or UPDATE ON cloudspace
-FOR EACH ROW
-DECLARE
-BEGIN
-  :new.modtime := sysdate;
-END;
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."CLOUDSPACE_MODTIME_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger DSLIST_ID_TRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."DSLIST_ID_TRG" BEFORE INSERT OR UPDATE ON dslist
-FOR EACH ROW
-DECLARE
-v_newVal NUMBER(12) := 0;
-v_incval NUMBER(12) := 0;
-BEGIN
-  IF INSERTING AND :new.id IS NULL THEN
-    SELECT  dslist_id_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
-    -- If this is the first time this table have been inserted into (sequence == 1)
-    IF v_newVal = 1 THEN
-      --get the max indentity value from the table
-      SELECT max(id) INTO v_newVal FROM dslist;
-      v_newVal := v_newVal + 1;
-      --set the sequence to that value
-      LOOP
-           EXIT WHEN v_incval>=v_newVal;
-           SELECT dslist_id_SEQ.nextval INTO v_incval FROM dual;
-      END LOOP;
-    END IF;
-    -- save this to emulate @@identity
-   mysql_utilities.identity := v_newVal;
-   -- assign the value from the sequence to emulate the identity column
-   :new.id := v_newVal;
-  END IF;
-END;
-
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."DSLIST_ID_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger DSLIST_LASTUSE_TRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."DSLIST_LASTUSE_TRG" BEFORE insert or UPDATE ON dslist
-FOR EACH ROW
-DECLARE
-BEGIN
-  :new.lastuse := sysdate;
-END;
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."DSLIST_LASTUSE_TRG" ENABLE;
 --------------------------------------------------------
 --  DDL for Trigger FIFO_5ROWS_PERSITE
 --------------------------------------------------------
@@ -1758,85 +859,7 @@ ALTER TRIGGER "ATLAS_PANDAMETA"."FIFO_5ROWS_PERSITE" ENABLE;
      END;
 /
 ALTER TRIGGER "ATLAS_PANDAMETA"."GRANTS_UPDATE" ENABLE;
---------------------------------------------------------
---  DDL for Trigger GROUPS_ID_TRG
---------------------------------------------------------
 
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."GROUPS_ID_TRG" BEFORE INSERT OR UPDATE ON groups
-FOR EACH ROW
-DECLARE
-v_newVal NUMBER(12) := 0;
-v_incval NUMBER(12) := 0;
-BEGIN
-  IF INSERTING AND :new.id IS NULL THEN
-    SELECT  groups_id_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
-    -- If this is the first time this table have been inserted into (sequence == 1)
-    IF v_newVal = 1 THEN
-      --get the max indentity value from the table
-      SELECT max(id) INTO v_newVal FROM groups;
-      v_newVal := v_newVal + 1;
-      --set the sequence to that value
-      LOOP
-           EXIT WHEN v_incval>=v_newVal;
-           SELECT groups_id_SEQ.nextval INTO v_incval FROM dual;
-      END LOOP;
-    END IF;
-    -- save this to emulate @@identity
-   mysql_utilities.identity := v_newVal;
-   -- assign the value from the sequence to emulate the identity column
-   :new.id := v_newVal;
-  END IF;
-END;
-
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."GROUPS_ID_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger HISTORY_ENTRYTIME_TRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."HISTORY_ENTRYTIME_TRG" BEFORE insert or UPDATE ON history
-FOR EACH ROW
-DECLARE
-BEGIN
-  :new.entrytime := sysdate;
-END;
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."HISTORY_ENTRYTIME_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger HISTORY_ID_TRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."HISTORY_ID_TRG" BEFORE INSERT OR UPDATE ON history
-FOR EACH ROW
-DECLARE
-v_newVal NUMBER(12) := 0;
-v_incval NUMBER(12) := 0;
-BEGIN
-  IF INSERTING AND :new.id IS NULL THEN
-    SELECT  history_id_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
-    -- If this is the first time this table have been inserted into (sequence == 1)
-    IF v_newVal = 1 THEN
-      --get the max indentity value from the table
-      SELECT max(id) INTO v_newVal FROM history;
-      v_newVal := v_newVal + 1;
-      --set the sequence to that value
-      LOOP
-           EXIT WHEN v_incval>=v_newVal;
-           SELECT history_id_SEQ.nextval INTO v_incval FROM dual;
-      END LOOP;
-    END IF;
-    -- save this to emulate @@identity
-   mysql_utilities.identity := v_newVal;
-   -- assign the value from the sequence to emulate the identity column
-   :new.id := v_newVal;
-  END IF;
-END;
-
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."HISTORY_ID_TRG" ENABLE;
 --------------------------------------------------------
 --  DDL for Trigger JOBCLASS_ID_TRG
 --------------------------------------------------------
@@ -1870,52 +893,7 @@ END;
 
 /
 ALTER TRIGGER "ATLAS_PANDAMETA"."JOBCLASS_ID_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger MEMBERS_SINCE_TRG
---------------------------------------------------------
 
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."MEMBERS_SINCE_TRG" BEFORE insert or UPDATE ON members
-FOR EACH ROW
-DECLARE
-BEGIN
-  :new.since := sysdate;
-END;
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."MEMBERS_SINCE_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger PASSWORDS_ID_TRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."PASSWORDS_ID_TRG" BEFORE INSERT OR UPDATE ON passwords
-FOR EACH ROW
-DECLARE
-v_newVal NUMBER(12) := 0;
-v_incval NUMBER(12) := 0;
-BEGIN
-  IF INSERTING AND :new.id IS NULL THEN
-    SELECT  passwords_id_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
-    -- If this is the first time this table have been inserted into (sequence == 1)
-    IF v_newVal = 1 THEN
-      --get the max indentity value from the table
-      SELECT max(id) INTO v_newVal FROM passwords;
-      v_newVal := v_newVal + 1;
-      --set the sequence to that value
-      LOOP
-           EXIT WHEN v_incval>=v_newVal;
-           SELECT passwords_id_SEQ.nextval INTO v_incval FROM dual;
-      END LOOP;
-    END IF;
-    -- save this to emulate @@identity
-   mysql_utilities.identity := v_newVal;
-   -- assign the value from the sequence to emulate the identity column
-   :new.id := v_newVal;
-  END IF;
-END;
-
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."PASSWORDS_ID_TRG" ENABLE;
 --------------------------------------------------------
 --  DDL for Trigger PROXYKEY_CREATED_TRG
 --------------------------------------------------------
@@ -1929,19 +907,7 @@ END;
 
 /
 ALTER TRIGGER "ATLAS_PANDAMETA"."PROXYKEY_CREATED_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger REDIRECT_STATUSTIME_TRG
---------------------------------------------------------
 
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."REDIRECT_STATUSTIME_TRG" BEFORE insert or UPDATE ON redirect
-FOR EACH ROW
-DECLARE
-BEGIN
-  :new.statustime := sysdate;
-END;
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."REDIRECT_STATUSTIME_TRG" ENABLE;
 --------------------------------------------------------
 --  DDL for Trigger SCHEDINSTANCE_TVALID_TRG
 --------------------------------------------------------
@@ -1955,143 +921,7 @@ END;
 
 /
 ALTER TRIGGER "ATLAS_PANDAMETA"."SCHEDINSTANCE_TVALID_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger SERVICELIST_ID_TRG
---------------------------------------------------------
 
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."SERVICELIST_ID_TRG" BEFORE INSERT OR UPDATE ON servicelist
-FOR EACH ROW
-DECLARE
-v_newVal NUMBER(12) := 0;
-v_incval NUMBER(12) := 0;
-BEGIN
-  IF INSERTING AND :new.id IS NULL THEN
-    SELECT  servicelist_id_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
-    -- If this is the first time this table have been inserted into (sequence == 1)
-    IF v_newVal = 1 THEN
-      --get the max indentity value from the table
-      SELECT max(id) INTO v_newVal FROM servicelist;
-      v_newVal := v_newVal + 1;
-      --set the sequence to that value
-      LOOP
-           EXIT WHEN v_incval>=v_newVal;
-           SELECT servicelist_id_SEQ.nextval INTO v_incval FROM dual;
-      END LOOP;
-    END IF;
-    -- save this to emulate @@identity
-   mysql_utilities.identity := v_newVal;
-   -- assign the value from the sequence to emulate the identity column
-   :new.id := v_newVal;
-  END IF;
-END;
-
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."SERVICELIST_ID_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger SERVICELIST_TSTARTTRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."SERVICELIST_TSTARTTRG" BEFORE insert or UPDATE ON servicelist
-FOR EACH ROW
-DECLARE
-BEGIN
-  :new.tstart := sysdate;
-END;
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."SERVICELIST_TSTARTTRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger TAGS_CREATED_TRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."TAGS_CREATED_TRG" BEFORE insert or UPDATE ON tags
-FOR EACH ROW
-DECLARE
-BEGIN
-  :new.created := sysdate;
-END;
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."TAGS_CREATED_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger TAGS_ID_TRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."TAGS_ID_TRG" BEFORE INSERT OR UPDATE ON tags
-FOR EACH ROW
-DECLARE
-v_newVal NUMBER(12) := 0;
-v_incval NUMBER(12) := 0;
-BEGIN
-  IF INSERTING AND :new.id IS NULL THEN
-    SELECT  tags_id_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
-    -- If this is the first time this table have been inserted into (sequence == 1)
-    IF v_newVal = 1 THEN
-      --get the max indentity value from the table
-      SELECT max(id) INTO v_newVal FROM tags;
-      v_newVal := v_newVal + 1;
-      --set the sequence to that value
-      LOOP
-           EXIT WHEN v_incval>=v_newVal;
-           SELECT tags_id_SEQ.nextval INTO v_incval FROM dual;
-      END LOOP;
-    END IF;
-    -- save this to emulate @@identity
-   mysql_utilities.identity := v_newVal;
-   -- assign the value from the sequence to emulate the identity column
-   :new.id := v_newVal;
-  END IF;
-END;
-
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."TAGS_ID_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger TRACK_CHANGES_NEWCACHE
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."TRACK_CHANGES_NEWCACHE" 
-BEFORE UPDATE ON ATLAS_PANDAMETA.CACHE
-FOR EACH ROW
-BEGIN
-	insert into atlas_pandameta.cache_track_NEW(TYPE,VALUE,LOB_LEN_OLD,LOB_LEN_NEW, USERHOST) VALUES(:NEW.TYPE,:NEW.VALUE,DBMS_LOB.GETLENGTH(:OLD.data),DBMS_LOB.GETLENGTH(:NEW.data),sys_context('USERENV','HOST'));
-END;
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."TRACK_CHANGES_NEWCACHE" DISABLE;
---------------------------------------------------------
---  DDL for Trigger USAGEREPORT_ENTRY_TRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."USAGEREPORT_ENTRY_TRG" BEFORE INSERT OR UPDATE ON UsageReport
-FOR EACH ROW
-DECLARE
-v_newVal NUMBER(12) := 0;
-v_incval NUMBER(12) := 0;
-BEGIN
-  IF INSERTING AND :new.ENTRY IS NULL THEN
-    SELECT  UsageReport_ENTRY_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
-    -- If this is the first time this table have been inserted into (sequence == 1)
-    IF v_newVal = 1 THEN
-      --get the max indentity value from the table
-      SELECT max(ENTRY) INTO v_newVal FROM UsageReport;
-      v_newVal := v_newVal + 1;
-      --set the sequence to that value
-      LOOP
-           EXIT WHEN v_incval>=v_newVal;
-           SELECT UsageReport_ENTRY_SEQ.nextval INTO v_incval FROM dual;
-      END LOOP;
-    END IF;
-    -- save this to emulate @@identity
-   mysql_utilities.identity := v_newVal;
-   -- assign the value from the sequence to emulate the identity column
-   :new.ENTRY := v_newVal;
-  END IF;
-END;
-
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."USAGEREPORT_ENTRY_TRG" ENABLE;
 --------------------------------------------------------
 --  DDL for Trigger USERS_ID_TRG
 --------------------------------------------------------
@@ -2138,19 +968,7 @@ END;
 
 /
 ALTER TRIGGER "ATLAS_PANDAMETA"."USERS_LASTMOD_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger WNDATA_LASTMOD_TRG
---------------------------------------------------------
 
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."WNDATA_LASTMOD_TRG" BEFORE insert or UPDATE ON WNData
-FOR EACH ROW
-DECLARE
-BEGIN
-  :new.LASTMOD := sysdate;
-END;
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."WNDATA_LASTMOD_TRG" ENABLE;
 --------------------------------------------------------
 --  DDL for Procedure CREATE_SYN4EXIST_OBJ
 --------------------------------------------------------
@@ -2311,29 +1129,7 @@ END mysql_utilities;
  
 
 /
---------------------------------------------------------
---  Constraints for Table CERTIFICATES
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."CERTIFICATES" ADD CONSTRAINT "PRIMARY_CERTIFICATES" PRIMARY KEY ("ID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."CERTIFICATES" MODIFY ("CERT" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CERTIFICATES" MODIFY ("ID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table CLASSLIST
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."CLASSLIST" ADD CONSTRAINT "PRIMARY_CLASSLIST" PRIMARY KEY ("CLASS", "NAME")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."CLASSLIST" MODIFY ("RIGHTS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CLASSLIST" MODIFY ("NAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CLASSLIST" MODIFY ("CLASS" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table PRODUCTIONDATASETS
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."PRODUCTIONDATASETS" MODIFY ("VUID" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PRODUCTIONDATASETS" MODIFY ("NAME" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table USERS
 --------------------------------------------------------
@@ -2348,37 +1144,7 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."USERS" MODIFY ("LASTMOD" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."USERS" MODIFY ("NAME" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."USERS" MODIFY ("ID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table SAVEDPAGES
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."SAVEDPAGES" ADD CONSTRAINT "PRIMARY_SAVEDPAGES" PRIMARY KEY ("NAME", "FLAG", "HOURS")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."SAVEDPAGES" MODIFY ("HTML" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SAVEDPAGES" MODIFY ("HOURS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SAVEDPAGES" MODIFY ("FLAG" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SAVEDPAGES" MODIFY ("NAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table CACHE_OLD
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD" ADD CONSTRAINT "PRIMARY_CACHE" PRIMARY KEY ("TYPE", "VALUE")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD" MODIFY ("USETIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD" MODIFY ("MODTIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD" MODIFY ("QURL" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD" MODIFY ("VALUE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD" MODIFY ("TYPE" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table SITEDDM
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEDDM" ADD CONSTRAINT "PRIMARY_SITEDDM" PRIMARY KEY ("NAME")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEDDM" MODIFY ("OUTPATH" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEDDM" MODIFY ("OUTCMD" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEDDM" MODIFY ("INCMD" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEDDM" MODIFY ("NAME" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table INSTALLEDSW
 --------------------------------------------------------
@@ -2415,14 +1181,7 @@ END mysql_utilities;
   USING INDEX  ENABLE;
   ALTER TABLE "ATLAS_PANDAMETA"."SITEACCESS" MODIFY ("POFFSET" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."SITEACCESS" MODIFY ("ID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table VORSPASSFAIL
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."VORSPASSFAIL" ADD CONSTRAINT "PRIMARY_VORSPASSFAIL" PRIMARY KEY ("SITE_NAME")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."VORSPASSFAIL" MODIFY ("PASSFAIL" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."VORSPASSFAIL" MODIFY ("SITE_NAME" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table LOGSTABLE
 --------------------------------------------------------
@@ -2465,14 +1224,7 @@ END mysql_utilities;
   USING INDEX  ENABLE;
   ALTER TABLE "ATLAS_PANDAMETA"."TAGINFO" MODIFY ("NQUEUES" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."TAGINFO" MODIFY ("DESCRIPTION" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table PASSWORDS
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."PASSWORDS" ADD CONSTRAINT "PRIMARY_PASWD" PRIMARY KEY ("ID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."PASSWORDS" MODIFY ("PASS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PASSWORDS" MODIFY ("ID" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table PANDACONFIG
 --------------------------------------------------------
@@ -2481,44 +1233,7 @@ END mysql_utilities;
   USING INDEX  ENABLE;
   ALTER TABLE "ATLAS_PANDAMETA"."PANDACONFIG" MODIFY ("CONTROLLER" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."PANDACONFIG" MODIFY ("NAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table REDIRECT
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."REDIRECT" ADD CONSTRAINT "PRIMARY_REDIRECT" PRIMARY KEY ("URL")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."REDIRECT" MODIFY ("USETIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."REDIRECT" MODIFY ("STATUSTIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."REDIRECT" MODIFY ("STATUS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."REDIRECT" MODIFY ("ALIVERESPONSE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."REDIRECT" MODIFY ("RESPONSE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."REDIRECT" MODIFY ("URL" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."REDIRECT" MODIFY ("DESCRIPTION" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."REDIRECT" MODIFY ("SITE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."REDIRECT" MODIFY ("TYPE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."REDIRECT" MODIFY ("SERVICE" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table SUBMITHOSTS
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."SUBMITHOSTS" ADD CONSTRAINT "PRIMARY_SUBMITHOST" PRIMARY KEY ("HOST")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."SUBMITHOSTS" MODIFY ("RUNURL" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SUBMITHOSTS" MODIFY ("RUNDIR" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SUBMITHOSTS" MODIFY ("SYSTEM" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SUBMITHOSTS" MODIFY ("HOST" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SUBMITHOSTS" MODIFY ("NICKNAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SUBMITHOSTS" MODIFY ("NAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table USAGEREPORT
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."USAGEREPORT" ADD CONSTRAINT "PRIMARY_USAGEREPORT" PRIMARY KEY ("ENTRY")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."USAGEREPORT" MODIFY ("SITE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."USAGEREPORT" MODIFY ("TINSERT" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."USAGEREPORT" MODIFY ("FLAG" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."USAGEREPORT" MODIFY ("ENTRY" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table MULTICLOUD_HISTORY
 --------------------------------------------------------
@@ -2536,18 +1251,7 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."USERCACHEUSAGE" MODIFY ("HOSTNAME" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."USERCACHEUSAGE" MODIFY ("FILENAME" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."USERCACHEUSAGE" MODIFY ("USERNAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table CLOUDSPACE
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."CLOUDSPACE" ADD CONSTRAINT "PRIMARY_CLOUDSPACE" PRIMARY KEY ("CLOUD", "STORE")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."CLOUDSPACE" MODIFY ("MODTIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CLOUDSPACE" MODIFY ("MODUSER" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CLOUDSPACE" MODIFY ("FREESPACE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CLOUDSPACE" MODIFY ("SPACE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CLOUDSPACE" MODIFY ("STORE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CLOUDSPACE" MODIFY ("CLOUD" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table SCHEDINSTANCE
 --------------------------------------------------------
@@ -2576,33 +1280,7 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."JOBCLASS" MODIFY ("DESCRIPTION" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."JOBCLASS" MODIFY ("NAME" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."JOBCLASS" MODIFY ("ID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table SYSCONFIG
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."SYSCONFIG" ADD CONSTRAINT "PRIMARY_SYSCFG" PRIMARY KEY ("NAME", "SYSTEM")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."SYSCONFIG" MODIFY ("SYSTEM" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SYSCONFIG" MODIFY ("NAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table SERVICELIST
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."SERVICELIST" ADD CONSTRAINT "PRIMARY_SERVICELST" PRIMARY KEY ("ID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."SERVICELIST" MODIFY ("LASTMOD" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SERVICELIST" MODIFY ("STATUS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SERVICELIST" MODIFY ("TCHECK" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SERVICELIST" MODIFY ("TSTOP" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SERVICELIST" MODIFY ("TSTART" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SERVICELIST" MODIFY ("NAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SERVICELIST" MODIFY ("ID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table SITESINFO
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."SITESINFO" MODIFY ("NICK" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITESINFO" MODIFY ("NAME" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table SITEDATA
 --------------------------------------------------------
@@ -2625,17 +1303,7 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."SITEDATA" MODIFY ("HOURS" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."SITEDATA" MODIFY ("FLAG" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."SITEDATA" MODIFY ("SITE" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table TAGS
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."TAGS" ADD CONSTRAINT "PRIMARY_TAGS" PRIMARY KEY ("ID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."TAGS" MODIFY ("CREATED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."TAGS" MODIFY ("TYPE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."TAGS" MODIFY ("DESCRIPTION" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."TAGS" MODIFY ("NAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."TAGS" MODIFY ("ID" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table USERSUBS
 --------------------------------------------------------
@@ -2644,17 +1312,7 @@ END mysql_utilities;
   USING INDEX  ENABLE;
   ALTER TABLE "ATLAS_PANDAMETA"."USERSUBS" MODIFY ("SITE" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."USERSUBS" MODIFY ("DATASETNAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table CACHE_OLD_2
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD_2" ADD CONSTRAINT "PRIMARY_CACHE_NEW" PRIMARY KEY ("TYPE", "VALUE")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD_2" MODIFY ("USETIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD_2" MODIFY ("MODTIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD_2" MODIFY ("QURL" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD_2" MODIFY ("VALUE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE_OLD_2" MODIFY ("TYPE" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table SITES_MATRIX_DATA
 --------------------------------------------------------
@@ -2664,84 +1322,7 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."SITES_MATRIX_DATA" MODIFY ("MEAS_DATE" CONSTRAINT "SITES_MATRIX_MEAS_DATE_NN" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."SITES_MATRIX_DATA" MODIFY ("DESTINATION" CONSTRAINT "SITE_DESTINATION_NN" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."SITES_MATRIX_DATA" MODIFY ("SOURCE" CONSTRAINT "SITE_SOURCE_NN" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table SITEHISTORY
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" ADD CONSTRAINT "PRIMARY_SITEHIST" PRIMARY KEY ("SITE", "FLAG", "TIME", "HOURS")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("FILEMODS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("SUBDONE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("SUBDEF" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("SUBTOT" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("UPDATEJOB" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("GETJOB" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("RUNNING" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("ACTIVATED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("WAITING" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("ASSIGNED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("DEFINED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("FAILED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("FINISHED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("NSTART" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("SPACE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("OS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("HOURS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("TIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("FLAG" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITEHISTORY" MODIFY ("SITE" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table PILOTQUEUE_BNL
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" ADD CONSTRAINT "PRIMARY_PILOTQUEUEBNL" PRIMARY KEY ("TPID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("WORKERNODE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("ERRINFO" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("ERRCODE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("STATUS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TRETRIEVE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TDONE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TEND" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TSTART" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TSCHEDULE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TACCEPT" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TSUBMIT" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TENTER" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TSTATE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("STATE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TCHECK" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TYPE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("QUEUEID" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("SCHEDD_NAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("SUBMITHOST" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("HOST" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("USER_" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("SYSTEM" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("NICKNAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("URL" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("TPID" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE_BNL" MODIFY ("JOBID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table DSLIST
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."DSLIST" ADD CONSTRAINT "PRIMARY_DSLIST" PRIMARY KEY ("ID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."DSLIST" MODIFY ("LIFETIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."DSLIST" MODIFY ("PINTIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."DSLIST" MODIFY ("LASTUSE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."DSLIST" MODIFY ("NAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."DSLIST" MODIFY ("ID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table GROUPS
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."GROUPS" ADD CONSTRAINT "PRIMARY_GROUPS" PRIMARY KEY ("ID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."GROUPS" MODIFY ("DESCRIPTION" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."GROUPS" MODIFY ("NAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."GROUPS" MODIFY ("ID" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table PROXYKEY
 --------------------------------------------------------
@@ -2755,76 +1336,7 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."PROXYKEY" MODIFY ("CREDNAME" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."PROXYKEY" MODIFY ("DN" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."PROXYKEY" MODIFY ("ID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table MEMBERS
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."MEMBERS" ADD CONSTRAINT "PRIMARY_MEMBERS" PRIMARY KEY ("UNAME", "GNAME")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."MEMBERS" MODIFY ("SINCE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."MEMBERS" MODIFY ("GNAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."MEMBERS" MODIFY ("UNAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table PILOTQUEUE
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" ADD CONSTRAINT "PRIMARY_PILOTQUEUE" PRIMARY KEY ("JOBID", "NICKNAME")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("WORKERNODE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("SCHEDD_NAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("ERRINFO" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("ERRCODE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("STATUS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TRETRIEVE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TDONE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TEND" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TSTART" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TSCHEDULE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TACCEPT" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TSUBMIT" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TENTER" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TSTATE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("STATE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TCHECK" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TYPE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("QUEUEID" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("SUBMITHOST" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("HOST" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("USER_" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("SYSTEM" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("NICKNAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("TPID" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTQUEUE" MODIFY ("JOBID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table VO_TO_SITE
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."VO_TO_SITE" ADD CONSTRAINT "PRIMARY_VOTOSITE" PRIMARY KEY ("SITE_NAME", "QUEUE", "VO_NAME")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."VO_TO_SITE" MODIFY ("VO_NAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."VO_TO_SITE" MODIFY ("QUEUE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."VO_TO_SITE" MODIFY ("SITE_NAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table CACHE
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE" ADD CONSTRAINT "CACHE_PK" PRIMARY KEY ("TYPE", "VALUE")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE" MODIFY ("USETIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE" MODIFY ("MODTIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE" MODIFY ("QURL" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE" MODIFY ("VALUE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."CACHE" MODIFY ("TYPE" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table HISTORY
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."HISTORY" ADD CONSTRAINT "PRIMARY_HISTORY" PRIMARY KEY ("ID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."HISTORY" MODIFY ("ENDTIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."HISTORY" MODIFY ("STARTTIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."HISTORY" MODIFY ("ENTRYTIME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."HISTORY" MODIFY ("ID" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table JDLLIST
 --------------------------------------------------------
@@ -2833,30 +1345,4 @@ END mysql_utilities;
   USING INDEX  ENABLE;
   ALTER TABLE "ATLAS_PANDAMETA"."JDLLIST" MODIFY ("SYSTEM" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."JDLLIST" MODIFY ("NAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table PILOTTYPE
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTTYPE" ADD CONSTRAINT "PRIMARY_PILOTTYPE" PRIMARY KEY ("NAME")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTTYPE" MODIFY ("SYSTEM" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTTYPE" MODIFY ("URL" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTTYPE" MODIFY ("SCRIPT" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."PILOTTYPE" MODIFY ("NAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table WNDATA
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" ADD CONSTRAINT "PRIMARY_WNDATA" PRIMARY KEY ("SITE", "WN", "FLAG", "HOURS")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" MODIFY ("LASTMOD" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" MODIFY ("UPDATEJOB" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" MODIFY ("GETJOB" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" MODIFY ("TRANSFERRING" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" MODIFY ("RUNNING" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" MODIFY ("HOLDING" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" MODIFY ("FAILED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" MODIFY ("FINISHED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" MODIFY ("NSTART" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" MODIFY ("HOURS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."WNDATA" MODIFY ("FLAG" NOT NULL ENABLE);

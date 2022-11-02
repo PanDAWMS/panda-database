@@ -47,59 +47,6 @@ CREATE TABLE auth_user_user_permissions (
 ) ;
 ALTER TABLE auth_user_user_permissions OWNER TO panda;
 
-CREATE TABLE cache_old (
-	type varchar(250) NOT NULL,
-	value varchar(250) NOT NULL,
-	qurl varchar(250) NOT NULL,
-	modtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	usetime timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	updmin integer,
-	data text
-) ;
-ALTER TABLE cache_old OWNER TO panda;
-ALTER TABLE cache_old ADD PRIMARY KEY (type,value);
-
-CREATE TABLE cache_old_2 (
-	type varchar(250) NOT NULL,
-	value varchar(250) NOT NULL,
-	qurl varchar(250) NOT NULL,
-	modtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	usetime timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	updmin integer,
-	data text
-) ;
-ALTER TABLE cache_old_2 OWNER TO panda;
-ALTER TABLE cache_old_2 ADD PRIMARY KEY (type,value);
-
-CREATE TABLE cache_track_new (
-	track_time timestamp DEFAULT CURRENT_TIMESTAMP,
-	type varchar(250),
-	value varchar(250),
-	lob_len_old bigint,
-	lob_len_new bigint,
-	userhost varchar(250)
-) ;
-ALTER TABLE cache_track_new OWNER TO panda;
-
-CREATE TABLE certificates (
-	id integer NOT NULL,
-	cert varchar(4000) NOT NULL
-) ;
-ALTER TABLE certificates OWNER TO panda;
-ALTER TABLE certificates ADD PRIMARY KEY (id);
-
-CREATE TABLE classlist (
-	class varchar(30) NOT NULL,
-	name varchar(60) NOT NULL,
-	rights varchar(30) NOT NULL,
-	priority integer,
-	quota1 bigint,
-	quota7 bigint,
-	quota30 bigint
-) ;
-ALTER TABLE classlist OWNER TO panda;
-ALTER TABLE classlist ADD PRIMARY KEY (class,name);
-
 CREATE TABLE cloudconfig (
 	name varchar(20) NOT NULL,
 	description varchar(50) NOT NULL,
@@ -133,17 +80,6 @@ ALTER TABLE cloudconfig ADD PRIMARY KEY (name);
 ALTER TABLE cloudconfig ADD CONSTRAINT cloudconfig_auto_mcu_nn CHECK ((auto_mcu IS NOT NULL AND auto_mcu::text <> ''));
 ALTER TABLE cloudconfig ADD CONSTRAINT cloudconfig_auto_mcu_check CHECK (auto_mcu IN (0,1));
 
-CREATE TABLE cloudspace (
-	cloud varchar(20) NOT NULL,
-	store varchar(50) NOT NULL,
-	space bigint NOT NULL DEFAULT '0',
-	freespace bigint NOT NULL DEFAULT '0',
-	moduser varchar(30) NOT NULL,
-	modtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP
-) ;
-ALTER TABLE cloudspace OWNER TO panda;
-ALTER TABLE cloudspace ADD PRIMARY KEY (cloud,store);
-
 CREATE TABLE deft_stepex (
 	req2step_id bigint,
 	reqid bigint,
@@ -159,84 +95,6 @@ CREATE TABLE deft_stepex (
 ) ;
 ALTER TABLE deft_stepex OWNER TO panda;
 
-CREATE TABLE dslist (
-	id integer NOT NULL,
-	duid varchar(40),
-	name varchar(200) NOT NULL,
-	ugid integer,
-	priority integer,
-	status varchar(10),
-	lastuse timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	pinstate varchar(10),
-	pintime timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	lifetime timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	site varchar(60),
-	par1 varchar(30),
-	par2 varchar(30),
-	par3 varchar(30),
-	par4 varchar(30),
-	par5 varchar(30),
-	par6 varchar(30)
-) ;
-ALTER TABLE dslist OWNER TO panda;
-CREATE INDEX dslist_duid_idx ON dslist (duid, site);
-CREATE INDEX dslist_name_idx ON dslist (name, site);
-ALTER TABLE dslist ADD PRIMARY KEY (id);
-
-CREATE TABLE groups (
-	id integer NOT NULL,
-	name varchar(60) NOT NULL,
-	description varchar(120) NOT NULL,
-	url varchar(100),
-	classa varchar(30),
-	classp varchar(30),
-	classxp varchar(30),
-	njobs1 bigint,
-	njobs7 bigint,
-	njobs30 bigint,
-	cpua1 bigint,
-	cpua7 bigint,
-	cpua30 bigint,
-	cpup1 bigint,
-	cpup7 bigint,
-	cpup30 bigint,
-	cpuxp1 bigint,
-	cpuxp7 bigint,
-	cpuxp30 bigint,
-	allcpua1 bigint,
-	allcpua7 bigint,
-	allcpua30 bigint,
-	allcpup1 bigint,
-	allcpup7 bigint,
-	allcpup30 bigint,
-	allcpuxp1 bigint,
-	allcpuxp7 bigint,
-	allcpuxp30 bigint,
-	quotaa1 bigint,
-	quotaa7 bigint,
-	quotaa30 bigint,
-	quotap1 bigint,
-	quotap7 bigint,
-	quotap30 bigint,
-	quotaxp1 bigint,
-	quotaxp7 bigint,
-	quotaxp30 bigint,
-	allquotaa1 bigint,
-	allquotaa7 bigint,
-	allquotaa30 bigint,
-	allquotap1 bigint,
-	allquotap7 bigint,
-	allquotap30 bigint,
-	allquotaxp1 bigint,
-	allquotaxp7 bigint,
-	allquotaxp30 bigint,
-	space1 bigint,
-	space7 bigint,
-	space30 bigint
-) ;
-ALTER TABLE groups OWNER TO panda;
-CREATE UNIQUE INDEX groups_name_idx ON groups (name);
-ALTER TABLE groups ADD PRIMARY KEY (id);
 
 CREATE TABLE harvester_dialogs (
 	harvester_id varchar(50),
@@ -323,18 +181,6 @@ COMMENT ON COLUMN harvester_workers.submittime IS E'Set when the worker is submi
 COMMENT ON COLUMN harvester_workers.workerid IS E'Identifier of the worker';
 ALTER TABLE harvester_workers OWNER TO panda;
 
-CREATE TABLE history (
-	id integer NOT NULL,
-	entrytime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	starttime timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	endtime timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	cpu bigint,
-	cpuxp bigint,
-	space integer
-) ;
-ALTER TABLE history OWNER TO panda;
-ALTER TABLE history ADD PRIMARY KEY (id);
-
 CREATE TABLE incidents (
 	at_time timestamp,
 	typekey varchar(20),
@@ -397,15 +243,6 @@ CREATE TABLE logstable (
 ALTER TABLE logstable OWNER TO panda;
 ALTER TABLE logstable ADD PRIMARY KEY (pandaid);
 
-CREATE TABLE members (
-	uname varchar(30) NOT NULL,
-	gname varchar(30) NOT NULL,
-	rights varchar(30),
-	since timestamp NOT NULL DEFAULT LOCALTIMESTAMP
-) ;
-ALTER TABLE members OWNER TO panda;
-ALTER TABLE members ADD PRIMARY KEY (uname,gname);
-
 CREATE TABLE multicloud_history (
 	site varchar(60) NOT NULL,
 	multicloud varchar(64),
@@ -446,116 +283,6 @@ CREATE TABLE panda_ddm_bl (
 ) ;
 ALTER TABLE panda_ddm_bl OWNER TO panda;
 
-CREATE TABLE passwords (
-	id integer NOT NULL,
-	pass varchar(60) NOT NULL
-) ;
-ALTER TABLE passwords OWNER TO panda;
-ALTER TABLE passwords ADD PRIMARY KEY (id);
-
-CREATE TABLE pilotqueue (
-	jobid varchar(100) NOT NULL,
-	tpid varchar(60) NOT NULL,
-	url varchar(200),
-	nickname varchar(60) NOT NULL,
-	system varchar(20) NOT NULL,
-	user_ varchar(60) NOT NULL,
-	host varchar(60) NOT NULL,
-	submithost varchar(60) NOT NULL,
-	queueid varchar(60) NOT NULL,
-	type varchar(20) NOT NULL,
-	pandaid bigint,
-	tcheck timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	state varchar(30) NOT NULL,
-	tstate timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tenter timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tsubmit timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	taccept timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tschedule timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tstart timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tend timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tdone timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tretrieve timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	status varchar(20) NOT NULL,
-	errcode bigint NOT NULL DEFAULT '0',
-	errinfo varchar(150) NOT NULL,
-	message varchar(4000),
-	schedd_name varchar(60) NOT NULL,
-	workernode varchar(60) NOT NULL
-) ;
-COMMENT ON COLUMN pilotqueue.user_ IS E'ORIGINAL NAME:user';
-ALTER TABLE pilotqueue OWNER TO panda;
-CREATE INDEX pilotqueue_nickname_idx ON pilotqueue (nickname);
-CREATE INDEX pilotqueue_pandaid_idx ON pilotqueue (pandaid);
-CREATE INDEX pilotqueue_queueid_idx ON pilotqueue (queueid);
-CREATE INDEX pilotqueue_state_idx ON pilotqueue (state);
-CREATE UNIQUE INDEX pilotqueue_tpid_idx ON pilotqueue (tpid);
-ALTER TABLE pilotqueue ADD PRIMARY KEY (jobid,nickname);
-
-CREATE TABLE pilotqueue_bnl (
-	jobid varchar(100) NOT NULL,
-	tpid varchar(60) NOT NULL,
-	url varchar(200) NOT NULL,
-	nickname varchar(60) NOT NULL,
-	system varchar(20) NOT NULL,
-	user_ varchar(60) NOT NULL,
-	host varchar(60) NOT NULL,
-	submithost varchar(60) NOT NULL,
-	schedd_name varchar(60) NOT NULL,
-	queueid varchar(60) NOT NULL,
-	type varchar(20) NOT NULL,
-	pandaid bigint,
-	tcheck timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	state varchar(30) NOT NULL,
-	tstate timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tenter timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tsubmit timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	taccept timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tschedule timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tstart timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tend timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tdone timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tretrieve timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	status varchar(20) NOT NULL,
-	errcode bigint NOT NULL DEFAULT '0',
-	errinfo varchar(150) NOT NULL,
-	message varchar(4000),
-	workernode varchar(60) NOT NULL
-) ;
-COMMENT ON COLUMN pilotqueue_bnl.user_ IS E'ORIGINAL NAME:user';
-ALTER TABLE pilotqueue_bnl OWNER TO panda;
-CREATE INDEX pilotqueuebnl_nickname_idx ON pilotqueue_bnl (nickname);
-CREATE INDEX pilotqueuebnl_pandaid_idx ON pilotqueue_bnl (pandaid);
-CREATE INDEX pilotqueuebnl_queueid_idx ON pilotqueue_bnl (queueid);
-CREATE INDEX pilotqueuebnl_state_idx ON pilotqueue_bnl (state);
-ALTER TABLE pilotqueue_bnl ADD PRIMARY KEY (tpid);
-
-CREATE TABLE pilottype (
-	name varchar(60) NOT NULL,
-	script varchar(60) NOT NULL,
-	url varchar(150) NOT NULL,
-	system varchar(60) NOT NULL
-) ;
-ALTER TABLE pilottype OWNER TO panda;
-ALTER TABLE pilottype ADD PRIMARY KEY (name);
-
-CREATE TABLE productiondatasets (
-	name varchar(120) NOT NULL,
-	version bigint,
-	vuid varchar(40) NOT NULL,
-	files integer,
-	gb integer,
-	events integer,
-	site varchar(60),
-	sw_release varchar(20),
-	geometry varchar(20),
-	jobid bigint,
-	pandaid bigint,
-	prodtime timestamp,
-	timestamp bigint
-) ;
-ALTER TABLE productiondatasets OWNER TO panda;
-
 CREATE TABLE proxykey (
 	id bigint NOT NULL,
 	dn varchar(100) NOT NULL,
@@ -568,36 +295,6 @@ CREATE TABLE proxykey (
 ALTER TABLE proxykey OWNER TO panda;
 ALTER TABLE proxykey ADD PRIMARY KEY (id);
 
-CREATE TABLE redirect (
-	service varchar(30) NOT NULL,
-	type varchar(30) NOT NULL,
-	site varchar(60) NOT NULL,
-	description varchar(120) NOT NULL,
-	url varchar(250) NOT NULL,
-	testurl varchar(250),
-	response varchar(30) NOT NULL,
-	aliveresponse varchar(30) NOT NULL,
-	responsetime integer,
-	rank integer,
-	performance integer,
-	status varchar(30) NOT NULL,
-	log varchar(250),
-	statustime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	usetime timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss')
-) ;
-ALTER TABLE redirect OWNER TO panda;
-ALTER TABLE redirect ADD PRIMARY KEY (url);
-
-CREATE TABLE savedpages (
-	name varchar(30) NOT NULL,
-	flag varchar(20) NOT NULL,
-	hours integer NOT NULL DEFAULT '0',
-	html text NOT NULL,
-	lastmod timestamp,
-	interval integer
-) ;
-ALTER TABLE savedpages OWNER TO panda;
-ALTER TABLE savedpages ADD PRIMARY KEY (name,flag,hours);
 
 CREATE TABLE schedconfig (
 	name varchar(60) DEFAULT 'default',
@@ -1063,35 +760,6 @@ ALTER TABLE schedinstance OWNER TO panda;
 CREATE INDEX schedinstance_nickname_idx ON schedinstance (nickname);
 ALTER TABLE schedinstance ADD PRIMARY KEY (nickname,pandasite);
 
-CREATE TABLE servicelist (
-	id bigint NOT NULL,
-	name varchar(60) NOT NULL DEFAULT 'default',
-	host varchar(100),
-	pid bigint,
-	userid varchar(40),
-	type varchar(30),
-	grp varchar(20),
-	description varchar(200),
-	url varchar(200),
-	testurl varchar(200),
-	response varchar(200),
-	tresponse bigint,
-	tstart timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	tstop timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	tcheck timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	cyclesec bigint,
-	status varchar(20) NOT NULL,
-	lastmod timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	config varchar(200),
-	message varchar(4000),
-	restartcmd varchar(4000),
-	doaction varchar(4000)
-) ;
-ALTER TABLE servicelist OWNER TO panda;
-CREATE INDEX servicelist_nameuserid_idx ON servicelist (name, host, config, userid);
-CREATE INDEX servicelist_name_idx ON servicelist (name, host, config);
-ALTER TABLE servicelist ADD PRIMARY KEY (id);
-
 CREATE TABLE siteaccess (
 	id bigint NOT NULL,
 	dn varchar(100),
@@ -1150,120 +818,6 @@ COMMENT ON COLUMN sitedata.nojobabs IS E'Absolute number of getJobs requests tha
 COMMENT ON COLUMN sitedata.updatejobabs IS E'Absolute number of updateJobs';
 ALTER TABLE sitedata OWNER TO panda;
 
-CREATE TABLE siteddm (
-	name varchar(60) NOT NULL,
-	incmd varchar(60) NOT NULL,
-	inpath varchar(200),
-	inopts varchar(60),
-	outcmd varchar(60) NOT NULL,
-	outopts varchar(60),
-	outpath varchar(200) NOT NULL
-) ;
-ALTER TABLE siteddm OWNER TO panda;
-ALTER TABLE siteddm ADD PRIMARY KEY (name);
-
-CREATE TABLE sitehistory (
-	site varchar(60) NOT NULL,
-	flag varchar(20) NOT NULL,
-	time timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	hours integer NOT NULL DEFAULT '0',
-	nwn integer,
-	memmin integer,
-	memmax integer,
-	si2000min integer,
-	si2000max integer,
-	si2000a integer,
-	si2000p integer,
-	walla integer,
-	wallp integer,
-	os varchar(30) NOT NULL,
-	space varchar(30) NOT NULL,
-	minjobs integer,
-	maxjobs integer,
-	laststart timestamp,
-	lastend timestamp,
-	lastfail timestamp,
-	lastpilot timestamp,
-	lastpid integer,
-	nstart integer NOT NULL DEFAULT '0',
-	finished integer NOT NULL DEFAULT '0',
-	failed integer NOT NULL DEFAULT '0',
-	defined integer NOT NULL DEFAULT '0',
-	assigned integer NOT NULL DEFAULT '0',
-	waiting integer NOT NULL DEFAULT '0',
-	activated integer NOT NULL DEFAULT '0',
-	running integer NOT NULL DEFAULT '0',
-	getjob integer NOT NULL DEFAULT '0',
-	updatejob integer NOT NULL DEFAULT '0',
-	subtot integer NOT NULL DEFAULT '0',
-	subdef integer NOT NULL DEFAULT '0',
-	subdone integer NOT NULL DEFAULT '0',
-	filemods integer NOT NULL DEFAULT '0',
-	ncpu integer,
-	nslot integer
-) ;
-ALTER TABLE sitehistory OWNER TO panda;
-ALTER TABLE sitehistory ADD PRIMARY KEY (site,flag,time,hours);
-
-CREATE TABLE sitesinfo (
-	name varchar(120) NOT NULL,
-	nick varchar(20) NOT NULL,
-	contact varchar(30),
-	email varchar(30),
-	status varchar(12),
-	lrc varchar(120),
-	gridcat integer,
-	monalisa varchar(20),
-	computingsite varchar(20),
-	mainsite varchar(20),
-	home varchar(120),
-	ganglia varchar(120),
-	goc varchar(20),
-	gocconfig smallint,
-	prodsys varchar(20),
-	dq2svc varchar(20),
-	usage varchar(40),
-	updtime bigint,
-	ndatasets integer,
-	nfiles integer,
-	timestamp bigint
-) ;
-ALTER TABLE sitesinfo OWNER TO panda;
-
-CREATE TABLE sitestats (
-	cloud varchar(10),
-	site varchar(60),
-	at_time timestamp,
-	twidth integer,
-	tjob integer,
-	tgetjob integer,
-	tstagein integer,
-	trun integer,
-	tstageout integer,
-	twait integer,
-	nusers integer,
-	nwn integer,
-	njobs integer,
-	nfinished integer,
-	nfailed integer,
-	nfailapp integer,
-	nfailsys integer,
-	nfaildat integer,
-	ntimeout integer,
-	efficiency integer,
-	siteutil integer,
-	jobtype varchar(30),
-	proctype varchar(90),
-	username varchar(90),
-	ngetjob integer,
-	nupdatejob integer,
-	release varchar(90),
-	nevents bigint,
-	spectype varchar(90),
-	tsetup integer DEFAULT -1
-) PARTITION BY RANGE (at_time) ;
-ALTER TABLE sitestats OWNER TO panda;
-CREATE INDEX sitestats_time_indx ON sitestats (at_time);
 
 CREATE TABLE sites_matrix_data (
 	source varchar(256) NOT NULL,
@@ -1302,28 +856,6 @@ CREATE TABLE snapshot_data (
 ) ;
 ALTER TABLE snapshot_data OWNER TO panda;
 
-CREATE TABLE submithosts (
-	name varchar(60) NOT NULL,
-	nickname varchar(20) NOT NULL,
-	host varchar(60) NOT NULL,
-	system varchar(60) NOT NULL,
-	rundir varchar(200) NOT NULL,
-	runurl varchar(200) NOT NULL,
-	jdltxt varchar(4000),
-	pilotqueue varchar(20),
-	outurl varchar(200)
-) ;
-ALTER TABLE submithosts OWNER TO panda;
-ALTER TABLE submithosts ADD PRIMARY KEY (host);
-
-CREATE TABLE sysconfig (
-	name varchar(60) NOT NULL,
-	system varchar(20) NOT NULL,
-	config varchar(4000)
-) ;
-ALTER TABLE sysconfig OWNER TO panda;
-ALTER TABLE sysconfig ADD PRIMARY KEY (name,system);
-
 CREATE TABLE taginfo (
 	tag varchar(30) NOT NULL,
 	description varchar(100) NOT NULL,
@@ -1333,38 +865,12 @@ CREATE TABLE taginfo (
 ALTER TABLE taginfo OWNER TO panda;
 ALTER TABLE taginfo ADD PRIMARY KEY (tag);
 
-CREATE TABLE tags (
-	id integer NOT NULL,
-	name varchar(20) NOT NULL,
-	description varchar(60) NOT NULL,
-	ugid integer,
-	type varchar(10) NOT NULL,
-	itemid integer,
-	created timestamp NOT NULL DEFAULT LOCALTIMESTAMP
-) ;
-ALTER TABLE tags OWNER TO panda;
-CREATE INDEX tags_name_idx ON tags (name, ugid);
-ALTER TABLE tags ADD PRIMARY KEY (id);
-
 CREATE TABLE test_schedconfig (
 	site_name varchar(50),
 	schedconfig text,
 	last_update timestamp
 ) ;
 ALTER TABLE test_schedconfig OWNER TO panda;
-
-CREATE TABLE usagereport (
-	entry integer NOT NULL,
-	flag varchar(20) NOT NULL,
-	hours integer,
-	tstart timestamp,
-	tend timestamp,
-	tinsert timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	site varchar(60) NOT NULL,
-	nwn integer
-) ;
-ALTER TABLE usagereport OWNER TO panda;
-ALTER TABLE usagereport ADD PRIMARY KEY (entry);
 
 CREATE TABLE usercacheusage (
 	username varchar(128),
@@ -1446,50 +952,3 @@ CREATE TABLE usersubs (
 ALTER TABLE usersubs OWNER TO panda;
 ALTER TABLE usersubs ADD PRIMARY KEY (datasetname,site);
 
-CREATE TABLE vorspassfail (
-	site_name varchar(32) NOT NULL,
-	passfail char(4) NOT NULL,
-	last_checked timestamp
-) ;
-ALTER TABLE vorspassfail OWNER TO panda;
-ALTER TABLE vorspassfail ADD PRIMARY KEY (site_name);
-
-CREATE TABLE vo_to_site (
-	site_name varchar(32) NOT NULL,
-	queue varchar(64) NOT NULL,
-	vo_name varchar(32) NOT NULL
-) ;
-ALTER TABLE vo_to_site OWNER TO panda;
-ALTER TABLE vo_to_site ADD PRIMARY KEY (site_name,queue,vo_name);
-
-CREATE TABLE wndata (
-	site varchar(60) NOT NULL,
-	wn varchar(50) NOT NULL,
-	flag varchar(20) NOT NULL,
-	hours integer NOT NULL DEFAULT '0',
-	mem integer,
-	si2000 integer,
-	os varchar(30),
-	space varchar(30),
-	maxjobs integer,
-	laststart timestamp,
-	lastend timestamp,
-	lastfail timestamp,
-	lastpilot timestamp,
-	lastpid integer,
-	nstart integer NOT NULL DEFAULT '0',
-	finished integer NOT NULL DEFAULT '0',
-	failed integer NOT NULL DEFAULT '0',
-	holding integer NOT NULL DEFAULT '0',
-	running integer NOT NULL DEFAULT '0',
-	transferring integer NOT NULL DEFAULT '0',
-	getjob integer NOT NULL DEFAULT '0',
-	updatejob integer NOT NULL DEFAULT '0',
-	lastmod timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	ncpu integer,
-	ncpucurrent integer,
-	nslot integer,
-	nslotcurrent integer
-) ;
-ALTER TABLE wndata OWNER TO panda;
-ALTER TABLE wndata ADD PRIMARY KEY (site,wn,flag,hours);
