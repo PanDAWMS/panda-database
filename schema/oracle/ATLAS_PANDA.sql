@@ -35,6 +35,8 @@
 --------------------------------------------------------
   
   INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SCHEMA', 0, 0, 12);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 12);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 12);
 
 --------------------------------------------------------
 --  DDL for Sequence CLOUDTASKS_ID_SEQ

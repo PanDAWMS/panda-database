@@ -72,6 +72,9 @@ done
 
 echo ========== adding the schema version "$LATEST_VERSION"
 psql -d panda_db -U postgres -c "INSERT INTO doma_panda.pandadb_version (component, major, minor, patch) VALUES('SCHEMA', '${MAJOR}', '${MINOR}', '${PATCH}')"
+psql -d panda_db -U postgres -c "INSERT INTO doma_panda.pandadb_version (component, major, minor, patch) VALUES('SERVER', '${MAJOR}', '${MINOR}', '${PATCH}')"
+psql -d panda_db -U postgres -c "INSERT INTO doma_panda.pandadb_version (component, major, minor, patch) VALUES('JEDI', '${MAJOR}', '${MINOR}', '${PATCH}')"
+
 
 echo ========== post step
 psql -U postgres -d panda_db -f $DIR/post_step_panda.sql
