@@ -46,6 +46,8 @@ else
     done
     # update version
     psql -d panda_db -U postgres -c "UPDATE doma_panda.pandadb_version set major='${MAJOR}', minor='${MINOR}', patch='${PATCH}' WHERE component = 'SCHEMA'"
+    psql -d panda_db -U postgres -c "UPDATE doma_panda.pandadb_version set major='${MAJOR}', minor='${MINOR}', patch='${PATCH}' WHERE component = 'SERVER'"
+    psql -d panda_db -U postgres -c "UPDATE doma_panda.pandadb_version set major='${MAJOR}', minor='${MINOR}', patch='${PATCH}' WHERE component = 'JEDI'"
     echo ========== updated to the latest schema "$LATEST_VERSION"
     exit 0
 fi
