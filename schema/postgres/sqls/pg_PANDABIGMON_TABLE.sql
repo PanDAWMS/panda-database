@@ -15,7 +15,7 @@ SET search_path = doma_pandabigmon,public;
 
 CREATE TABLE all_requests (
 	id bigint,
-	server varchar(40),
+	server varchar(100),
 	remote varchar(100),
 	qtime timestamp,
 	url varchar(2500),
@@ -31,7 +31,7 @@ CREATE TABLE all_requests_daily (
 	qtime timestamp,
 	remote varchar(100),
 	is_rejected smallint,
-	server varchar(40),
+	server varchar(100),
 	urlview varchar(300),
 	url varchar(2500),
 	referrer varchar(4000),
@@ -157,7 +157,7 @@ ALTER TABLE objects_comparison ADD PRIMARY KEY (id);
 
 CREATE TABLE request_stats (
 	id bigint NOT NULL,
-	server varchar(40) NOT NULL,
+	server varchar(100) NOT NULL,
 	remote varchar(100) NOT NULL,
 	qtime timestamp NOT NULL,
 	qduration timestamp NOT NULL,
@@ -184,7 +184,7 @@ ALTER TABLE request_stats ADD PRIMARY KEY (id);
 
 CREATE TABLE rucio_accounts (
 	certificatedn varchar(250),
-	rucio_account varchar(25),
+	rucio_account varchar(40),
 	create_time timestamp DEFAULT ((CURRENT_TIMESTAMP(0) AT TIME ZONE 'UTC')),
 	id numeric(38)
 ) ;
