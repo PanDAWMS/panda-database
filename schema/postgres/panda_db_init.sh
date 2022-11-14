@@ -22,7 +22,7 @@ echo
 
 # check schema version
 LATEST_VERSION=$(cat ${DIR}/version)
-CURRENT_VERSION=$(psql -d panda_db -U postgres -tc "SELECT major || '.' ||  minor || '.' || patch FROM doma_panda.pandadb_version WHERE component = 'SCHEMA'")
+CURRENT_VERSION=$(psql -d panda_db -U postgres -tc "SELECT major || '.' ||  minor || '.' || patch FROM doma_panda.pandadb_version WHERE component = 'SCHEMA'" || true)
 
 IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_VERSION"
 
