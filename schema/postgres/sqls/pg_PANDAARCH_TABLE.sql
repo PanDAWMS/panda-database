@@ -155,7 +155,26 @@ CREATE TABLE jobsarchived (
 	avgpss bigint,
 	maxwalltime bigint,
 	hs06 bigint,
-	meancorecount decimal(8,2)
+	meancorecount decimal(8,2),
+	nucleus varchar(52),
+	eventservice smallint,
+	failedattempt smallint,
+	hs06sec bigint,
+	gshare 	varchar(32),
+	totrchar bigint,
+	totwchar bigint,
+	totrbytes bigint,
+	totwbytes bigint,
+	raterchar bigint,
+	ratewchar bigint,
+	raterbytes bigint,
+	ratewbytes bigint,
+	resource_type varchar(56),
+	diskio integer,
+	memory_leak bigint,
+	memory_leak_x2 decimal(11,2),
+	container_name varchar(200),
+	job_label varchar(20)
 ) ;
 COMMENT ON COLUMN jobsarchived.hs06 IS E'Core count x core power';
 ALTER TABLE jobsarchived OWNER TO panda;
