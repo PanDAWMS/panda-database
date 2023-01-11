@@ -21,3 +21,5 @@ ALTER TABLE doma_pandaarch.jobsarchived
 ;
 
 UPDATE doma_panda.pandadb_version set major=0, minor=0, patch=13 WHERE component = 'SCHEMA';
+UPDATE doma_panda.pandadb_version set major=0, minor=0, patch=13 WHERE component = 'SERVER';
+UPDATE doma_panda.pandadb_version set major=0, minor=0, patch=13 WHERE component = 'JEDI';
