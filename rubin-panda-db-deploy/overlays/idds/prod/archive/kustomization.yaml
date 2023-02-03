@@ -1,0 +1,26 @@
+
+resources:
+- ns.yaml
+# cnpg
+#- ../../base/cnpg
+- cnpg-panda-idds-database.yaml
+- cnpg-panda-idds-pooler.yaml
+
+#patches:
+#- endpoints-patch.yaml
+
+secretGenerator:
+- name: usdf-panda-idds-prod-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/username
+  - etc/.secrets/password
+
+#nameSuffix: -dev
+namespace: panda-db
+commonLabels:
+  env: prod
+  app: panda-idds
+  namespace: panda-db
+
