@@ -2732,6 +2732,23 @@ CREATE TABLE "ATLAS_PANDA"."SECRETS"
   );
 
 --------------------------------------------------------
+--  DDL for Table CARBON_REGION_EMISSIONS
+--------------------------------------------------------
+CREATE TABLE "ATLAS_PANDA"."CARBON_REGION_EMISSIONS"
+   (
+    "REGION" VARCHAR2(16 BYTE),
+	"TIMESTAMP" DATE,
+	"VALUE" NUMBER(10,0),
+	CONSTRAINT "CARBON_REGION_EMISSIONS_PK" PRIMARY KEY ("REGION", "TIMESTAMP") ENABLE
+   ) ORGANIZATION INDEX COMPRESS 1;
+
+COMMENT ON TABLE "ATLAS_PANDA"."CARBON_REGION_EMISSIONS"  IS 'Table to store CO2 emission time series for a region or country';
+COMMENT ON COLUMN "ATLAS_PANDA"."CARBON_REGION_EMISSIONS"."REGION" IS 'The name of the region. The region is usually a country, but can be more fine grained in large countries';
+COMMENT ON COLUMN "ATLAS_PANDA"."CARBON_REGION_EMISSIONS"."TIMESTAMP" IS 'When the value was taken';
+COMMENT ON COLUMN "ATLAS_PANDA"."CARBON_REGION_EMISSIONS"."VALUE" IS 'Emissions value in gCO2/kWh';
+
+
+--------------------------------------------------------
 --  DDL for Index TOTAL_WALLTIME_CACHE_PK
 --------------------------------------------------------
 
