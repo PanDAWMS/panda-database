@@ -17,7 +17,7 @@ Deployment comes in two parts:
 The cnpg operator will install into `cnpg-system` namespace.
 
 ```
-CNPG_VERSION=1.17 CNPG_VERSION_MINOR=0 make update-cnpg-operator
+CNPG_VERSION=1.18 CNPG_VERSION_MINOR=1 make update-cnpg-operator
 make apply-cnpg-operator
 ```
 
