@@ -984,6 +984,213 @@ spec:
                       will define pods anti-affinity unless this field is explicitly
                       set to false
                     type: boolean
+                  nodeAffinity:
+                    description: 'NodeAffinity describes node affinity scheduling
+                      rules for the pod. More info: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity'
+                    properties:
+                      preferredDuringSchedulingIgnoredDuringExecution:
+                        description: The scheduler will prefer to schedule pods to
+                          nodes that satisfy the affinity expressions specified by
+                          this field, but it may choose a node that violates one or
+                          more of the expressions. The node that is most preferred
+                          is the one with the greatest sum of weights, i.e. for each
+                          node that meets all of the scheduling requirements (resource
+                          request, requiredDuringScheduling affinity expressions,
+                          etc.), compute a sum by iterating through the elements of
+                          this field and adding "weight" to the sum if the node matches
+                          the corresponding matchExpressions; the node(s) with the
+                          highest sum are the most preferred.
+                        items:
+                          description: An empty preferred scheduling term matches
+                            all objects with implicit weight 0 (i.e. it's a no-op).
+                            A null preferred scheduling term matches no objects (i.e.
+                            is also a no-op).
+                          properties:
+                            preference:
+                              description: A node selector term, associated with the
+                                corresponding weight.
+                              properties:
+                                matchExpressions:
+                                  description: A list of node selector requirements
+                                    by node's labels.
+                                  items:
+                                    description: A node selector requirement is a
+                                      selector that contains values, a key, and an
+                                      operator that relates the key and values.
+                                    properties:
+                                      key:
+                                        description: The label key that the selector
+                                          applies to.
+                                        type: string
+                                      operator:
+                                        description: Represents a key's relationship
+                                          to a set of values. Valid operators are
+                                          In, NotIn, Exists, DoesNotExist. Gt, and
+                                          Lt.
+                                        type: string
+                                      values:
+                                        description: An array of string values. If
+                                          the operator is In or NotIn, the values
+                                          array must be non-empty. If the operator
+                                          is Exists or DoesNotExist, the values array
+                                          must be empty. If the operator is Gt or
+                                          Lt, the values array must have a single
+                                          element, which will be interpreted as an
+                                          integer. This array is replaced during a
+                                          strategic merge patch.
+                                        items:
+                                          type: string
+                                        type: array
+                                    required:
+                                    - key
+                                    - operator
+                                    type: object
+                                  type: array
+                                matchFields:
+                                  description: A list of node selector requirements
+                                    by node's fields.
+                                  items:
+                                    description: A node selector requirement is a
+                                      selector that contains values, a key, and an
+                                      operator that relates the key and values.
+                                    properties:
+                                      key:
+                                        description: The label key that the selector
+                                          applies to.
+                                        type: string
+                                      operator:
+                                        description: Represents a key's relationship
+                                          to a set of values. Valid operators are
+                                          In, NotIn, Exists, DoesNotExist. Gt, and
+                                          Lt.
+                                        type: string
+                                      values:
+                                        description: An array of string values. If
+                                          the operator is In or NotIn, the values
+                                          array must be non-empty. If the operator
+                                          is Exists or DoesNotExist, the values array
+                                          must be empty. If the operator is Gt or
+                                          Lt, the values array must have a single
+                                          element, which will be interpreted as an
+                                          integer. This array is replaced during a
+                                          strategic merge patch.
+                                        items:
+                                          type: string
+                                        type: array
+                                    required:
+                                    - key
+                                    - operator
+                                    type: object
+                                  type: array
+                              type: object
+                              x-kubernetes-map-type: atomic
+                            weight:
+                              description: Weight associated with matching the corresponding
+                                nodeSelectorTerm, in the range 1-100.
+                              format: int32
+                              type: integer
+                          required:
+                          - preference
+                          - weight
+                          type: object
+                        type: array
+                      requiredDuringSchedulingIgnoredDuringExecution:
+                        description: If the affinity requirements specified by this
+                          field are not met at scheduling time, the pod will not be
+                          scheduled onto the node. If the affinity requirements specified
+                          by this field cease to be met at some point during pod execution
+                          (e.g. due to an update), the system may or may not try to
+                          eventually evict the pod from its node.
+                        properties:
+                          nodeSelectorTerms:
+                            description: Required. A list of node selector terms.
+                              The terms are ORed.
+                            items:
+                              description: A null or empty node selector term matches
+                                no objects. The requirements of them are ANDed. The
+                                TopologySelectorTerm type implements a subset of the
+                                NodeSelectorTerm.
+                              properties:
+                                matchExpressions:
+                                  description: A list of node selector requirements
+                                    by node's labels.
+                                  items:
+                                    description: A node selector requirement is a
+                                      selector that contains values, a key, and an
+                                      operator that relates the key and values.
+                                    properties:
+                                      key:
+                                        description: The label key that the selector
+                                          applies to.
+                                        type: string
+                                      operator:
+                                        description: Represents a key's relationship
+                                          to a set of values. Valid operators are
+                                          In, NotIn, Exists, DoesNotExist. Gt, and
+                                          Lt.
+                                        type: string
+                                      values:
+                                        description: An array of string values. If
+                                          the operator is In or NotIn, the values
+                                          array must be non-empty. If the operator
+                                          is Exists or DoesNotExist, the values array
+                                          must be empty. If the operator is Gt or
+                                          Lt, the values array must have a single
+                                          element, which will be interpreted as an
+                                          integer. This array is replaced during a
+                                          strategic merge patch.
+                                        items:
+                                          type: string
+                                        type: array
+                                    required:
+                                    - key
+                                    - operator
+                                    type: object
+                                  type: array
+                                matchFields:
+                                  description: A list of node selector requirements
+                                    by node's fields.
+                                  items:
+                                    description: A node selector requirement is a
+                                      selector that contains values, a key, and an
+                                      operator that relates the key and values.
+                                    properties:
+                                      key:
+                                        description: The label key that the selector
+                                          applies to.
+                                        type: string
+                                      operator:
+                                        description: Represents a key's relationship
+                                          to a set of values. Valid operators are
+                                          In, NotIn, Exists, DoesNotExist. Gt, and
+                                          Lt.
+                                        type: string
+                                      values:
+                                        description: An array of string values. If
+                                          the operator is In or NotIn, the values
+                                          array must be non-empty. If the operator
+                                          is Exists or DoesNotExist, the values array
+                                          must be empty. If the operator is Gt or
+                                          Lt, the values array must have a single
+                                          element, which will be interpreted as an
+                                          integer. This array is replaced during a
+                                          strategic merge patch.
+                                        items:
+                                          type: string
+                                        type: array
+                                    required:
+                                    - key
+                                    - operator
+                                    type: object
+                                  type: array
+                              type: object
+                              x-kubernetes-map-type: atomic
+                            type: array
+                        required:
+                        - nodeSelectorTerms
+                        type: object
+                        x-kubernetes-map-type: atomic
+                    type: object
                   nodeSelector:
                     additionalProperties:
                       type: string
@@ -2297,7 +2504,7 @@ spec:
                       set up.
                     properties:
                       enabled:
-                        description: This flag enabled the constraints for sync replicas
+                        description: This flag enables the constraints for sync replicas
                         type: boolean
                       nodeLabelsAntiAffinity:
                         description: A list of node labels values to extract and compare
@@ -2347,6 +2554,39 @@ spec:
                 required:
                 - source
                 type: object
+              replicationSlots:
+                description: Replication slots management configuration
+                properties:
+                  highAvailability:
+                    description: Replication slots for high availability configuration
+                    properties:
+                      enabled:
+                        description: If enabled, the operator will automatically manage
+                          replication slots on the primary instance and use them in
+                          streaming replication connections with all the standby instances
+                          that are part of the HA cluster. If disabled (default),
+                          the operator will not take advantage of replication slots
+                          in streaming connections with the replicas. This feature
+                          also controls replication slots in replica cluster, from
+                          the designated primary to its cascading replicas. This can
+                          only be set at creation time.
+                        type: boolean
+                      slotPrefix:
+                        default: _cnpg_
+                        description: Prefix for replication slots managed by the operator
+                          for HA. It may only contain lower case letters, numbers,
+                          and the underscore character. This can only be set at creation
+                          time. By default set to `_cnpg_`.
+                        pattern: ^[0-9a-z_]*$
+                        type: string
+                    type: object
+                  updateInterval:
+                    default: 30
+                    description: Standby will update the status of the local replication
+                      slots every `updateInterval` seconds (default 30).
+                    minimum: 1
+                    type: integer
+                type: object
               resources:
                 description: Resources requirements of every generated Pod. Please
                   refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -2374,6 +2614,34 @@ spec:
                       it defaults to Limits if that is explicitly specified, otherwise
                       to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                     type: object
+                type: object
+              serviceAccountTemplate:
+                description: Configure the generation of the service account
+                properties:
+                  metadata:
+                    description: Metadata are the metadata to be used for the generated
+                      service account
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        description: 'Annotations is an unstructured key value map
+                          stored with a resource that may be set by external tools
+                          to store and retrieve arbitrary metadata. They are not queryable
+                          and should be preserved when modifying objects. More info:
+                          http://kubernetes.io/docs/user-guide/annotations'
+                        type: object
+                      labels:
+                        additionalProperties:
+                          type: string
+                        description: 'Map of string keys and values that can be used
+                          to organize and categorize (scope and select) objects. May
+                          match selectors of replication controllers and services.
+                          More info: http://kubernetes.io/docs/user-guide/labels'
+                        type: object
+                    type: object
+                required:
+                - metadata
                 type: object
               startDelay:
                 default: 30
@@ -2574,8 +2842,6 @@ spec:
                       not specified, generated PVCs will be satisfied by the default
                       storage class
                     type: string
-                required:
-                - size
                 type: object
               superuserSecret:
                 description: The secret containing the superuser password. If not
@@ -2783,8 +3049,6 @@ spec:
                       not specified, generated PVCs will be satisfied by the default
                       storage class
                     type: string
-                required:
-                - size
                 type: object
             required:
             - instances
@@ -2859,8 +3123,8 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{ // Represents the observations of a foo's
-                    current state. // Known .status.conditions.type are: \"Available\",
+                    \n type FooStatus struct{ // Represents the observations of a
+                    foo's current state. // Known .status.conditions.type are: \"Available\",
                     \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
                     // +listType=map // +listMapKey=type Conditions []metav1.Condition
                     `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
@@ -2960,6 +3224,11 @@ spec:
               initializingPVC:
                 description: List of all the PVCs that are being initialized by this
                   cluster
+                items:
+                  type: string
+                type: array
+              instanceNames:
+                description: List of instance names in the cluster
                 items:
                   type: string
                 type: array
@@ -4771,13 +5040,13 @@ spec:
                               type: string
                             ports:
                               description: List of ports to expose from the container.
-                                Exposing a port here gives the system additional information
-                                about the network connections a container uses, but
-                                is primarily informational. Not specifying a port
-                                here DOES NOT prevent that port from being exposed.
-                                Any port which is listening on the default "0.0.0.0"
-                                address inside a container will be accessible from
-                                the network. Cannot be updated.
+                                Not specifying a port here DOES NOT prevent that port
+                                from being exposed. Any port which is listening on
+                                the default "0.0.0.0" address inside a container will
+                                be accessible from the network. Modifying this array
+                                with strategic merge patch may corrupt the data. For
+                                more information See https://github.com/kubernetes/kubernetes/issues/108255.
+                                Cannot be updated.
                               items:
                                 description: ContainerPort represents a network port
                                   in a single container.
@@ -5535,8 +5804,6 @@ spec:
                           be specified when creating a pod, and it cannot be modified
                           by updating the pod spec. In order to add an ephemeral container
                           to an existing pod, use the pod's ephemeralcontainers subresource.
-                          This field is beta-level and available on clusters that
-                          haven't disabled the EphemeralContainers feature gate.
                         items:
                           description: "An EphemeralContainer is a temporary container
                             that you may add to an existing Pod for user-initiated
@@ -5547,9 +5814,7 @@ spec:
                             container causes the Pod to exceed its resource allocation.
                             \n To add an ephemeral container, use the ephemeralcontainers
                             subresource of an existing Pod. Ephemeral containers may
-                            not be removed or restarted. \n This is a beta feature
-                            available on clusters that haven't disabled the EphemeralContainers
-                            feature gate."
+                            not be removed or restarted."
                           properties:
                             args:
                               description: 'Arguments to the entrypoint. The image''s
@@ -6863,6 +7128,19 @@ spec:
                         description: 'Use the host''s pid namespace. Optional: Default
                           to false.'
                         type: boolean
+                      hostUsers:
+                        description: 'Use the host''s user namespace. Optional: Default
+                          to true. If set to true or not present, the pod will be
+                          run in the host user namespace, useful for when the pod
+                          needs a feature only available to the host user namespace,
+                          such as loading a kernel module with CAP_SYS_MODULE. When
+                          set to false, a new userns is created for the pod. Setting
+                          false is useful for mitigating container breakout vulnerabilities
+                          even allowing users to run their containers as root without
+                          actually having root privileges on the host. This field
+                          is alpha-level and is only honored by servers that enable
+                          the UserNamespacesSupport feature.'
+                        type: boolean
                       hostname:
                         description: Specifies the hostname of the Pod If not specified,
                           the pod's hostname will be set to a system-defined value.
@@ -7489,13 +7767,13 @@ spec:
                               type: string
                             ports:
                               description: List of ports to expose from the container.
-                                Exposing a port here gives the system additional information
-                                about the network connections a container uses, but
-                                is primarily informational. Not specifying a port
-                                here DOES NOT prevent that port from being exposed.
-                                Any port which is listening on the default "0.0.0.0"
-                                address inside a container will be accessible from
-                                the network. Cannot be updated.
+                                Not specifying a port here DOES NOT prevent that port
+                                from being exposed. Any port which is listening on
+                                the default "0.0.0.0" address inside a container will
+                                be accessible from the network. Modifying this array
+                                with strategic merge patch may corrupt the data. For
+                                more information See https://github.com/kubernetes/kubernetes/issues/108255.
+                                Cannot be updated.
                               items:
                                 description: ContainerPort represents a network port
                                   in a single container.
@@ -8215,7 +8493,7 @@ spec:
                           set. \n If the OS field is set to linux, the following fields
                           must be unset: -securityContext.windowsOptions \n If the
                           OS field is set to windows, following fields must be unset:
-                          - spec.hostPID - spec.hostIPC - spec.securityContext.seLinuxOptions
+                          - spec.hostPID - spec.hostIPC - spec.hostUsers - spec.securityContext.seLinuxOptions
                           - spec.securityContext.seccompProfile - spec.securityContext.fsGroup
                           - spec.securityContext.fsGroupChangePolicy - spec.securityContext.sysctls
                           - spec.shareProcessNamespace - spec.securityContext.runAsUser
@@ -8224,8 +8502,7 @@ spec:
                           - spec.containers[*].securityContext.capabilities - spec.containers[*].securityContext.readOnlyRootFilesystem
                           - spec.containers[*].securityContext.privileged - spec.containers[*].securityContext.allowPrivilegeEscalation
                           - spec.containers[*].securityContext.procMount - spec.containers[*].securityContext.runAsUser
-                          - spec.containers[*].securityContext.runAsGroup This is
-                          a beta field and requires the IdentifyPodOS feature"
+                          - spec.containers[*].securityContext.runAsGroup"
                         properties:
                           name:
                             description: 'Name is the name of the operating system.
@@ -8643,6 +8920,20 @@ spec:
                                   type: object
                               type: object
                               x-kubernetes-map-type: atomic
+                            matchLabelKeys:
+                              description: MatchLabelKeys is a set of pod label keys
+                                to select the pods over which spreading will be calculated.
+                                The keys are used to lookup values from the incoming
+                                pod labels, those key-value labels are ANDed with
+                                labelSelector to select the group of existing pods
+                                over which spreading will be calculated for the incoming
+                                pod. Keys that don't exist in the incoming pod labels
+                                will be ignored. A null or empty list means only match
+                                against labelSelector.
+                              items:
+                                type: string
+                              type: array
+                              x-kubernetes-list-type: atomic
                             maxSkew:
                               description: 'MaxSkew describes the degree to which
                                 pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`,
@@ -8688,10 +8979,34 @@ spec:
                                 new pod with the same labelSelector cannot be scheduled,
                                 because computed skew will be 3(3 - 0) if new Pod
                                 is scheduled to any of the three zones, it will violate
-                                MaxSkew. \n This is an alpha field and requires enabling
-                                MinDomainsInPodTopologySpread feature gate."
+                                MaxSkew. \n This is a beta field and requires the
+                                MinDomainsInPodTopologySpread feature gate to be enabled
+                                (enabled by default)."
                               format: int32
                               type: integer
+                            nodeAffinityPolicy:
+                              description: "NodeAffinityPolicy indicates how we will
+                                treat Pod's nodeAffinity/nodeSelector when calculating
+                                pod topology spread skew. Options are: - Honor: only
+                                nodes matching nodeAffinity/nodeSelector are included
+                                in the calculations. - Ignore: nodeAffinity/nodeSelector
+                                are ignored. All nodes are included in the calculations.
+                                \n If this value is nil, the behavior is equivalent
+                                to the Honor policy. This is a alpha-level feature
+                                enabled by the NodeInclusionPolicyInPodTopologySpread
+                                feature flag."
+                              type: string
+                            nodeTaintsPolicy:
+                              description: "NodeTaintsPolicy indicates how we will
+                                treat node taints when calculating pod topology spread
+                                skew. Options are: - Honor: nodes without taints,
+                                along with tainted nodes for which the incoming pod
+                                has a toleration, are included. - Ignore: node taints
+                                are ignored. All nodes are included. \n If this value
+                                is nil, the behavior is equivalent to the Ignore policy.
+                                This is a alpha-level feature enabled by the NodeInclusionPolicyInPodTopologySpread
+                                feature flag."
+                              type: string
                             topologyKey:
                               description: TopologyKey is the key of node labels.
                                 Nodes that have a label with this key and identical
@@ -8700,11 +9015,11 @@ spec:
                                 to put balanced number of pods into each bucket. We
                                 define a domain as a particular instance of a topology.
                                 Also, we define an eligible domain as a domain whose
-                                nodes match the node selector. e.g. If TopologyKey
-                                is "kubernetes.io/hostname", each Node is a domain
-                                of that topology. And, if TopologyKey is "topology.kubernetes.io/zone",
-                                each zone is a domain of that topology. It's a required
-                                field.
+                                nodes meet the requirements of nodeAffinityPolicy
+                                and nodeTaintsPolicy. e.g. If TopologyKey is "kubernetes.io/hostname",
+                                each Node is a domain of that topology. And, if TopologyKey
+                                is "topology.kubernetes.io/zone", each zone is a domain
+                                of that topology. It's a required field.
                               type: string
                             whenUnsatisfiable:
                               description: 'WhenUnsatisfiable indicates how to deal
@@ -10539,8 +10854,9 @@ spec:
                   creation or not
                 type: boolean
               schedule:
-                description: The schedule follows the same format used in Kubernetes
-                  CronJobs, see https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format
+                description: The schedule does not follow the same format used in
+                  Kubernetes CronJobs as it includes an additional seconds specifier,
+                  see https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format
                 type: string
               suspend:
                 description: If this backup is suspended or not
@@ -11043,6 +11359,32 @@ data:
             usage: "GAUGE"
             description: "Number of streaming replicas connected to the instance"
 
+    pg_replication_slots:
+      query: |
+        SELECT slot_name,
+          slot_type,
+          database,
+          active,
+          pg_catalog.pg_wal_lsn_diff(pg_catalog.pg_current_wal_lsn(), restart_lsn)
+        FROM pg_catalog.pg_replication_slots
+        WHERE NOT temporary
+      metrics:
+        - slot_name:
+            usage: "LABEL"
+            description: "Name of the replication slot"
+        - slot_type:
+            usage: "LABEL"
+            description: "Type of the replication slot"
+        - database:
+            usage: "LABEL"
+            description: "Name of the database"
+        - active:
+            usage: "GAUGE"
+            description: "Flag indicating whether the slot is active"
+        - pg_wal_lsn_diff:
+            usage: "GAUGE"
+            description: "Replication lag in bytes"
+
     pg_stat_archiver:
       query: |
         SELECT archived_count
@@ -11313,14 +11655,14 @@ spec:
         - /manager
         env:
         - name: OPERATOR_IMAGE_NAME
-          value: ghcr.io/cloudnative-pg/cloudnative-pg:1.17.0
+          value: ghcr.io/cloudnative-pg/cloudnative-pg:1.18.1
         - name: OPERATOR_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
         - name: MONITORING_QUERIES_CONFIGMAP
           value: cnpg-default-monitoring
-        image: ghcr.io/cloudnative-pg/cloudnative-pg:1.17.0
+        image: ghcr.io/cloudnative-pg/cloudnative-pg:1.18.1
         livenessProbe:
           httpGet:
             path: /readyz
