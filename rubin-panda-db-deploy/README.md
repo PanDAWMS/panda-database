@@ -47,3 +47,27 @@ make apply
 cd overlays/idds/$ENVIRONMENT/{main|archive}
 make apply
 ```
+
+# Common Tasks
+
+Requires installation of the cnpg [kubectl plugin](https://cloudnative-pg.io/documentation/1.17/cnpg-plugin/#cloudnativepg-plugin)
+
+### Get status of cluster
+
+```
+kubectl cnpg status usdf-panda-server -n panda-db
+```
+
+### Promote a replica to primary
+
+```
+kubectl cnpg promote usdf-panda-server -n panda-db
+```
+
+### Destroy an instance
+
+```
+kubectl cnpg destroy usdf-panda-server 1 -n panda-db
+```
+
+where 1 is the ordinal number of the instance
