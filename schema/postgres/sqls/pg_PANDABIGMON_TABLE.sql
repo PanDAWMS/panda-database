@@ -83,7 +83,8 @@ CREATE TABLE auth_user (
 	is_staff boolean,
 	is_active boolean,
 	date_joined timestamp,
-	is_tester boolean
+	is_tester boolean,
+	is_expert boolean
 ) ;
 ALTER TABLE auth_user OWNER TO panda;
 ALTER TABLE auth_user ADD PRIMARY KEY (id);
