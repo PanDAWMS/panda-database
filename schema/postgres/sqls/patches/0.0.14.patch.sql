@@ -1,0 +1,1 @@
+ALTER TABLE doma_pandabigmon.auth_user ADD COLUMN is_expert boolean;
