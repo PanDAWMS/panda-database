@@ -5,7 +5,20 @@ metadata:
   # note the name is the DB services/pods  not the Cluster name.
   name: usdf-panda-server
 spec:
-  instances: 1
+  spec:
+    backup:
+      retentionPolicy: "15d"
+      barmanObjectStore:
+        destinationPath: s3://rubin-usdf-panda
+        endpointURL: http://sdfk8s001.slac.stanford.edu:9000
+        s3Credentials:
+          accessKeyId:
+            name: s3-creds
+            key: ACCESS_KEY_ID
+          secretAccessKey:
+            name: s3-creds
+            key: ACCESS_SECRET_KEY
+  instances: 2
   primaryUpdateStrategy: unsupervised
 
   bootstrap:
