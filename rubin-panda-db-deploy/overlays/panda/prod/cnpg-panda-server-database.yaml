@@ -10,7 +10,7 @@ spec:
       retentionPolicy: "15d"
       barmanObjectStore:
         destinationPath: s3://rubin-panda-dev
-        endpointURL: http://s3dfrgw.slac.stanford.edu:9000
+        endpointURL: https://s3dfrgw.slac.stanford.edu
         s3Credentials:
           accessKeyId:
             name: s3-creds
