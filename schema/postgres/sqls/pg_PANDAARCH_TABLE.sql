@@ -174,7 +174,9 @@ CREATE TABLE jobsarchived (
 	memory_leak bigint,
 	memory_leak_x2 decimal(11,2),
 	container_name varchar(200),
-	job_label varchar(20)
+	job_label varchar(20),
+    gco2_regional decimal(10,2),
+    gco2_global decimal(10,2)
 ) ;
 COMMENT ON COLUMN jobsarchived.hs06 IS E'Core count x core power';
 ALTER TABLE jobsarchived OWNER TO panda;
