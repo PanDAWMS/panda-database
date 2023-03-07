@@ -1,6 +1,6 @@
 
 SECRET_PATH ?= secret/rubin/usdf-panda-idds/postgres
-S3_SECRET_PATH ?= secret/rubin/usdf-panda-idds/weka-s3
+S3_SECRET_PATH ?= secret/rubin/usdf-panda-dev/s3
 
 get-secrets-from-vault:
 	mkdir -p etc/.secrets/
