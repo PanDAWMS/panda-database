@@ -963,7 +963,7 @@ ALTER TRIGGER "ATLAS_PANDAMETA"."USERS_ID_TRG" ENABLE;
 FOR EACH ROW
 DECLARE
 BEGIN
-  :new.lastmod := sysdate;
+  :new.lastmod := sys_extract_utc(systimestamp);
 END;
 
 /
