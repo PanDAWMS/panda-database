@@ -98,6 +98,34 @@ retention_keep_table = false
 WHERE parent_table = 'doma_panda.jedi_job_retry_history'
 ;
 
+SELECT partman.create_parent(
+p_parent_table => 'doma_panda.task_attempts',
+p_control => 'starttime',
+p_type => 'native',
+p_interval=> 'daily',
+p_premake => 3
+);
+UPDATE partman.part_config
+SET infinite_time_partitions = true,
+retention = '3 months',
+retention_keep_table = false
+WHERE parent_table = 'doma_panda.task_attempts'
+;
+
+SELECT partman.create_parent(
+p_parent_table => 'doma_panda.pandalog',
+p_control => 'bintime',
+p_type => 'native',
+p_interval=> 'daily',
+p_premake => 3
+);
+UPDATE partman.part_config
+SET infinite_time_partitions = true,
+retention = '7 days',
+retention_keep_table = false
+WHERE parent_table = 'doma_panda.pandalog'
+;
+
 -- PANDA tables with backup
 
 SELECT partman.create_parent(
@@ -236,76 +264,4 @@ SET infinite_time_partitions = true,
 retention = '3 months',
 retention_keep_table = false
 WHERE parent_table = 'doma_pandameta.usercacheusage'
-;
-
--- PANDAMON tables
-
-SELECT partman.create_parent(
-p_parent_table => 'doma_pandabigmon.old_pandamon_jobspage_aggr',
-p_control => 'modifdate',
-p_type => 'native',
-p_interval=> 'daily',
-p_premake => 3
-);
-UPDATE partman.part_config
-SET infinite_time_partitions = true,
-retention = '7 days',
-retention_keep_table = false
-WHERE parent_table = 'doma_pandabigmon.old_pandamon_jobspage_aggr'
-;
-
-SELECT partman.create_parent(
-p_parent_table => 'doma_pandabigmon.old_pandamon_jobspage_all',
-p_control => 'part_id',
-p_type => 'native',
-p_interval=> '1000000',
-p_premake => 3
-);
-UPDATE partman.part_config
-SET infinite_time_partitions = true,
-retention = '7 days',
-retention_keep_table = false
-WHERE parent_table = 'doma_pandabigmon.old_pandamon_jobspage_all'
-;
-
-SELECT partman.create_parent(
-p_parent_table => 'doma_pandabigmon.pandamon_jobspage',
-p_control => 'part_id',
-p_type => 'native',
-p_interval=> '1000000',
-p_premake => 3
-);
-UPDATE partman.part_config
-SET infinite_time_partitions = true,
-retention = '7 days',
-retention_keep_table = false
-WHERE parent_table = 'doma_pandabigmon.pandamon_jobspage'
-;
-
-SELECT partman.create_parent(
-p_parent_table => 'doma_pandabigmon.pandamon_jobspage_arch',
-p_control => 'modificationtime',
-p_type => 'native',
-p_interval=> 'daily',
-p_premake => 3
-);
-UPDATE partman.part_config
-SET infinite_time_partitions = true,
-retention = '7 days',
-retention_keep_table = false
-WHERE parent_table = 'doma_pandabigmon.pandamon_jobspage_arch'
-;
-
-SELECT partman.create_parent(
-p_parent_table => 'doma_pandabigmon.panda_tasks_aggr',
-p_control => 'jeditaskid',
-p_type => 'native',
-p_interval=> '1000000',
-p_premake => 3
-);
-UPDATE partman.part_config
-SET infinite_time_partitions = true,
-retention = '7 days',
-retention_keep_table = false
-WHERE parent_table = 'doma_pandabigmon.panda_tasks_aggr'
 ;
