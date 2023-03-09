@@ -2592,7 +2592,7 @@ ALTER TABLE retryerrors ALTER COLUMN RETRYERROR_ID SET NOT NULL;
 
 CREATE TABLE schedconfig_json (
 	panda_queue varchar(50) NOT NULL,
-	data text,
+	data json,
 	last_update timestamp
 ) ;
 COMMENT ON TABLE schedconfig_json IS E'Table to store the AGIS''s JSON configuration for each panda queue';
