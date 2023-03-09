@@ -39,7 +39,7 @@ CREATE TABLE filestable_arch (
 	datasetid bigint,
 	fileid bigint,
 	attemptnr smallint
-) PARTITION BY RANGE (modificationtime) ;
+) ;
 ALTER  TABLE filestable_arch OWNER TO panda;
 CREATE INDEX files_arch_lfn_idx ON filestable_arch (lfn);
 CREATE INDEX files_arch_pandaid_idx ON filestable_arch (pandaid);
@@ -187,7 +187,7 @@ CREATE TABLE jobsarchived (
 	meancorecount decimal(8,2),
 	gco2_regional decimal(10,2),
 	gco2_global decimal(10,2)
-) PARTITION BY RANGE (modificationtime) ;
+) ;
 COMMENT ON COLUMN jobsarchived.avgpss IS E'Average PSS in the job';
 COMMENT ON COLUMN jobsarchived.avgrss IS E'AverageÂ RSS in the job';
 COMMENT ON COLUMN jobsarchived.avgswap IS E'Average SWAP in the job';
@@ -257,7 +257,7 @@ CREATE TABLE metatable_arch (
 	pandaid bigint NOT NULL DEFAULT '0',
 	modificationtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	metadata text
-) PARTITION BY RANGE (modificationtime) ;
+) ;
 ALTER  TABLE metatable_arch OWNER TO panda;
 CREATE INDEX meta_arch_pandaid_idx ON metatable_arch (pandaid);
 ALTER TABLE metatable_arch ALTER COLUMN PANDAID SET NOT NULL;
@@ -280,7 +280,7 @@ ALTER  TABLE pandaids_modiftime_errlog_old OWNER TO panda;
 CREATE TABLE pandaids_modiftime_old (
 	pandaid bigint NOT NULL,
 	modiftime timestamp NOT NULL
-) PARTITION BY RANGE (pandaid) ;
+) ;
 ALTER  TABLE pandaids_modiftime_old OWNER TO panda;
 ALTER TABLE pandaids_modiftime_old ADD PRIMARY KEY (pandaid,modiftime);
 
