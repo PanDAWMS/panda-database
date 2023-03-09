@@ -17,7 +17,7 @@ SET search_path = doma_pandaarch,public;
 CREATE TABLE filestable_arch (
 	row_id bigint NOT NULL,
 	pandaid bigint NOT NULL DEFAULT 0,
-	modificationtime timestamp NOT NULL DEFAULT statement_timestamp(),
+	modificationtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	creationtime timestamp,
 	guid varchar(64),
 	lfn varchar(256),
@@ -52,7 +52,7 @@ ALTER TABLE filestable_arch ALTER COLUMN MODIFICATIONTIME SET NOT NULL;
 
 CREATE TABLE jobparamstable_arch (
 	pandaid bigint NOT NULL,
-	modificationtime timestamp NOT NULL DEFAULT statement_timestamp(),
+	modificationtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	jobparameters text
 ) PARTITION BY RANGE (modificationtime) ;
 ALTER  TABLE jobparamstable_arch OWNER TO panda;
@@ -66,9 +66,9 @@ CREATE TABLE jobsarchived (
 	jobdefinitionid bigint NOT NULL DEFAULT '0',
 	schedulerid varchar(128),
 	pilotid varchar(200),
-	creationtime timestamp NOT NULL DEFAULT statement_timestamp(),
+	creationtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	creationhost varchar(128),
-	modificationtime timestamp NOT NULL DEFAULT statement_timestamp(),
+	modificationtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	modificationhost varchar(128),
 	atlasrelease varchar(64),
 	transformation varchar(250),
@@ -89,8 +89,8 @@ CREATE TABLE jobsarchived (
 	ipconnectivity char(5),
 	minramcount bigint NOT NULL DEFAULT '0',
 	minramunit char(4),
-	starttime timestamp DEFAULT statement_timestamp(),
-	endtime timestamp DEFAULT statement_timestamp(),
+	starttime timestamp DEFAULT LOCALTIMESTAMP,
+	endtime timestamp DEFAULT LOCALTIMESTAMP,
 	cpuconsumptiontime numeric(20),
 	cpuconsumptionunit varchar(128),
 	commandtopilot varchar(250),
@@ -124,8 +124,8 @@ CREATE TABLE jobsarchived (
 	transfertype varchar(10),
 	taskid integer,
 	cmtconfig varchar(250),
-	statechangetime timestamp DEFAULT statement_timestamp(),
-	proddbupdatetime timestamp DEFAULT statement_timestamp(),
+	statechangetime timestamp DEFAULT LOCALTIMESTAMP,
+	proddbupdatetime timestamp DEFAULT LOCALTIMESTAMP,
 	lockedby varchar(128),
 	relocationflag smallint DEFAULT '0',
 	jobexecutionid bigint DEFAULT '0',
@@ -255,7 +255,7 @@ ALTER TABLE jobsarchived ALTER COLUMN TASKBUFFERERRORCODE SET NOT NULL;
 
 CREATE TABLE metatable_arch (
 	pandaid bigint NOT NULL DEFAULT '0',
-	modificationtime timestamp NOT NULL DEFAULT statement_timestamp(),
+	modificationtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	metadata text
 ) PARTITION BY RANGE (modificationtime) ;
 ALTER  TABLE metatable_arch OWNER TO panda;

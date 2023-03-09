@@ -13,7 +13,7 @@ DROP TRIGGER IF EXISTS cloudconfig_modtime_trg ON cloudconfig CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_cloudconfig_modtime_trg() RETURNS trigger AS $BODY$
 DECLARE
 BEGIN
-  NEW.modtime := statement_timestamp();
+  NEW.modtime := LOCALTIMESTAMP;
 RETURN NEW;
 END
 $BODY$
@@ -93,7 +93,7 @@ DROP TRIGGER IF EXISTS proxykey_created_trg ON proxykey CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proxykey_created_trg() RETURNS trigger AS $BODY$
 DECLARE
 BEGIN
-  NEW.created := statement_timestamp();
+  NEW.created := LOCALTIMESTAMP;
 RETURN NEW;
 END
 $BODY$
@@ -110,7 +110,7 @@ DROP TRIGGER IF EXISTS schedinstance_tvalid_trg ON schedinstance CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_schedinstance_tvalid_trg() RETURNS trigger AS $BODY$
 DECLARE
 BEGIN
-  NEW.tvalid := statement_timestamp();
+  NEW.tvalid := LOCALTIMESTAMP;
 RETURN NEW;
 END
 $BODY$

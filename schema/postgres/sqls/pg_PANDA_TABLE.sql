@@ -48,7 +48,7 @@ CREATE TABLE cloudtasks (
 	taskid integer,
 	cloud varchar(20),
 	status varchar(20),
-	tmod timestamp NOT NULL DEFAULT statement_timestamp(),
+	tmod timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	tenter timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss')
 ) ;
 COMMENT ON TABLE cloudtasks IS E'Table for task brokerage which assigns production tasks to clouds by checking data locality and work distribution';
@@ -355,7 +355,7 @@ ALTER TABLE harvester_instances ADD PRIMARY KEY (harvester_id);
 
 CREATE TABLE harvester_metrics (
 	harvester_id varchar(50) NOT NULL,
-	creation_time timestamp DEFAULT statement_timestamp(),
+	creation_time timestamp DEFAULT LOCALTIMESTAMP,
 	harvester_host varchar(100),
 	metrics varchar(4000)
 ) PARTITION BY RANGE (creation_time) ;
@@ -2525,7 +2525,7 @@ CREATE TABLE pilottoken (
 	schedulerhost varchar(100),
 	scheduleruser varchar(150),
 	usages integer NOT NULL DEFAULT '1',
-	created timestamp NOT NULL DEFAULT statement_timestamp(),
+	created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	expires timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
 	schedulerid varchar(80)
 ) ;
