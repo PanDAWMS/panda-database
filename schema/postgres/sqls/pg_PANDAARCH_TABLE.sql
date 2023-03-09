@@ -54,7 +54,7 @@ CREATE TABLE jobparamstable_arch (
 	pandaid bigint NOT NULL,
 	modificationtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	jobparameters text
-) PARTITION BY RANGE (modificationtime) ;
+) ;
 ALTER  TABLE jobparamstable_arch OWNER TO panda;
 CREATE INDEX jobparams_arch_pandaid_idx ON jobparamstable_arch (pandaid);
 ALTER TABLE jobparamstable_arch ALTER COLUMN PANDAID SET NOT NULL;
