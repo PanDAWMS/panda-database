@@ -2319,7 +2319,7 @@ CREATE TABLE metrics (
 	computingsite varchar(128),
 	gshare varchar(32),
 	metric varchar(128),
-	value_json text,
+	value_json json,
 	timestamp timestamp
 ) ;
 ALTER  TABLE metrics OWNER TO panda;
