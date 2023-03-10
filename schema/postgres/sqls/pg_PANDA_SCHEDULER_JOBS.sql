@@ -91,8 +91,9 @@ SELECT DBMS_ASSERT.SQL_OBJECT_NAME( sys_context('USERENV', 'CURRENT_SCHEMA') || 
 END;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.add_dailypart (period_days bigint, n_table text, tablespace_name text) OWNER TO panda;
+ALTER PROCEDURE add_dailypart (period_days bigint, n_table text, tablespace_name text) OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.add_dailypart (period_days bigint, n_table text, tablespace_name text) FROM PUBLIC;
 
 
@@ -593,7 +594,7 @@ END;
 $body$
 LANGUAGE PLPGSQL
 ;
-ALTER PROCEDURE doma_panda.bulkcopy_panda_partitions (dest_schema text) OWNER TO panda;
+ALTER PROCEDURE bulkcopy_panda_partitions (dest_schema text) OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.bulkcopy_panda_partitions (dest_schema text) FROM PUBLIC;
 
 
@@ -657,8 +658,9 @@ END LOOP;
 END;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.datasets_90days_sl_window (DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE datasets_90days_sl_window (DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.datasets_90days_sl_window (DAYS_OFFSET bigint default 93) FROM PUBLIC;
 
 
@@ -670,8 +672,8 @@ DECLARE
 
   rows_cnt bigint;
   taskid_cnt bigint;
-  row_sum bigint := 0;
-  part_cnt bigint := 1;
+  --row_sum bigint := 0;
+  --part_cnt bigint := 1;
   p RECORD;
 
 BEGIN
@@ -701,12 +703,10 @@ BEGIN
 END;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.delete_jedi_events_proc () OWNER TO panda;
+ALTER PROCEDURE delete_jedi_events_proc () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.delete_jedi_events_proc () FROM PUBLIC;
-
-
-
 
 
 CREATE OR REPLACE PROCEDURE doma_panda.do_grants (obj_type text, obj_name text,owner_name text) AS $body$
@@ -746,15 +746,16 @@ BEGIN
 END;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.do_grants (obj_type text, obj_name text,owner_name text) OWNER TO panda;
+ALTER PROCEDURE do_grants (obj_type text, obj_name text,owner_name text) OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.do_grants (obj_type text, obj_name text,owner_name text) FROM PUBLIC;
 
 
 
 
 
-CREATE OR REPLACE PROCEDURE doma_panda.grant_privs4exist_obj (owner_name text ) AS $body$
+CREATE OR REPLACE PROCEDURE grant_privs4exist_obj (owner_name text ) AS $body$
 DECLARE
 
 	
@@ -860,8 +861,9 @@ END LOOP;
 END;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.harvester_workers_sl_window (DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE harvester_workers_sl_window (DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.harvester_workers_sl_window (DAYS_OFFSET bigint default 60) FROM PUBLIC;
 
 
@@ -943,8 +945,9 @@ END LOOP;
 END;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.jobs_statuslog_sl_window (DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE jobs_statuslog_sl_window (DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.jobs_statuslog_sl_window (DAYS_OFFSET bigint default 93) FROM PUBLIC;
 
 
@@ -1014,8 +1017,9 @@ END LOOP;
 END;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.pandalog_sl_window (mytab_name text, DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE pandalog_sl_window (mytab_name text, DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.pandalog_sl_window (mytab_name text, DAYS_OFFSET bigint default 3) FROM PUBLIC;
 
 
@@ -1089,8 +1093,9 @@ END LOOP;
 END;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.panda_table_sl_window (mytab_name text, mytab_column text, DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE panda_table_sl_window (mytab_name text, mytab_column text, DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.panda_table_sl_window (mytab_name text, mytab_column text, DAYS_OFFSET bigint default 3) FROM PUBLIC;
 
 
@@ -1130,8 +1135,9 @@ FROM all_indexes WHERE owner = UPPER(m_owner) AND table_name = UPPER(m_table) an
 END;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.rebuild_table_indices (m_owner text, m_table text, m_tbs_name text) OWNER TO panda;
+ALTER PROCEDURE rebuild_table_indices (m_owner text, m_table text, m_tbs_name text) OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.rebuild_table_indices (m_owner text, m_table text, m_tbs_name text) FROM PUBLIC;
 
 
@@ -1202,8 +1208,9 @@ END LOOP;
 END;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.tasks_statuslog_sl_window (DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE tasks_statuslog_sl_window (DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.tasks_statuslog_sl_window (DAYS_OFFSET bigint default 93) FROM PUBLIC;
 
 
@@ -1246,7 +1253,7 @@ INSERT INTO mv_jobsactive4_stats(CUR_DATE,
     jobStatus,
     processingType,
     prodSourceLabel,
-    date_trunc(-1, currentPriority) AS currentPriority,
+    TRUNC(currentPriority, -1) AS currentPriority,
     VO,
     WORKQUEUE_ID,
     COUNT(*)  AS num_of_jobs
@@ -1261,7 +1268,7 @@ INSERT INTO mv_jobsactive4_stats(CUR_DATE,
     jobStatus,
     processingType,
     prodSourceLabel,
-    date_trunc(-1, currentPriority),
+    TRUNC(currentPriority, -1),
     VO,
     WORKQUEUE_ID;
 --COMMIT;
@@ -1272,8 +1279,9 @@ INSERT INTO mv_jobsactive4_stats(CUR_DATE,
 end;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.update_jobsactive_stats () OWNER TO panda;
+ALTER PROCEDURE update_jobsactive_stats () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_jobsactive_stats () FROM PUBLIC;
 
 
@@ -1310,8 +1318,9 @@ GROUP BY clock_timestamp(), gshare, workqueue_id, ja4.resource_type, computingSi
 end;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.update_jobsact_stats_by_gshare () OWNER TO panda;
+ALTER PROCEDURE update_jobsact_stats_by_gshare () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_jobsact_stats_by_gshare () FROM PUBLIC;
 
 
@@ -1349,8 +1358,9 @@ GROUP BY clock_timestamp(), gshare, workqueue_id, ja4.resource_type, computingSi
 end;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.update_jobsdef_stats_by_gshare () OWNER TO panda;
+ALTER PROCEDURE update_jobsdef_stats_by_gshare () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_jobsdef_stats_by_gshare () FROM PUBLIC;
 
 
@@ -1385,7 +1395,7 @@ WITH ja4_stats AS (
     AND jobstatus IN ('assigned', 'defined')
     GROUP BY PRODSOURCELABEL, CLOUD, RESOURCE_TYPE, GSHARE, JOBSTATUS, WORKQUEUE_ID, VO
     )
-SELECT /*+ use_nl(ja4, ja4_stats) */ clock_timestamp(), ja4.PRODSOURCELABEL, ja4.CLOUD, ja4.RESOURCE_TYPE, ja4.GSHARE, ja4.JOBSTATUS, ja4.WORKQUEUE_ID, ja4.VO, ja4_stats.max_priority, COUNT(*) AS max_priority_count
+SELECT clock_timestamp(), ja4.PRODSOURCELABEL, ja4.CLOUD, ja4.RESOURCE_TYPE, ja4.GSHARE, ja4.JOBSTATUS, ja4.WORKQUEUE_ID, ja4.VO, ja4_stats.max_priority, COUNT(*) AS max_priority_count
 FROM doma_panda.jobsActive4 ja4, ja4_stats    
 WHERE ja4.PRODSOURCELABEL = ja4_stats.PRODSOURCELABEL
 AND ja4.PROCESSINGTYPE<>'pmerge' 
@@ -1402,7 +1412,7 @@ GROUP BY ja4.PRODSOURCELABEL, ja4.CLOUD, ja4.RESOURCE_TYPE, ja4.GSHARE, ja4.JOBS
 
 UNION
 
-SELECT /*+ use_nl(jd4, jd4_stats) */ clock_timestamp(), jd4.PRODSOURCELABEL, jd4.CLOUD, jd4.RESOURCE_TYPE, jd4.GSHARE, jd4.JOBSTATUS, jd4.WORKQUEUE_ID, jd4.VO, jd4_stats.max_priority, COUNT(*) AS max_priority_count
+SELECT clock_timestamp(), jd4.PRODSOURCELABEL, jd4.CLOUD, jd4.RESOURCE_TYPE, jd4.GSHARE, jd4.JOBSTATUS, jd4.WORKQUEUE_ID, jd4.VO, jd4_stats.max_priority, COUNT(*) AS max_priority_count
 FROM doma_panda.jobsDefined4 jd4, jd4_stats    
 WHERE jd4.PRODSOURCELABEL = jd4_stats.PRODSOURCELABEL
 AND jd4.PROCESSINGTYPE<>'pmerge' 
@@ -1425,8 +1435,9 @@ GROUP BY jd4.PRODSOURCELABEL, jd4.CLOUD, jd4.RESOURCE_TYPE, jd4.GSHARE, jd4.JOBS
 end;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.update_job_stats_hp () OWNER TO panda;
+ALTER PROCEDURE update_job_stats_hp () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_job_stats_hp () FROM PUBLIC;
 
 
@@ -1446,11 +1457,11 @@ INSERT INTO doma_panda.typical_num_input(agg_type, vo, agg_key, prodsourcelabel,
                                            processingtype, ninputdatafiles)
 SELECT 'gshare' as agg_type, vo, gshare as agg_key, prodSourceLabel, processingType, PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY nInputDataFiles)
 FROM doma_panda.jobsActive4
-WHERE (nInputDataFiles AND nInputDataFiles::text <> '') 
-    AND (vo AND vo::text <> '') 
-    AND (prodsourcelabel AND prodsourcelabel::text <> '')
-    AND (processingtype AND processingtype::text <> '')
-    AND (gshare AND gshare::text <> '')
+WHERE (nInputDataFiles IS NOT NULL AND nInputDataFiles::text <> '')
+    AND (vo IS NOT NULL AND vo::text <> '')
+    AND (prodsourcelabel IS NOT NULL AND prodsourcelabel::text <> '')
+    AND (processingtype IS NOT NULL AND processingtype::text <> '')
+    AND (gshare IS NOT NULL AND gshare::text <> '')
     AND workqueue_id IN (SELECT DISTINCT workqueue_id FROM doma_panda.jobsActive4
 EXCEPT 
 SELECT queue_id 
@@ -1461,11 +1472,11 @@ UNION
 
 SELECT 'workqueue' as agg_type, vo, workqueue_id::varchar as agg_key, prodSourceLabel, processingType, PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY nInputDataFiles)
 FROM doma_panda.jobsActive4
-WHERE (nInputDataFiles AND nInputDataFiles::text <> '') 
-    AND (vo AND vo::text <> '') 
-    AND (prodsourcelabel AND prodsourcelabel::text <> '')
-    AND (processingtype AND processingtype::text <> '')
-    AND (workqueue_id AND workqueue_id::text <> '')
+WHERE (nInputDataFiles IS NOT NULL AND nInputDataFiles::text <> '')
+    AND (vo IS NOT NULL AND vo::text <> '')
+    AND (prodsourcelabel IS NOT NULL AND prodsourcelabel::text <> '')
+    AND (processingtype IS NOT NULL AND processingtype::text <> '')
+    AND (workqueue_id IS NOT NULL AND workqueue_id::text <> '')
     AND workqueue_id IN (SELECT queue_id FROM doma_panda.jedi_work_queue WHERE queue_function = 'Resource')
 GROUP BY vo, WORKQUEUE_ID, prodSourceLabel, processingType;
 
@@ -1478,7 +1489,7 @@ END;
 $body$
 LANGUAGE PLPGSQL
 ;
-ALTER PROCEDURE doma_panda.update_num_input_data_files () OWNER TO panda;
+ALTER PROCEDURE update_num_input_data_files () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_num_input_data_files () FROM PUBLIC;
 
 
@@ -1537,7 +1548,7 @@ end;
 $body$
 LANGUAGE PLPGSQL
 ;
-ALTER PROCEDURE doma_panda.update_run_jumbo_count () OWNER TO panda;
+ALTER PROCEDURE update_run_jumbo_count () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_run_jumbo_count () FROM PUBLIC;
 
 
@@ -1556,11 +1567,11 @@ DELETE from doma_panda.total_walltime_cache;
 INSERT INTO doma_panda.total_walltime_cache(vo, agg_type, agg_key, prodsourcelabel, resource_type,
                                         total_walltime, n_has_value, n_no_value)
 SELECT
-   vo, agg_type, agg_key, prodsourcelabel, resource_type, sum(total_walltime), sum(n_has_value), SUM(n_no_value)
+   *
 FROM (
       SELECT
          vo, 'gshare' AS agg_type, gshare AS agg_key, prodsourcelabel, resource_type, 
-         SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN maxwalltime ELSE 0 END)) as total_walltime, SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN 1 ELSE 0 END)) as n_has_value, SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN 0 ELSE 1 END))  as n_no_value
+         SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN maxwalltime ELSE 0 END)), SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN 1 ELSE 0 END)), SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN 0 ELSE 1 END))
       FROM
          doma_panda.jobsactive4 
       WHERE
@@ -1576,13 +1587,13 @@ FROM (
                WHERE
                   queue_function = 'Resource'
          )
-      GROUP BY vo, gshare, prodsourcelabel, resource_type, agg_typegshare'
-      
+      GROUP BY vo, agg_key, prodsourcelabel, resource_type, agg_type
+
 UNION
 
       SELECT
          vo, 'gshare' AS agg_type, gshare AS agg_key, prodsourcelabel, resource_type,
-         SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN maxwalltime ELSE 0 END)) as total_walltime, SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN 1 ELSE 0 END)) as n_has_value, SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN 0 ELSE 1 END)) as n_no_value
+         SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN maxwalltime ELSE 0 END)), SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN 1 ELSE 0 END)), SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN 0 ELSE 1 END))
       FROM
          doma_panda.jobsdefined4 
       WHERE
@@ -1597,17 +1608,17 @@ UNION
                WHERE
                   queue_function = 'Resource'
          )
-      GROUP BY vo, gshare, prodsourcelabel, resource_type, agg_typegshare'
-   ) alias25 GROUP BY vo, agg_type, agg_key, prodsourcelabel, resource_type
+      GROUP BY vo, agg_key, prodsourcelabel, resource_type, agg_type
+   ) alias22
 
 UNION
 
 SELECT
-   vo, agg_type, agg_key, prodsourcelabel, resource_type, sum(total_walltime), sum(n_has_value), SUM(n_no_value) 
+   *
 FROM (
       SELECT
          vo, 'workqueue' AS agg_type, workqueue_id::varchar AS agg_key, prodsourcelabel, resource_type,
-         SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN maxwalltime ELSE 0 END)) as total_walltime, SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN 1 ELSE 0 END)) as n_has_value, SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN 0 ELSE 1 END)) as n_no_value
+         SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN maxwalltime ELSE 0 END)), SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN 1 ELSE 0 END)), SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN 0 ELSE 1 END))
       FROM
          doma_panda.jobsactive4 
       WHERE
@@ -1621,13 +1632,13 @@ FROM (
                queue_function = 'Resource'
          )
       GROUP BY
-         vo, workqueue_id::varchar, prodsourcelabel, resource_type, agg_typeworkqueue'
+         vo, agg_key, prodsourcelabel, resource_type, agg_type
       
 UNION
 
       SELECT
          vo, 'workqueue' AS agg_type, workqueue_id::varchar AS agg_key, prodsourcelabel, resource_type,
-         SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN maxwalltime ELSE 0 END)) as total_walltime, SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN 1 ELSE 0 END)) as n_has_value, SUM((CASE WHEN (maxwalltime AND maxwalltime::text <> '') THEN 0 ELSE 1 END))  as n_no_value 
+         SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN maxwalltime ELSE 0 END)), SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN 1 ELSE 0 END)), SUM((CASE WHEN (maxwalltime IS NOT NULL AND maxwalltime::text <> '') THEN 0 ELSE 1 END))
       FROM
          doma_panda.jobsdefined4 
       WHERE
@@ -1640,8 +1651,8 @@ UNION
                queue_function = 'Resource'
          )
       GROUP BY
-         vo, workqueue_id::varchar, prodsourcelabel, resource_type, agg_typeworkqueue'
-   ) alias50 GROUP BY vo, agg_type, agg_key, prodsourcelabel, resource_type
+         vo, agg_key, prodsourcelabel, resource_type, agg_type
+   ) alias44
 ;
 
 --DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
@@ -1650,12 +1661,44 @@ UNION
 end;
 $body$
 LANGUAGE PLPGSQL
+SECURITY DEFINER
 ;
-ALTER PROCEDURE doma_panda.update_total_walltime () OWNER TO panda;
+ALTER PROCEDURE update_total_walltime () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_total_walltime () FROM PUBLIC;
 
+CREATE OR REPLACE PROCEDURE doma_panda.update_ups_stats () AS $body$
+DECLARE
 
 
+binning bigint := 100;
+
+
+BEGIN
+
+-- 4th Dec 2020 , ver 1.0
+-- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
+--DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Generates UPS statistics of activated jobs!');
+--DBMS_APPLICATION_INFO.SET_CLIENT_INFO( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
+
+
+DELETE from doma_panda.UPS_STATS;
+
+INSERT INTO doma_panda.UPS_STATS(TS, RESOURCE_TYPE, GSHARE, COMPUTINGSITE, JOBSTATUS, VO, CURRENT_PRIORITY_BINNED, CURRENT_PRIORITY_COUNT)
+SELECT clock_timestamp(), resource_type, gshare, computingsite, jobstatus, vo, floor(currentpriority/binning)*binning, count(*) FROM doma_panda.jobsactive4
+GROUP BY clock_timestamp(), computingsite, gshare, resource_type, jobstatus, vo, floor(currentpriority/binning);
+
+--COMMIT;
+
+--DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
+--DBMS_APPLICATION_INFO.SET_CLIENT_INFO( client_info => null);
+
+end;
+$body$
+LANGUAGE PLPGSQL
+SECURITY DEFINER
+;
+ALTER PROCEDURE update_ups_stats () OWNER TO panda;
+-- REVOKE ALL ON PROCEDURE doma_panda.update_ups_stats () FROM PUBLIC;
 
 
 CREATE OR REPLACE PROCEDURE doma_panda.verif_drop_copiedpandapart (arch_schema text, DAYS_OFFSET bigint default 2) AS $body$
@@ -1687,12 +1730,12 @@ SELECT DBMS_ASSERT.schema_name(UPPER(arch_schema)) INTO STRICT valschema_name;
 SELECT COUNT(*) INTO STRICT num_part
 FROM tablepart4copying
 WHERE
-date_trunc('day', copying_done_on) =
+TRUNC(copying_done_on) =
 (
-SELECT MIN(date_trunc('day', copying_done_on)) FROM tablepart4copying WHERE copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
+SELECT MIN(TRUNC(copying_done_on)) FROM tablepart4copying WHERE copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
 )
 AND coalesce(deleted_on::text, '') = ''
-AND (date_trunc('day', clock_timestamp()) - date_trunc('day', copying_done_on)) >= DAYS_OFFSET;
+AND (date_trunc('day', clock_timestamp()) - TRUNC(copying_done_on)) >= DAYS_OFFSET;
 
 
 -- do NOT drop partitions that are within 3 days from now. In that case exit the procedure
@@ -1732,12 +1775,12 @@ FROM tablepart4copying
 WHERE
 table_name <> 'FILESTABLE4'
 AND
-date_trunc('day', copying_done_on) =
+TRUNC(copying_done_on) =
 (
-SELECT MIN(date_trunc('day', copying_done_on)) FROM tablepart4copying WHERE table_name <> 'FILESTABLE4' AND copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
+SELECT MIN(TRUNC(copying_done_on)) FROM tablepart4copying WHERE table_name <> 'FILESTABLE4' AND copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
 )
 AND coalesce(deleted_on::text, '') = ''
-AND ( date_trunc('day', clock_timestamp()) - date_trunc('day', copying_done_on) ) >= DAYS_OFFSET
+AND ( date_trunc('day', clock_timestamp()) - TRUNC(copying_done_on) ) >= DAYS_OFFSET
 
 
 UNION
@@ -1748,12 +1791,12 @@ FROM tablepart4copying
 WHERE
 table_name = 'FILESTABLE4'
 AND
-date_trunc('day', copying_done_on) =
+TRUNC(copying_done_on) =
 (
-SELECT MIN(date_trunc('day', copying_done_on)) FROM tablepart4copying WHERE table_name = 'FILESTABLE4' AND copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
+SELECT MIN(TRUNC(copying_done_on)) FROM tablepart4copying WHERE table_name = 'FILESTABLE4' AND copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
 )
 AND coalesce(deleted_on::text, '') = ''
-AND ( date_trunc('day', clock_timestamp()) - date_trunc('day', copying_done_on) ) >= (DAYS_OFFSET+28)
+AND ( date_trunc('day', clock_timestamp()) - TRUNC(copying_done_on) ) >= (DAYS_OFFSET+28)
 ) alias21;
 
 
@@ -1899,7 +1942,7 @@ END;
 $body$
 LANGUAGE PLPGSQL
 ;
-ALTER PROCEDURE doma_panda.verif_drop_copiedpandapart (arch_schema text, DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE verif_drop_copiedpandapart (arch_schema text, DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.verif_drop_copiedpandapart (arch_schema text, DAYS_OFFSET bigint default 2) FROM PUBLIC;
 
 
@@ -1923,12 +1966,12 @@ BEGIN
 SELECT COUNT(*) INTO STRICT num_part
 FROM doma_panda.tablepart4copying
 WHERE
-date_trunc('day', copying_done_on) =
+TRUNC(copying_done_on) =
 (
-SELECT MIN(date_trunc('day', copying_done_on)) FROM doma_panda.tablepart4copying WHERE copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
+SELECT MIN(TRUNC(copying_done_on)) FROM doma_panda.tablepart4copying WHERE copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
 )
 AND coalesce(deleted_on::text, '') = ''
-AND (date_trunc('day', clock_timestamp()) - date_trunc('day', copying_done_on)) >= DAYS_OFFSET;
+AND (date_trunc('day', clock_timestamp()) - TRUNC(copying_done_on)) >= DAYS_OFFSET;
 
 
 -- do NOT drop partitions that are within 3 days from now. In that case exit the procedure
@@ -1946,12 +1989,12 @@ SELECT table_name, partition_name BULK COLLECT INTO STRICT
 coll_tables, coll_parts
 FROM doma_panda.tablepart4copying
 WHERE
-date_trunc('day', copying_done_on) =
+TRUNC(copying_done_on) =
 (
-SELECT MIN(date_trunc('day', copying_done_on)) FROM doma_panda.tablepart4copying WHERE copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
+SELECT MIN(TRUNC(copying_done_on)) FROM doma_panda.tablepart4copying WHERE copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
 )
 AND coalesce(deleted_on::text, '') = ''
-AND ( date_trunc('day', clock_timestamp()) - date_trunc('day', copying_done_on) ) >= DAYS_OFFSET;
+AND ( date_trunc('day', clock_timestamp()) - TRUNC(copying_done_on) ) >= DAYS_OFFSET;
 
 
 -- Verification part --
@@ -2128,7 +2171,7 @@ END;
 $body$
 LANGUAGE PLPGSQL
 ;
-ALTER PROCEDURE doma_panda.verif_drop_copiedpandapart_v2 (DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE verif_drop_copiedpandapart_v2 (DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.verif_drop_copiedpandapart_v2 (DAYS_OFFSET bigint default 2) FROM PUBLIC;
 
 
@@ -2158,12 +2201,12 @@ BEGIN
 SELECT COUNT(*) INTO STRICT num_part
 FROM doma_panda.tablepart4copying
 WHERE
-date_trunc('day', copying_done_on) =
+TRUNC(copying_done_on) =
 (
-SELECT MIN(date_trunc('day', copying_done_on)) FROM doma_panda.tablepart4copying WHERE copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
+SELECT MIN(TRUNC(copying_done_on)) FROM doma_panda.tablepart4copying WHERE copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
 )
 AND coalesce(deleted_on::text, '') = ''
-AND (date_trunc('day', clock_timestamp()) - date_trunc('day', copying_done_on)) >= DAYS_OFFSET;
+AND (date_trunc('day', clock_timestamp()) - TRUNC(copying_done_on)) >= DAYS_OFFSET;
 
 
 -- do NOT drop partitions that are within 3 days from now. In that case exit the procedure
@@ -2200,12 +2243,12 @@ doma_panda.tablepart4copying
 WHERE
 table_name <> 'FILESTABLE4' 
 AND 
-date_trunc('day', copying_done_on) =
+TRUNC(copying_done_on) =
 (
-SELECT MIN(date_trunc('day', copying_done_on)) FROM doma_panda.tablepart4copying WHERE table_name <> 'FILESTABLE4' AND copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
+SELECT MIN(TRUNC(copying_done_on)) FROM doma_panda.tablepart4copying WHERE table_name <> 'FILESTABLE4' AND copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
 )
 AND coalesce(deleted_on::text, '') = ''
-AND ( date_trunc('day', clock_timestamp()) - date_trunc('day', copying_done_on) ) >= DAYS_OFFSET
+AND ( date_trunc('day', clock_timestamp()) - TRUNC(copying_done_on) ) >= DAYS_OFFSET
 
 
 UNION
@@ -2216,12 +2259,12 @@ doma_panda.tablepart4copying
 WHERE
 table_name = 'FILESTABLE4' 
 AND 
-date_trunc('day', copying_done_on) =
+TRUNC(copying_done_on) =
 (
-SELECT MIN(date_trunc('day', copying_done_on)) FROM doma_panda.tablepart4copying WHERE table_name = 'FILESTABLE4' AND copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
+SELECT MIN(TRUNC(copying_done_on)) FROM doma_panda.tablepart4copying WHERE table_name = 'FILESTABLE4' AND copied_to_arch = 'Y' AND coalesce(deleted_on::text, '') = ''
 )
 AND coalesce(deleted_on::text, '') = ''
-AND ( date_trunc('day', clock_timestamp()) - date_trunc('day', copying_done_on) ) >= (DAYS_OFFSET+28)
+AND ( date_trunc('day', clock_timestamp()) - TRUNC(copying_done_on) ) >= (DAYS_OFFSET+28)
 ) alias21;
 
 
@@ -2366,6 +2409,6 @@ END;
 $body$
 LANGUAGE PLPGSQL
 ;
-ALTER PROCEDURE doma_panda.verif_drop_copiedpandapart_v3 (DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE verif_drop_copiedpandapart_v3 (DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.verif_drop_copiedpandapart_v3 (DAYS_OFFSET bigint default 2) FROM PUBLIC;
 
