@@ -13,6 +13,39 @@ ALTER SCHEMA doma_pandameta OWNER TO panda;
 
 SET search_path = doma_pandameta,public;
 
+CREATE TABLE agis_dump (
+	panda_site varchar(52),
+	update_time timestamp,
+	json_data text
+) ;
+ALTER TABLE agis_dump OWNER TO panda;
+
+CREATE TABLE auth_group (
+	id bigint,
+	name varchar(80)
+) ;
+ALTER TABLE auth_group OWNER TO panda;
+
+CREATE TABLE auth_group_permissions (
+	id bigint,
+	group_id bigint,
+	permission_id bigint
+) ;
+ALTER TABLE auth_group_permissions OWNER TO panda;
+
+CREATE TABLE auth_user_groups (
+	id bigint,
+	user_id bigint,
+	group_id bigint
+) ;
+ALTER TABLE auth_user_groups OWNER TO panda;
+
+CREATE TABLE auth_user_user_permissions (
+	id bigint,
+	user_id bigint,
+	permission_id bigint
+) ;
+ALTER TABLE auth_user_user_permissions OWNER TO panda;
 
 CREATE TABLE cloudconfig (
 	name varchar(20) NOT NULL,
