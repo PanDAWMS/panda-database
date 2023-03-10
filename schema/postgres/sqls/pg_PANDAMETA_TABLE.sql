@@ -29,7 +29,7 @@ CREATE TABLE cloudconfig (
 	comment_ varchar(200),
 	space bigint NOT NULL DEFAULT '0',
 	moduser varchar(30),
-	modtime timestamp NOT NULL LOCALTIMESTAMPP,
+	modtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	validation varchar(20),
 	mcshare bigint NOT NULL DEFAULT '0',
 	countries varchar(80),
