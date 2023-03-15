@@ -986,7 +986,6 @@ COMMENT ON COLUMN jedi_tasks.workdiskunit IS E'unit of WORKDISKCOUNT';
 COMMENT ON COLUMN jedi_tasks.workinggroup IS E'The name of the working group which owns the task ';
 COMMENT ON COLUMN jedi_tasks.workqueue_id IS E'The work queue identifier to which the task belongs';
 ALTER  TABLE jedi_tasks OWNER TO panda;
-CREATE INDEX jedi_tasks_amiflag_bit_idx ON jedi_tasks (bitand(amiflag,1));
 CREATE INDEX jedi_tasks_amiflag_idx ON jedi_tasks (amiflag);
 CREATE INDEX jedi_tasks_creation_idx ON jedi_tasks (creationdate);
 CREATE INDEX jedi_tasks_lockedby_idx ON jedi_tasks (lockedby);
