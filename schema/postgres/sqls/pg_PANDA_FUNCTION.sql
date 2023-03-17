@@ -5,7 +5,7 @@
 SET client_encoding TO 'UTF8';
 
 SET search_path = doma_panda,public;
-\set ON_ERROR_STOP ON
+set ON_ERROR_STOP ON
 
 SET check_function_bodies = false;
 
