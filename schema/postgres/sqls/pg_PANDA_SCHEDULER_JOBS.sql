@@ -880,7 +880,7 @@ ON CONFLICT (status)
 DO
   UPDATE SET min_jeditaskid=EXCLUDED.min_jeditaskid;
 END;
-\$body$
+$body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
