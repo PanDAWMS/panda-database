@@ -9,7 +9,7 @@ SET search_path = doma_panda,public;
 
 SET check_function_bodies = false;
 
-CREATE OR REPLACE FUNCTION doma_panda.bitor ( P_BITS1 integer, P_BITS2 integer ) RETURNS integer AS \$body$
+CREATE OR REPLACE FUNCTION doma_panda.bitor ( P_BITS1 integer, P_BITS2 integer ) RETURNS integer AS $body$
 BEGIN
      RETURN P_BITS1 | P_BITS2;
 END;
