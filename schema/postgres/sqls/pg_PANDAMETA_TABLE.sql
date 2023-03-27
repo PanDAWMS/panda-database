@@ -520,7 +520,7 @@ ALTER TABLE siteaccess ALTER COLUMN POFFSET SET NOT NULL;
 
 CREATE TABLE sitedata (
 	site varchar(60) NOT NULL,
-	flag varchar(20) NOT NULL,
+	flag varchar(30) NOT NULL,
 	hours integer NOT NULL DEFAULT '0',
 	nwn integer,
 	memmin integer,
