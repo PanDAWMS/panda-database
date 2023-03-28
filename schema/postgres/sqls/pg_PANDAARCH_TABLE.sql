@@ -186,7 +186,8 @@ CREATE TABLE jobsarchived (
 	job_label varchar(20),
 	meancorecount decimal(8,2),
 	gco2_regional decimal(10,2),
-	gco2_global decimal(10,2)
+	gco2_global decimal(10,2),
+	cpu_architecture_level varchar(20)
 ) ;
 COMMENT ON COLUMN jobsarchived.avgpss IS E'Average PSS in the job';
 COMMENT ON COLUMN jobsarchived.avgrss IS E'AverageÂ RSS in the job';
