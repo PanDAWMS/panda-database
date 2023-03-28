@@ -1178,7 +1178,8 @@ CREATE TABLE jobsactive4 (
 	job_label varchar(20),
 	meancorecount decimal(8,2),
 	gco2_regional decimal(10,2),
-	gco2_global decimal(10,2)
+	gco2_global decimal(10,2),
+	cpu_architecture_level varchar(20)
 ) ;
 COMMENT ON TABLE jobsactive4 IS E'Table for hosting all PanDA jobs that are in active running mode. All timestamp and date type columns are in UTC';
 COMMENT ON COLUMN jobsactive4.assignedpriority IS E'defined priority value';
@@ -1460,7 +1461,8 @@ CREATE TABLE jobsarchived4 (
 	job_label varchar(20),
 	meancorecount decimal(8,2),
 	gco2_regional decimal(10,2),
-	gco2_global decimal(10,2)
+	gco2_global decimal(10,2),
+    cpu_architecture_level varchar(20)
 ) PARTITION BY RANGE (modificationtime) ;
 COMMENT ON TABLE jobsarchived4 IS E'Table for hosting all PanDA jobs that are in finished, failed or cancelled status. Data is regularly copied to an archive table in ATLAS_PANDAARCH schema. Data retention of the JOBSARCHIVED4 table is defined to be 3 days (can be changed if necessary). All timestamp and date type columns are in UTC ';
 COMMENT ON COLUMN jobsarchived4.assignedpriority IS E'defined priority value';
@@ -1758,7 +1760,8 @@ CREATE TABLE jobsdefined4 (
 	job_label varchar(20),
 	meancorecount decimal(8,2),
 	gco2_regional decimal(10,2),
-	gco2_global decimal(10,2)
+	gco2_global decimal(10,2),
+    cpu_architecture_level varchar(20)
 ) ;
 COMMENT ON COLUMN jobsdefined4.assignedpriority IS E'defined priority value';
 COMMENT ON COLUMN jobsdefined4.atlasrelease IS E'Release required to run the job';
@@ -2052,7 +2055,8 @@ CREATE TABLE jobswaiting4 (
 	job_label varchar(20),
 	meancorecount decimal(8,2),
 	gco2_regional decimal(10,2),
-	gco2_global decimal(10,2)
+	gco2_global decimal(10,2),
+	cpu_architecture_level varchar(20)
 ) ;
 COMMENT ON TABLE jobswaiting4 IS E'Table for hosting all PanDA jobs that are in waiting state. The columns (and their description) are the same as the ones in JOBSACTIVE4 table. All timestamp and date type columns are in UTC';
 COMMENT ON COLUMN jobswaiting4.assignedpriority IS E'defined priority value';
