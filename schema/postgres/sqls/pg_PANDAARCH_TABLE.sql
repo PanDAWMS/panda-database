@@ -20,7 +20,7 @@ CREATE TABLE filestable_arch (
 	modificationtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	creationtime timestamp,
 	guid varchar(64),
-	lfn varchar(256),
+	lfn varchar(4000),
 	type varchar(20),
 	fsize bigint DEFAULT 0,
 	dataset varchar(255),
