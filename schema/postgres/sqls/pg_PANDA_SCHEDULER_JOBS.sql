@@ -1667,41 +1667,6 @@ SECURITY DEFINER
 ALTER PROCEDURE update_total_walltime () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_total_walltime () FROM PUBLIC;
 
-CREATE OR REPLACE PROCEDURE doma_panda.update_ups_stats () AS $body$
-DECLARE
-
-
-binning bigint := 100;
-
-
-BEGIN
-
--- 4th Dec 2020 , ver 1.0
--- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
---DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Generates UPS statistics of activated jobs!');
---DBMS_APPLICATION_INFO.SET_CLIENT_INFO( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
-
-
-DELETE from doma_panda.UPS_STATS;
-
-INSERT INTO doma_panda.UPS_STATS(TS, RESOURCE_TYPE, GSHARE, COMPUTINGSITE, JOBSTATUS, VO, CURRENT_PRIORITY_BINNED, CURRENT_PRIORITY_COUNT)
-SELECT clock_timestamp(), resource_type, gshare, computingsite, jobstatus, vo, floor(currentpriority/binning)*binning, count(*) FROM doma_panda.jobsactive4
-GROUP BY clock_timestamp(), computingsite, gshare, resource_type, jobstatus, vo, floor(currentpriority/binning);
-
---COMMIT;
-
---DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
---DBMS_APPLICATION_INFO.SET_CLIENT_INFO( client_info => null);
-
-end;
-$body$
-LANGUAGE PLPGSQL
-SECURITY DEFINER
-;
-ALTER PROCEDURE update_ups_stats () OWNER TO panda;
--- REVOKE ALL ON PROCEDURE doma_panda.update_ups_stats () FROM PUBLIC;
-
-
 CREATE OR REPLACE PROCEDURE doma_panda.verif_drop_copiedpandapart (arch_schema text, DAYS_OFFSET bigint default 2) AS $body$
 DECLARE
 
