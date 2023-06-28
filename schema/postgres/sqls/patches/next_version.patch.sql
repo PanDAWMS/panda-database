@@ -13,3 +13,7 @@ retention = '7 days',
 retention_keep_table = false
 WHERE parent_table = 'doma_panda.pandalog'
 ;
+
+ALTER TABLE doma_panda.jedi_events
+    error_diag varchar(500)
+;
