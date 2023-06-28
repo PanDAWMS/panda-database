@@ -745,7 +745,8 @@ CREATE TABLE "ATLAS_PANDA"."JEDI_DATASET_LOCALITY"
 	"ZIPROW_ID" NUMBER(11,0), 
 	"FILE_NOT_DELETED" CHAR(1 BYTE), 
 	"ERROR_CODE" NUMBER(5,0), 
-	"PATH_CONVENTION" NUMBER(2,0), 
+	"PATH_CONVENTION" NUMBER(2,0),
+	"ERROR_DIAG" VARCHAR2(500 BYTE),
 	 CONSTRAINT "JEDI_EVENTS_PK" PRIMARY KEY ("JEDITASKID", "PANDAID", "FILEID", "JOB_PROCESSID") ENABLE
    ) ORGANIZATION INDEX COMPRESS 1 
   PARTITION BY RANGE ("JEDITASKID") 
@@ -767,6 +768,7 @@ CREATE TABLE "ATLAS_PANDA"."JEDI_DATASET_LOCALITY"
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_EVENTS"."FILE_NOT_DELETED" IS 'Flag whether the file has been deleted by Rucio. The flag is set to ''Y'' by the PanDA server for "status IN (4,5,7,8) AND objstore_id IS NOT NULL" condition. Rucio sets it back to NULL after handling it.';
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_EVENTS"."ERROR_CODE" IS 'Error code for the event range';
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_EVENTS"."PATH_CONVENTION" IS 'Convention ID of file path. This is required to use various conventions for file paths in object stores.';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_EVENTS"."ERROR_DIAG" IS 'To track the error message for Vera Rubin jobs.';
 
 --------------------------------------------------------
 --  DDL for Table JEDI_JOBPARAMS_TEMPLATE
