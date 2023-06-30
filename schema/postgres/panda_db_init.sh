@@ -45,7 +45,6 @@ else
         fi
     done
     # update version
-    psql -d panda_db -U postgres -c "UPDATE doma_panda.pandadb_version set major='${MAJOR}', minor='${MINOR}', patch='${PATCH}' WHERE component = 'PANDABIGMON'"
     psql -d panda_db -U postgres -c "UPDATE doma_panda.pandadb_version set major='${MAJOR}', minor='${MINOR}', patch='${PATCH}' WHERE component = 'SERVER'"
     psql -d panda_db -U postgres -c "UPDATE doma_panda.pandadb_version set major='${MAJOR}', minor='${MINOR}', patch='${PATCH}' WHERE component = 'JEDI'"
     echo ========== updated to the latest schema "$LATEST_VERSION"
@@ -73,7 +72,6 @@ do
 done
 
 echo ========== adding the schema version "$LATEST_VERSION"
-psql -d panda_db -U postgres -c "INSERT INTO doma_panda.pandadb_version (component, major, minor, patch) VALUES('PANDABIGMON', '${MAJOR}', '${MINOR}', '${PATCH}')"
 psql -d panda_db -U postgres -c "INSERT INTO doma_panda.pandadb_version (component, major, minor, patch) VALUES('SERVER', '${MAJOR}', '${MINOR}', '${PATCH}')"
 psql -d panda_db -U postgres -c "INSERT INTO doma_panda.pandadb_version (component, major, minor, patch) VALUES('JEDI', '${MAJOR}', '${MINOR}', '${PATCH}')"
 
