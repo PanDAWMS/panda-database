@@ -2965,6 +2965,13 @@ COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."DATA" IS 'CLOB in JSON format conta
 
   CREATE INDEX "ATLAS_PANDA"."JEDI_TASKS_MODIFTIME_IDX" ON "ATLAS_PANDA"."JEDI_TASKS" ("MODIFICATIONTIME") 
   ;
+
+--------------------------------------------------------
+--  DDL for Index JEDI_TASKS_REALMODTIME_IDX
+--------------------------------------------------------
+
+  CREATE INDEX "ATLAS_PANDA"."JEDI_TASKS_REALMODTIME_IDX" ON "ATLAS_PANDA"."JEDI_TASKS" ("REALMODIFICATIONTIME")
+  ;
 --------------------------------------------------------
 --  DDL for Index JEDI_WORK_QUEUE_QFUNC_IDX
 --------------------------------------------------------
