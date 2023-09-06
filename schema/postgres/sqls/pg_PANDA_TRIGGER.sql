@@ -12,6 +12,7 @@ CREATE OR REPLACE FUNCTION update_realmodificationtime_trg() RETURNS trigger AS 
 BEGIN
 	IF NEW.modificationtime <> OLD.modificationtime THEN
         NEW.realmodificationtime := CURRENT_TIMESTAMP AT TIME ZONE 'UTC';
+    END IF;
 RETURN NEW;
 END
 $BODY$
