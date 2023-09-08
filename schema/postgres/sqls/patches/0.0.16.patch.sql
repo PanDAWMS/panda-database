@@ -1,10 +1,8 @@
 -- patch to be used to upgrade from version 0.0.15
 
-ALTER SESSION set DDL_LOCK_TIMEOUT = 30;
-
 -- MODIFICATIONTIME TRIGGER
 -- New column JEDI_TASKS.REALMODIFICATIONTIME
-ALTER TABLE jedi_tasks ADD (realmodificationtime timestamp);
+ALTER TABLE jedi_tasks ADD realmodificationtime timestamp;
 COMMENT ON COLUMN jedi_tasks.realmodificationtime IS E'Set ALWAYS to last modification time, without any tricks like old timestamps';
 
 CREATE INDEX jedi_tasks_realmodtime_idx ON jedi_tasks (realmodificationtime);
