@@ -42,6 +42,26 @@ ALTER  TABLE carbon_region_emissions OWNER TO panda;
 ALTER TABLE carbon_region_emissions ADD PRIMARY KEY (region,timestamp);
 
 
+CREATE TABLE sql_queue (
+    topic varchar(50),
+    pandaid bigint,
+    execution_order integer,
+    jeditaskid bigint,
+    creationtime timestamp,
+    data VARCHAR(4000)
+) ;
+CREATE INDEX sql_queue_topic_task_idx ON sql_queue (topic, jeditaskid);
+CREATE INDEX sql_queue_topic_creationtime_idx ON sql_queue (topic, creationtime);
+COMMENT ON TABLE sql_queue IS E'Queue to send messages between agents';
+COMMENT ON COLUMN sql_queue.topic IS E'Topic of the message';
+COMMENT ON COLUMN sql_queue.pandaid IS E'Job ID';
+COMMENT ON COLUMN sql_queue.execution_order IS E'In case multiple SQLs need to be executed together';
+COMMENT ON COLUMN sql_queue.jeditaskid IS E'JEDI Task ID in case the messages want to be batched';
+COMMENT ON COLUMN sql_queue.creationtime IS E'Timestamp when the message was created';
+COMMENT ON COLUMN sql_queue.data IS E'CLOB in JSON format containing the SQL query and variables';
+ALTER TABLE sql_queue ADD PRIMARY KEY (topic, pandaid, execution_order);
+
+
 CREATE TABLE cloudtasks (
 	id integer NOT NULL,
 	taskname varchar(128),
@@ -907,7 +927,8 @@ CREATE TABLE jedi_tasks (
 	memory_leak_core bigint,
 	memory_leak_x2 decimal(14,3),
 	attemptnr smallint,
-	container_name varchar(200)
+	container_name varchar(200),
+	realmodificationtime timestamp
 ) PARTITION BY RANGE (jeditaskid) ;
 COMMENT ON COLUMN jedi_tasks.amiflag IS E'It will contain a mask, one bit per AMI task (AMI has two tasks) with default value at insertion for "amiflag" to 3 (0b00000011). A trigger when the field âcampaignâ is modified:	if "amiflag" is NULL then "amiflag" = 2 else "amiflag" = BITOR(AMIFLAG, 2)';
 COMMENT ON COLUMN jedi_tasks.architecture IS E'The architecture on which the task runs. Eg, $CMTCONFIG';
@@ -996,6 +1017,7 @@ CREATE INDEX jedi_tasks_nametaskid_idx ON jedi_tasks (taskname, jeditaskid);
 CREATE INDEX jedi_tasks_parent_tid_idx ON jedi_tasks (parent_tid);
 CREATE INDEX jedi_tasks_status3attr_idx ON jedi_tasks (status, workqueue_id, prodsourcelabel, jeditaskid);
 CREATE INDEX jedi_upper_tasks_name_idx ON jedi_tasks (upper(taskname));
+CREATE INDEX jedi_tasks_realmodtime_idx ON jedi_tasks (realmodificationtime);
 ALTER TABLE jedi_tasks ADD PRIMARY KEY (jeditaskid);
 ALTER TABLE jedi_tasks ALTER COLUMN CREATIONDATE SET NOT NULL;
 ALTER TABLE jedi_tasks ALTER COLUMN JEDITASKID SET NOT NULL;
