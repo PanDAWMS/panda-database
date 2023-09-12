@@ -27,4 +27,3 @@ ALTER FUNCTION update_realmodificationtime_trg() OWNER TO panda;
 CREATE TRIGGER update_realmodificationtime
 	BEFORE INSERT OR UPDATE ON jedi_tasks FOR EACH ROW
 	EXECUTE PROCEDURE update_realmodificationtime_trg();
-/
