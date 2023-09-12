@@ -728,7 +728,7 @@ CREATE TABLE jedi_events (
 	file_not_deleted char(1),
 	error_code integer,
 	path_convention smallint,
-	error_diag varchar(500),
+	error_diag varchar(500)
 ) PARTITION BY RANGE (jeditaskid) ;
 COMMENT ON COLUMN jedi_events.attemptnr IS E'How many times the events have been retried so far';
 COMMENT ON COLUMN jedi_events.datasetid IS E'DatasetID of the file which contains the events';
