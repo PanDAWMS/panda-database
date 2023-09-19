@@ -19,7 +19,7 @@ BEGIN
       EXCEPTION WHEN OTHERS THEN
          --Ignore ORA-04063: view "X.Y" has errors.
          --(You could potentially workaround this by creating an empty view,
-         -- granting access to it, and then recreat the original view.)
+         -- granting access to it, and then recreate the original view.)
          IF SQLCODE IN (-4063) THEN
             NULL;
          --Raise exception along with the statement that failed.
