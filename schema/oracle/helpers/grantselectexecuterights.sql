@@ -10,7 +10,8 @@ BEGIN
                 (
                    --Ungrantable objects.  Your schema may have more.
                    'SYNONYM', 'INDEX', 'INDEX PARTITION', 'DATABASE LINK',
-                   'LOB', 'TABLE PARTITION', 'TRIGGER', 'PROCEDURE', 'PACKAGE'
+                   'LOB', 'TABLE PARTITION', 'TRIGGER', 'PROCEDURE', 'PACKAGE',
+                   'FUNCTION', 'JOB', 'TYPE', 'LOB PARTITION'
                 )
        ORDER BY object_type, object_name
    ) LOOP
@@ -40,7 +41,7 @@ BEGIN
           WHERE owner = 'DOMA_PANDAMETA'
             AND object_type IN
                 (
-                   'PROCEDURE', 'PACKAGE'
+                   'PROCEDURE', 'PACKAGE', 'FUNCTION'
                 )
        ORDER BY object_type, object_name
    ) LOOP
