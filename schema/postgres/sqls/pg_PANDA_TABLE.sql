@@ -195,6 +195,7 @@ CREATE TABLE filestable4 (
 	modificationtime timestamp NOT NULL DEFAULT to_date('01-JAN-1970 00:00:00','DD-MON-YYYY HH24:MI:SS'),
 	guid varchar(64),
 	lfn varchar(4000),
+-- 	lfn varchar(4000), -- for SLAC instance
 	type varchar(20),
 	dataset varchar(255),
 	status varchar(64),
@@ -239,6 +240,7 @@ CREATE INDEX filestable4_datasetype3col_idx ON filestable4 (dataset, type, desti
 CREATE INDEX filestable4_destdblock_idx ON filestable4 (destinationdblock);
 CREATE INDEX filestable4_dispdblock_idx ON filestable4 (dispatchdblock);
 CREATE INDEX filestable4_lfn_idx ON filestable4 (lfn);
+-- CREATE INDEX filestable4_lfn_idx ON filestable4 using hash(lfn); -- for SLAC instance
 CREATE INDEX filestable4_pandaid_idx ON filestable4 (pandaid);
 CREATE INDEX filestable4_taskfileid_idx ON filestable4 (jeditaskid, datasetid, fileid);
 ALTER TABLE filestable4 ADD PRIMARY KEY (row_id,modificationtime);
@@ -629,6 +631,7 @@ CREATE TABLE jedi_dataset_contents (
 	creationdate timestamp NOT NULL,
 	lastattempttime timestamp,
 	lfn varchar(4000) NOT NULL,
+-- 	lfn varchar(4000) NOT NULL, -- for SLAC instance
 	guid varchar(64),
 	type varchar(20) NOT NULL,
 	status varchar(64) NOT NULL,
@@ -684,6 +687,7 @@ COMMENT ON COLUMN jedi_dataset_contents.status IS E'The status of the file';
 COMMENT ON COLUMN jedi_dataset_contents.type IS E'The type of the file';
 ALTER  TABLE jedi_dataset_contents OWNER TO panda;
 CREATE INDEX jedi_datasetcontent_lfn_idx ON jedi_dataset_contents (lfn);
+-- CREATE INDEX jedi_datasetcontent_lfn_idx ON jedi_dataset_contents using hash(lfn); -- for SLAC instance
 CREATE INDEX jedi_dataset_contents_id_idx ON jedi_dataset_contents (datasetid);
 CREATE INDEX jedi_dataset_contents_pid_idx ON jedi_dataset_contents (pandaid);
 ALTER TABLE jedi_dataset_contents ADD PRIMARY KEY (jeditaskid,datasetid,fileid);
