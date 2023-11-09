@@ -43,6 +43,7 @@ CREATE TABLE filestable_arch (
 ) ;
 ALTER  TABLE filestable_arch OWNER TO panda;
 CREATE INDEX files_arch_lfn_idx ON filestable_arch (lfn);
+-- CREATE INDEX files_arch_lfn_idx ON filestable_arch using hash(lfn); -- for SLAC instance
 CREATE INDEX files_arch_pandaid_idx ON filestable_arch (pandaid);
 CREATE INDEX files_arch_rowid_idx ON filestable_arch (row_id);
 CREATE INDEX file_arch_task_dset_fileid_idx ON filestable_arch (jeditaskid, datasetid, fileid, pandaid);
