@@ -195,7 +195,7 @@ CREATE TABLE filestable4 (
 	modificationtime timestamp NOT NULL DEFAULT to_date('01-JAN-1970 00:00:00','DD-MON-YYYY HH24:MI:SS'),
 	guid varchar(64),
 	lfn varchar(4000),
--- 	lfn varchar(4000), -- for SLAC instance
+-- 	lfn varchar(40000), -- for SLAC instance
 	type varchar(20),
 	dataset varchar(255),
 	status varchar(64),
@@ -631,7 +631,7 @@ CREATE TABLE jedi_dataset_contents (
 	creationdate timestamp NOT NULL,
 	lastattempttime timestamp,
 	lfn varchar(4000) NOT NULL,
--- 	lfn varchar(4000) NOT NULL, -- for SLAC instance
+-- 	lfn varchar(40000) NOT NULL, -- for SLAC instance
 	guid varchar(64),
 	type varchar(20) NOT NULL,
 	status varchar(64) NOT NULL,
