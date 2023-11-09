@@ -21,6 +21,7 @@ CREATE TABLE filestable_arch (
 	creationtime timestamp,
 	guid varchar(64),
 	lfn varchar(4000),
+-- 	lfn varchar(40000), -- for SLAC instance
 	type varchar(20),
 	fsize bigint DEFAULT 0,
 	dataset varchar(255),
