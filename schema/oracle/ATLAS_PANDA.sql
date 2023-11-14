@@ -5340,7 +5340,7 @@ set define off;
 CREATE OR REPLACE PROCEDURE "ATLAS_PANDA"."UPDATE_JOBSACT_STATS_BY_GSHARE"
 AS
 BEGIN
-
+-- 14th Nov 2023 , ver 1.5
 -- 27th Nov 2020 , ver 1.4
 -- 29th Jan 2018 , ver 1.3
 -- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
@@ -5352,12 +5352,17 @@ DELETE from ATLAS_PANDA.JOBS_SHARE_STATS;
 INSERT INTO ATLAS_PANDA.JOBS_SHARE_STATS (TS, GSHARE, WORKQUEUE_ID, RESOURCE_TYPE,
                                           COMPUTINGSITE, JOBSTATUS,
                                           MAXPRIORITY, PRORATED_DISKIO_AVG, NJOBS, HS, VO)
+WITH
+    sc_slimmed AS (
+    SELECT /*+ MATERIALIZE */ sc.panda_queue AS pq, sc.data.corepower AS cp
+    FROM ATLAS_PANDA.schedconfig_json sc
+    )
 SELECT sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus,
       MAX(currentPriority) AS maxPriority, AVG(diskIO/NVL(ja4.coreCount, 1)) AS proratedDiskioAvg, COUNT(*) AS num_of_jobs,
-      COUNT(*) * NVL(ja4.coreCount, 1) * sc.corePower AS HS, VO
-FROM ATLAS_PANDA.jobsActive4 ja4, ATLAS_PANDAMETA.schedconfig sc
-WHERE ja4.computingsite = sc.siteid
-GROUP BY sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc.corePower, VO;
+      COUNT(*) * NVL(ja4.coreCount, 1) * sc_s.cp AS HS, VO
+FROM ATLAS_PANDA.jobsActive4 ja4, sc_slimmed sc_s
+WHERE ja4.computingsite = sc_s.pq
+GROUP BY sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO;
 
 
 COMMIT;
@@ -5374,10 +5379,11 @@ end;
 --------------------------------------------------------
 set define off;
 
-  CREATE OR REPLACE PROCEDURE "ATLAS_PANDA"."UPDATE_JOBSDEF_STATS_BY_GSHARE"
+CREATE OR REPLACE PROCEDURE "ATLAS_PANDA"."UPDATE_JOBSDEF_STATS_BY_GSHARE"
 AS
 BEGIN
 
+-- 14th Nov 2023 , ver 1.1
 -- 27th Nov 2020 , ver 1.0
 -- Based on UPDATE_JOBSACT_STATS_BY_GSHARE
 -- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
@@ -5390,12 +5396,17 @@ DELETE from ATLAS_PANDA.JOBSDEFINED_SHARE_STATS;
 INSERT INTO ATLAS_PANDA.JOBSDEFINED_SHARE_STATS (TS, GSHARE, WORKQUEUE_ID, RESOURCE_TYPE,
                                           COMPUTINGSITE, JOBSTATUS,
                                           MAXPRIORITY, PRORATED_DISKIO_AVG, NJOBS, HS, VO)
+WITH
+    sc_slimmed AS (
+    SELECT /*+ MATERIALIZE */ sc.panda_queue AS pq, sc.data.corepower AS cp
+    FROM ATLAS_PANDA.schedconfig_json sc
+    )
 SELECT sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus,
       MAX(currentPriority) AS maxPriority, AVG(diskIO/NVL(ja4.coreCount, 1)) AS proratedDiskioAvg, COUNT(*) AS num_of_jobs,
-      COUNT(*) * NVL(ja4.coreCount, 1) * sc.corePower AS HS, VO
-FROM ATLAS_PANDA.jobsDefined4 ja4, ATLAS_PANDAMETA.schedconfig sc
-WHERE ja4.computingsite = sc.siteid
-GROUP BY sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc.corePower, VO;
+      COUNT(*) * NVL(ja4.coreCount, 1) * sc_s.cp AS HS, VO
+FROM ATLAS_PANDA.jobsDefined4 ja4, sc_slimmed sc_s
+WHERE ja4.computingsite = sc_s.pq
+GROUP BY sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO;
 
 
 COMMIT;
