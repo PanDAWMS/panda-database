@@ -2,10 +2,10 @@ BEGIN
 dbms_scheduler.create_job(
 	job_name => 'ADD_DAILYPART_PANDA',
 	job_type => 'PLSQL_BLOCK',
-	job_action => '"BEGIN ADD_DAILYPART(7, ''JOBSARCHIVED4', ''DOMA_PANDA_DATA02'');
-			ADD_DAILYPART(7, ''FILESTABLE4'', ''DOMA_PANDA_DATA02'');
-			ADD_DAILYPART(7, ''JOBPARAMSTABLE'', ''DOMA_PANDA_DATA02'');
-			ADD_DAILYPART(7, ''METATABLE'', ''DOMA_PANDA_DATA02'');
+	job_action => '"BEGIN ADD_DAILYPART(7, ''JOBSARCHIVED4', ''ATLAS_PANDA_DATA02'');
+			ADD_DAILYPART(7, ''FILESTABLE4'', ''ATLAS_PANDA_DATA02'');
+			ADD_DAILYPART(7, ''JOBPARAMSTABLE'', ''ATLAS_PANDA_DATA02'');
+			ADD_DAILYPART(7, ''METATABLE'', ''ATLAS_PANDA_DATA02'');
 		  END; "',
 	start_date => SYSTIMESTAMP,
 	repeat_interval => 'FREQ=WEEKLY;INTERVAL=1',
@@ -18,7 +18,7 @@ BEGIN
 dbms_scheduler.create_job(
 	job_name => 'BULKCOPY_PANDAPART_JOB',
 	job_type => 'PLSQL_BLOCK',
-	job_action => 'BEGIN BULKCOPY_PANDA_PARTITIONS(''DOMA_PANDAARCH''); END;',
+	job_action => 'BEGIN BULKCOPY_PANDA_PARTITIONS(''ATLAS_PANDAARCH''); END;',
 	start_date => SYSTIMESTAMP,
 	repeat_interval => 'FREQ=DAILY;INTERVAL=1',
 	auto_drop => FALSE,
@@ -30,7 +30,7 @@ BEGIN
 dbms_scheduler.create_job(
 	job_name => 'DROP_PART_JEDI_EVENTS_JOB',
 	job_type => 'PLSQL_BLOCK',
-	job_action => 'BEGIN DOMA_PANDA.DELETE_JEDI_EVENTS_PROC;	END;',
+	job_action => 'BEGIN ATLAS_PANDA.DELETE_JEDI_EVENTS_PROC;	END;',
 	start_date => SYSTIMESTAMP,
 	repeat_interval => 'FREQ=WEEKLY; BYDAY=MON; BYHOUR=10; BYMINUTE=0; BYSECOND=0;',
 	auto_drop => FALSE,
@@ -66,7 +66,7 @@ BEGIN
 dbms_scheduler.create_job(
 	job_name => 'PANDA_DATASETS_90DAYS_SLWINDOW',
 	job_type => 'STORED_PROCEDURE',
-	job_action => 'DOMA_PANDA.DATASETS_90DAYS_SL_WINDOW',
+	job_action => 'ATLAS_PANDA.DATASETS_90DAYS_SL_WINDOW',
 	start_date => SYSTIMESTAMP,
 	repeat_interval => 'FREQ=MONTHLY;INTERVAL=1',
 	auto_drop => FALSE,
@@ -79,13 +79,27 @@ dbms_scheduler.create_job(
 	job_name => 'PANDA_HARVEST_DIALOGS_SLWINDOW',
 	job_type => 'PLSQL_BLOCK',
 	job_action => '"BEGIN
-			DOMA_PANDA.PANDA_TABLE_SL_WINDOW(''HARVESTER_DIALOGS'',''CREATIONTIME'', 10);
+			ATLAS_PANDA.PANDA_TABLE_SL_WINDOW(''HARVESTER_DIALOGS'',''CREATIONTIME'', 10);
 			END; "',
 	start_date => SYSTIMESTAMP,
 	repeat_interval => 'FREQ=WEEKLY; BYDAY=TUE; BYHOUR=11; BYMINUTE=0; BYSECOND=0;',
 	auto_drop => FALSE,
 	enabled => TRUE,
-	comments =>  'Sustains at least 7 days of data sliding window on the DOMA_PANDA.HARVERSTER_DIALOGS table. The table is daily partitioned using the automatic INTERVAL approach.');
+	comments =>  'Sustains at least 7 days of data sliding window on the ATLAS_PANDA.HARVERSTER_DIALOGS table. The table is daily partitioned using the automatic INTERVAL approach.');
+END;
+
+BEGIN
+dbms_scheduler.create_job(
+	job_name => 'PANDA_HARVEST_METRICS_SLWINDOW',
+	job_type => 'PLSQL_BLOCK',
+	job_action => 'BEGIN
+			ATLAS_PANDA.PANDA_TABLE_SL_WINDOW(''HARVESTER_METRICS'',''CREATION_TIME'', 10);
+			END; ',
+	start_date => SYSTIMESTAMP,
+	repeat_interval => 'FREQ=WEEKLY; BYDAY=TUE; BYHOUR=10; BYMINUTE=0; BYSECOND=0;',
+	auto_drop => FALSE,
+	enabled => TRUE,
+	comments =>  'Sustains at least 10 days of data sliding window on the ATLAS_PANDA.HARVERSTER_METRICS table. The table is daily partitioned using the automatic INTERVAL approach.');
 END;
 
 BEGIN
@@ -93,7 +107,7 @@ dbms_scheduler.create_job(
 	job_name => 'PANDA_HARVEST_WORKERS_SLWINDOW',
 	job_type => 'PLSQL_BLOCK',
 	job_action => '"BEGIN
-			DOMA_PANDA.HARVESTER_WORKERS_sl_window(60);
+			ATLAS_PANDA.HARVESTER_WORKERS_sl_window(60);
 			END; "',
 	start_date => SYSTIMESTAMP,
 	repeat_interval => 'FREQ=WEEKLY; BYDAY=MON; BYHOUR=10; BYMINUTE=0; BYSECOND=0;',
@@ -107,7 +121,7 @@ dbms_scheduler.create_job(
 	job_name => 'PANDA_JOBS_STATUSLOG_SLWINDOW',
 	job_type => 'PLSQL_BLOCK',
 	job_action => '"BEGIN
-			DOMA_PANDA.JOBS_STATUSLOG_SL_WINDOW(93);
+			ATLAS_PANDA.JOBS_STATUSLOG_SL_WINDOW(93);
 			END; "',
 	start_date => SYSTIMESTAMP,
 	repeat_interval => 'FREQ=WEEKLY; BYDAY=MON; BYHOUR=09; BYMINUTE=0; BYSECOND=0;',
@@ -120,7 +134,7 @@ BEGIN
 dbms_scheduler.create_job(
 	job_name => 'PANDA_PANDALOG_SLWINDOW',
 	job_type => 'PLSQL_BLOCK',
-	job_action => 'BEGIN DOMA_PANDA.PANDALOG_SL_WINDOW('PANDALOG', 10); END;',
+	job_action => 'BEGIN ATLAS_PANDA.PANDALOG_SL_WINDOW('PANDALOG', 10); END;',
 	start_date => SYSTIMESTAMP,
 	repeat_interval => 'FREQ=DAILY;INTERVAL=1',
 	auto_drop => FALSE,
@@ -133,9 +147,9 @@ dbms_scheduler.create_job(
 	job_name => 'PANDA_TAB_INDICES_REBUILD',
 	job_type => 'PLSQL_BLOCK',
 	job_action => '"BEGIN
-			REBUILD_TABLE_INDICES(''DOMA_PANDA'', ''JOBSACTIVE4'', ''DOMA_PANDA_DATA02'');
-			REBUILD_TABLE_INDICES(''DOMA_PANDA'', ''JOBSDEFINED4'', ''DOMA_PANDA_DATA02'');
-			REBUILD_TABLE_INDICES(''DOMA_PANDA'', ''JOBSWAITING4'', ''DOMA_PANDA_DATA02'');
+			REBUILD_TABLE_INDICES(''ATLAS_PANDA'', ''JOBSACTIVE4'', ''ATLAS_PANDA_DATA02'');
+			REBUILD_TABLE_INDICES(''ATLAS_PANDA'', ''JOBSDEFINED4'', ''ATLAS_PANDA_DATA02'');
+			REBUILD_TABLE_INDICES(''ATLAS_PANDA'', ''JOBSWAITING4'', ''ATLAS_PANDA_DATA02'');
 			END; "',
 	start_date => SYSTIMESTAMP,
 	repeat_interval => 'FREQ=WEEKLY; BYDAY=MON',
@@ -184,7 +198,7 @@ BEGIN
 dbms_scheduler.create_job(
 	job_name => 'UPDATE_JOBS_BY_GSHARE_JOB',
 	job_type => 'PLSQL_BLOCK',
-	job_action => '"BEGIN DOMA_PANDA.UPDATE_JOBSACT_STATS_BY_GSHARE;	END;"',
+	job_action => '"BEGIN ATLAS_PANDA.UPDATE_JOBSACT_STATS_BY_GSHARE;	END;"',
 	start_date => SYSTIMESTAMP,
 	repeat_interval => 'FREQ=MINUTELY;INTERVAL=1;',
 	auto_drop => FALSE,
@@ -244,7 +258,7 @@ BEGIN
 dbms_scheduler.create_job(
 	job_name => 'VERIF_AND_DROP_PANDAPART_JOB',
 	job_type => 'PLSQL_BLOCK',
-	job_action => 'BEGIN VERIF_DROP_COPIEDPANDAPART(''DOMA_PANDAARCH'', 2); END;',
+	job_action => 'BEGIN VERIF_DROP_COPIEDPANDAPART(''ATLAS_PANDAARCH'', 2); END;',
 	start_date => SYSTIMESTAMP,
 	repeat_interval => 'FREQ=DAILY;INTERVAL=1',
 	auto_drop => FALSE,
