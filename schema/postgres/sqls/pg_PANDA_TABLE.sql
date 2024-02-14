@@ -385,6 +385,7 @@ COMMENT ON TABLE harvester_metrics IS E'Table to store harvester service metrics
 COMMENT ON COLUMN harvester_metrics.metrics IS E'The harvester service metrics are in JSON structure which is in the order of tens key-value pairs (memory, CPU, etc.)';
 ALTER  TABLE harvester_metrics OWNER TO panda;
 CREATE INDEX harvester_metrics_idx ON harvester_metrics (harvester_id, creation_time, harvester_host);
+CREATE INDEX harvester_metrics_ihc_idx ON harvester_metrics (harvester_id, harvester_host, creation_time);
 ALTER TABLE harvester_metrics ALTER COLUMN HARVESTER_ID SET NOT NULL;
 
 

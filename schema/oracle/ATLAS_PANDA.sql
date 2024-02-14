@@ -3537,6 +3537,14 @@ COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."DATA" IS 'CLOB in JSON format conta
   CREATE INDEX "ATLAS_PANDA"."HARVESTER_METRICS_IDX" ON "ATLAS_PANDA"."HARVESTER_METRICS" ("HARVESTER_ID", "CREATION_TIME", "HARVESTER_HOST") 
    LOCAL
  (PARTITION "DATA_BEFORE_01112018" ) COMPRESS 1 ;
+
+
+--------------------------------------------------------
+--  DDL for Index HARVESTER_METRICS_IHC_IDX
+--------------------------------------------------------
+CREATE INDEX "ATLAS_PANDA"."HARVESTER_METRICS_IHC_IDX" ON "ATLAS_PANDA"."HARVESTER_METRICS" ("HARVESTER_ID", "HARVESTER_HOST", "CREATION_TIME") LOCAL COMPRESS 1 ;
+
+
 --------------------------------------------------------
 --  DDL for Index JEDI_DATASET_CONTENTS_ID_IDX
 --------------------------------------------------------
