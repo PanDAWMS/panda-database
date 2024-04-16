@@ -295,7 +295,7 @@ CREATE TABLE "ATLAS_PANDA"."JEDI_DATASET_LOCALITY"
    COMMENT ON COLUMN "ATLAS_PANDA"."FILESTABLE4"."SCOPE" IS 'Scope (user, group, project) of the file provided by the DDM system';
    COMMENT ON TABLE "ATLAS_PANDA"."FILESTABLE4"  IS 'Table for hosting the files each PanDA job deals with (input, output, log). When a PanDA job is in a defined or running state, relevant rows reside in the INITIAL partition of the table. When it is finished or aborted the "modificationtime" is set to the real current time and as the table has "row movement" enabled, Oracle moves the rows from the INITIAL partition to the partitions of the current day. Data is regularly copied to an archive table in ATLAS_PANDAARCH schema. Data retention of the FILESTABLE4 table is defined to be 30 days (can be changed if necessary)';
 
- --------------------------------------------------------
+--------------------------------------------------------
 --  DDL for Table GLOBAL_SHARES
 --------------------------------------------------------
 
@@ -327,6 +327,39 @@ CREATE TABLE "ATLAS_PANDA"."JEDI_DATASET_LOCALITY"
    COMMENT ON COLUMN "ATLAS_PANDA"."GLOBAL_SHARES"."TRANSPATH" IS 'The name of the transformation';
    COMMENT ON COLUMN "ATLAS_PANDA"."GLOBAL_SHARES"."RTYPE" IS 'Type of the resources, for example grid, cloud or hpc';
    COMMENT ON TABLE "ATLAS_PANDA"."GLOBAL_SHARES"  IS 'Global share definitions';
+
+--------------------------------------------------------
+--  DDL for Table GLOBAL_SHARES. This table is optional
+--  if you want to track changes in the global shares
+--  and filled by the trigger GLOBAL_SHARES_AUDIT_TRIGGER
+--------------------------------------------------------
+CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
+(
+    "AUDIT_ID" NUMBER GENERATED ALWAYS AS IDENTITY,
+    "OPERATION" VARCHAR2(10 BYTE),
+    "TIMESTAMP" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "USERNAME" VARCHAR2(100 BYTE),
+    "CURRENT_USER" VARCHAR2(100 BYTE),
+    "HOST" VARCHAR2(256 BYTE),
+    "IP_ADDRESS" VARCHAR2(45 BYTE),
+    "OS_USER" VARCHAR2(256 BYTE),
+    "MODULE" VARCHAR2(64 BYTE),
+    "CLIENT_PROGRAM_NAME" VARCHAR2(256 BYTE),
+    "SESSIONID" VARCHAR2(128 BYTE),
+    "SID" NUMBER,
+    "NAME" VARCHAR2(32 BYTE),
+    "VALUE" NUMBER(3,0),
+    "PARENT" VARCHAR2(32 BYTE),
+    "PRODSOURCELABEL" VARCHAR2(100 BYTE),
+    "WORKINGGROUP" VARCHAR2(100 BYTE),
+    "CAMPAIGN" VARCHAR2(100 BYTE),
+    "PROCESSINGTYPE" VARCHAR2(100 BYTE),
+    "VO" VARCHAR2(32 BYTE),
+    "QUEUE_ID" NUMBER(5,0),
+    "THROTTLED" CHAR(1 BYTE),
+    "TRANSPATH" VARCHAR2(128 BYTE),
+    "RTYPE" VARCHAR2(16 BYTE)
+);
 
 --------------------------------------------------------
 --  DDL for Table HARVESTER_COMMANDS
@@ -3952,6 +3985,82 @@ BEGIN
 END;
 /
 ALTER TRIGGER "ATLAS_PANDA"."UPD_AMIFLAG_TRIG" DISABLE;
+
+--------------------------------------------------------
+--  DDL for Trigger GLOBAL_SHARES_AUDIT_TRIGGER
+--------------------------------------------------------
+
+CREATE OR REPLACE TRIGGER "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT_TRIGGER"
+AFTER INSERT OR UPDATE OR DELETE ON "ATLAS_PANDA"."GLOBAL_SHARES"
+FOR EACH ROW
+DECLARE
+  v_operation VARCHAR2(10);
+BEGIN
+  -- Determine the operation type
+  IF INSERTING THEN
+    v_operation := 'INSERT';
+  ELSIF UPDATING THEN
+    v_operation := 'UPDATE';
+  ELSIF DELETING THEN
+    v_operation := 'DELETE';
+  END IF;
+
+  -- Insert a record into the audit table
+  INSERT INTO "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
+  (
+    "OPERATION",
+    "USERNAME",
+    "HOST",
+    "IP_ADDRESS",
+    "SESSIONID",
+    "CLIENT_PROGRAM_NAME",
+    "CURRENT_USER",
+    "MODULE",
+    "OS_USER",
+    "SID",
+    "NAME",
+    "VALUE",
+    "PARENT",
+    "PRODSOURCELABEL",
+    "WORKINGGROUP",
+    "CAMPAIGN",
+    "PROCESSINGTYPE",
+    "VO",
+    "QUEUE_ID",
+    "THROTTLED",
+    "TRANSPATH",
+    "RTYPE"
+  )
+  VALUES
+  (
+    v_operation,
+    SYS_CONTEXT('USERENV', 'SESSION_USER'),
+    SYS_CONTEXT('USERENV', 'HOST'),
+    SYS_CONTEXT('USERENV', 'IP_ADDRESS'),
+    SYS_CONTEXT('USERENV', 'SESSIONID'),
+    SYS_CONTEXT('USERENV', 'CLIENT_PROGRAM_NAME'),
+    SYS_CONTEXT('USERENV', 'CURRENT_USER'),
+    SYS_CONTEXT('USERENV', 'MODULE'),
+    SYS_CONTEXT('USERENV', 'OS_USER'),
+    SYS_CONTEXT('USERENV', 'SID'),
+    NVL(:NEW."NAME", :OLD."NAME"),
+    NVL(:NEW."VALUE", :OLD."VALUE"),
+    NVL(:NEW."PARENT", :OLD."PARENT"),
+    NVL(:NEW."PRODSOURCELABEL", :OLD."PRODSOURCELABEL"),
+    NVL(:NEW."WORKINGGROUP", :OLD."WORKINGGROUP"),
+    NVL(:NEW."CAMPAIGN", :OLD."CAMPAIGN"),
+    NVL(:NEW."PROCESSINGTYPE", :OLD."PROCESSINGTYPE"),
+    NVL(:NEW."VO", :OLD."VO"),
+    NVL(:NEW."QUEUE_ID", :OLD."QUEUE_ID"),
+    NVL(:NEW."THROTTLED", :OLD."THROTTLED"),
+    NVL(:NEW."TRANSPATH", :OLD."TRANSPATH"),
+    NVL(:NEW."RTYPE", :OLD."RTYPE")
+  );
+END;
+/
+ALTER TRIGGER "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT_TRIGGER" ENABLE;
+
+
 --------------------------------------------------------
 --  DDL for Procedure ADD_DAILYPART
 --------------------------------------------------------
