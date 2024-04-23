@@ -333,7 +333,8 @@ CREATE TABLE harvester_dialogs (
 	diagid bigint NOT NULL,
 	modulename varchar(100),
 	identifier varchar(100),
-	creationtime timestamp,
+	creationtime timestamp NOT NULL,
+    -- creationtime timestamp NOT NULL DEFAULT to_date('01-JAN-1970 00:00:00','DD-MON-YYYY HH24:MI:SS'),
 	messagelevel varchar(10),
 	diagmessage varchar(500)
 ) PARTITION BY RANGE (creationtime) ;
@@ -780,7 +781,7 @@ CREATE TABLE jedi_job_retry_history (
 	jeditaskid bigint NOT NULL,
 	oldpandaid bigint NOT NULL,
 	newpandaid bigint NOT NULL,
-	ins_utc_tstamp timestamp DEFAULT ((CURRENT_TIMESTAMP(0) AT TIME ZONE 'UTC')),
+	ins_utc_tstamp timestamp NOT NULL DEFAULT ((CURRENT_TIMESTAMP(0) AT TIME ZONE 'UTC')),
 	relationtype varchar(16),
 	originpandaid bigint
 ) PARTITION BY RANGE (ins_utc_tstamp) ;
