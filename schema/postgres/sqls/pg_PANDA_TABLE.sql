@@ -378,7 +378,7 @@ ALTER TABLE harvester_instances ADD PRIMARY KEY (harvester_id);
 
 CREATE TABLE harvester_metrics (
 	harvester_id varchar(50) NOT NULL,
-	creation_time timestamp DEFAULT LOCALTIMESTAMP,
+	creation_time timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	harvester_host varchar(100),
 	metrics varchar(4000)
 ) PARTITION BY RANGE (creation_time) ;
