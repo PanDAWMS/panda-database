@@ -59,6 +59,7 @@ COMMENT ON COLUMN sql_queue.execution_order IS E'In case multiple SQLs need to b
 COMMENT ON COLUMN sql_queue.jeditaskid IS E'JEDI Task ID in case the messages want to be batched';
 COMMENT ON COLUMN sql_queue.creationtime IS E'Timestamp when the message was created';
 COMMENT ON COLUMN sql_queue.data IS E'CLOB in JSON format containing the SQL query and variables';
+ALTER TABLE sql_queue OWNER TO panda;
 ALTER TABLE sql_queue ADD PRIMARY KEY (topic, pandaid, execution_order);
 
 
