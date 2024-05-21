@@ -176,7 +176,8 @@
     "MEANCORECOUNT" NUMBER(8,2),
     "GCO2_REGIONAL" NUMBER(10, 2),
     "GCO2_GLOBAL" NUMBER(10, 2),
-    "CPU_ARCHITECTURE_LEVEL" VARCHAR2(20)
+    "CPU_ARCHITECTURE_LEVEL" VARCHAR2(20),
+    "OUTPUTFILETYPE" VARCHAR2(32)
    ) 
   PARTITION BY RANGE ("MODIFICATIONTIME") 
  (PARTITION "JOBSARCHIVED_JAN_2017_1"  VALUES LESS THAN (TO_DATE(' 2017-01-04 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))) ;
@@ -207,6 +208,8 @@
    COMMENT ON COLUMN "ATLAS_PANDAARCH"."JOBSARCHIVED"."DISKIO" IS 'Local disk access in kBPerSec. Required to limit the number of running jobs based on total IO for each queue.';
    COMMENT ON COLUMN "ATLAS_PANDAARCH"."JOBSARCHIVED"."MEMORY_LEAK" IS 'Memory leak in KB/s';
    COMMENT ON COLUMN "ATLAS_PANDAARCH"."JOBSARCHIVED"."MEMORY_LEAK_X2" IS 'Memory leak square statistic';
+   COMMENT ON COLUMN "ATLAS_PANDAARCH"."JOBSARCHIVED"."OUTPUTFILETYPE" IS 'Comma-separated list of output file types for the job';
+
 --------------------------------------------------------
 --  DDL for Table METATABLE_ARCH
 --------------------------------------------------------

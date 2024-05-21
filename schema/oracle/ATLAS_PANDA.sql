@@ -1256,7 +1256,8 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
     "MEANCORECOUNT" NUMBER(8,2),
     "GCO2_REGIONAL" NUMBER(10, 2),
     "GCO2_GLOBAL" NUMBER(10, 2),
-    "CPU_ARCHITECTURE_LEVEL" VARCHAR2(20)
+    "CPU_ARCHITECTURE_LEVEL" VARCHAR2(20),
+    "OUTPUTFILETYPE" VARCHAR2(32)
    )  ENABLE ROW MOVEMENT ;
 
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSACTIVE4"."PANDAID" IS 'sequential ID generated from Oracle sequence object JOBSDEFINED4_PANDAID_SEQ when the job is inserted to jobsDefined4';
@@ -1374,6 +1375,7 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSACTIVE4"."DISKIO" IS 'Local disk access in kBPerSec. Required to limit the number of running jobs based on total IO for each queue.';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSACTIVE4"."MEMORY_LEAK" IS 'Memory leak in KB/s';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSACTIVE4"."MEMORY_LEAK_X2" IS 'Memory leak square statistic';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSACTIVE4"."OUTPUTFILETYPE" IS 'Comma-separated list of output file types for the job';
    COMMENT ON TABLE "ATLAS_PANDA"."JOBSACTIVE4"  IS 'Table for hosting all PanDA jobs that are in active running mode. All timestamp and date type columns are in UTC';
 
 --------------------------------------------------------
@@ -1506,7 +1508,8 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
     "MEANCORECOUNT" NUMBER(8,2),
     "GCO2_REGIONAL" NUMBER(10, 2),
     "GCO2_GLOBAL" NUMBER(10, 2),
-    "CPU_ARCHITECTURE_LEVEL" VARCHAR2(20)
+    "CPU_ARCHITECTURE_LEVEL" VARCHAR2(20),
+    "OUTPUTFILETYPE" VARCHAR2(32)
    ) 
   PARTITION BY RANGE ("MODIFICATIONTIME") 
  (PARTITION "PART_JOBSARCHIVED4_15032020"  VALUES LESS THAN (TO_DATE(' 2020-03-15 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')))  ENABLE ROW MOVEMENT ;
@@ -1626,6 +1629,7 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSARCHIVED4"."DISKIO" IS 'Local disk access in kBPerSec. Required to limit the number of running jobs based on total IO for each queue.';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSARCHIVED4"."MEMORY_LEAK" IS 'Memory leak in KB/s';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSARCHIVED4"."MEMORY_LEAK_X2" IS 'Memory leak square statistic';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSARCHIVED4"."OUTPUTFILETYPE" IS 'Comma-separated list of output file types for the job';
    COMMENT ON TABLE "ATLAS_PANDA"."JOBSARCHIVED4"  IS 'Table for hosting all PanDA jobs that are in finished, failed or cancelled status. Data is regularly copied to an archive table in ATLAS_PANDAARCH schema. Data retention of the JOBSARCHIVED4 table is defined to be 3 days (can be changed if necessary). All timestamp and date type columns are in UTC ';
 
 --------------------------------------------------------
@@ -1772,7 +1776,8 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
     "MEANCORECOUNT" NUMBER(8,2),
     "GCO2_REGIONAL" NUMBER(10, 2),
     "GCO2_GLOBAL" NUMBER(10, 2),
-    "CPU_ARCHITECTURE_LEVEL" VARCHAR2(20)
+    "CPU_ARCHITECTURE_LEVEL" VARCHAR2(20),
+    "OUTPUTFILETYPE" VARCHAR2(32)
    )  ENABLE ROW MOVEMENT ;
 
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED4"."PANDAID" IS 'sequential ID generated from Oracle sequence object JOBSDEFINED4_PANDAID_SEQ when the job is inserted to jobsDefined4';
@@ -1890,6 +1895,7 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED4"."DISKIO" IS 'Local disk access in kBPerSec. Required to limit the number of running jobs based on total IO for each queue.';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED4"."MEMORY_LEAK" IS 'Memory leak in KB/s';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED4"."MEMORY_LEAK_X2" IS 'Memory leak square statistic';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED4"."OUTPUTFILETYPE" IS 'Comma-separated list of output file types for the job';
 
 --------------------------------------------------------
 --  DDL for Table JOBSWAITING4
@@ -2021,7 +2027,8 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
     "MEANCORECOUNT" NUMBER(8,2),
     "GCO2_REGIONAL" NUMBER(10, 2),
     "GCO2_GLOBAL" NUMBER(10, 2),
-    "CPU_ARCHITECTURE_LEVEL" VARCHAR2(20)
+    "CPU_ARCHITECTURE_LEVEL" VARCHAR2(20),
+    "OUTPUTFILETYPE" VARCHAR2(32)
    )  ENABLE ROW MOVEMENT ;
 
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSWAITING4"."PANDAID" IS 'sequential ID generated from Oracle sequence object JOBSDEFINED4_PANDAID_SEQ when the job is inserted to jobsDefined4';
@@ -2139,6 +2146,7 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSWAITING4"."DISKIO" IS 'Local disk access in kBPerSec. Required to limit the number of running jobs based on total IO for each queue.';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSWAITING4"."MEMORY_LEAK" IS 'Memory leak in KB/s';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSWAITING4"."MEMORY_LEAK_X2" IS 'Memory leak square statistic';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSWAITING4"."OUTPUTFILETYPE" IS 'Comma-separated list of output file types for the job';
    COMMENT ON TABLE "ATLAS_PANDA"."JOBSWAITING4"  IS 'Table for hosting all PanDA jobs that are in waiting state. The columns (and their description) are the same as the ones in JOBSACTIVE4 table. All timestamp and date type columns are in UTC';
 
 --------------------------------------------------------
@@ -4166,6 +4174,9 @@ valschema_name VARCHAR2(30);
 
 BEGIN
 
+-- Ver 2.14: 21st May 2024
+-- Added column OUTPUTFILETYPE to the JOBS tables
+
 -- Ver 2.13: 28th Mar 2023
 -- Added column CPU_ARCHITECTURE_LEVEL to the JOBS tables
 
@@ -4507,7 +4518,8 @@ JOB_LABEL,
 MEANCORECOUNT,
 GCO2_REGIONAL,
 GCO2_GLOBAL,
-CPU_ARCHITECTURE_LEVEL)
+CPU_ARCHITECTURE_LEVEL,
+OUTPUTFILETYPE)
 (SELECT
 SPECIALHANDLING,
 JOBSETID,
@@ -4634,7 +4646,8 @@ JOB_LABEL,
 MEANCORECOUNT,
 GCO2_REGIONAL,
 GCO2_GLOBAL,
-CPU_ARCHITECTURE_LEVEL
+CPU_ARCHITECTURE_LEVEL,
+OUTPUTFILETYPE
 FROM jobsArchived4 PARTITION (' || part_name || ')
 )';
 
