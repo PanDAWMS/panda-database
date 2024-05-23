@@ -831,7 +831,7 @@ CREATE TABLE jedi_process_lock (
 	prodsourcelabel varchar(20) NOT NULL,
 	workqueue_id integer NOT NULL,
 	cloud varchar(10) NOT NULL,
-	lockedby varchar(40),
+	lockedby varchar(56),
 	lockedtime timestamp,
 	resource_type varchar(56) NOT NULL,
 	component varchar(56) NOT NULL
