@@ -6,6 +6,7 @@ ALTER TABLE doma_panda.jobswaiting4 ADD COLUMN outputfiletype varchar(32);
 
 ALTER TABLE doma_pandaarch.jobsarchived ADD COLUMN outputfiletype varchar(32);
 
+ALTER TABLE doma_panda.jedi_process_lock ALTER COLUMN lockedby TYPE varchar(56);
 -- Update versions
 UPDATE pandadb_version SET major=0, minor=0, patch=17 where component='JEDI';
 UPDATE pandadb_version SET major=0, minor=0, patch=17 where component='SERVER';
