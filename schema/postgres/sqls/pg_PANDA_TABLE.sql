@@ -1211,7 +1211,7 @@ CREATE TABLE jobsactive4 (
 	gco2_regional decimal(10,2),
 	gco2_global decimal(10,2),
 	cpu_architecture_level varchar(20),
-    outputfiletype varchar(32),
+    outputfiletype varchar(32)
 ) ;
 COMMENT ON TABLE jobsactive4 IS E'Table for hosting all PanDA jobs that are in active running mode. All timestamp and date type columns are in UTC';
 COMMENT ON COLUMN jobsactive4.assignedpriority IS E'defined priority value';
