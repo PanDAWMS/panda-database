@@ -781,7 +781,7 @@ CREATE TABLE jedi_job_retry_history (
 	jeditaskid bigint NOT NULL,
 	oldpandaid bigint NOT NULL,
 	newpandaid bigint NOT NULL,
-	ins_utc_tstamp timestamp DEFAULT ((CURRENT_TIMESTAMP(0) AT TIME ZONE 'UTC')),
+	ins_utc_tstamp timestamp NOT NULL DEFAULT ((CURRENT_TIMESTAMP(0) AT TIME ZONE 'UTC')),
 	relationtype varchar(16),
 	originpandaid bigint
 ) PARTITION BY RANGE (ins_utc_tstamp) ;
