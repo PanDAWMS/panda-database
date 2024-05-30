@@ -131,7 +131,7 @@ CREATE TABLE jobsarchived (
 	lockedby varchar(128),
 	relocationflag smallint DEFAULT '0',
 	jobexecutionid bigint DEFAULT '0',
-	vo varchar(16),
+	vo varchar(32),
 	pilottiming varchar(100),
 	workinggroup varchar(20),
 	processingtype varchar(64),
