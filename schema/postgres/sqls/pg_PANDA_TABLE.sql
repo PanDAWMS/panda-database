@@ -30,7 +30,7 @@ ALTER TABLE cache ADD PRIMARY KEY (main_key,sub_key);
 
 
 CREATE TABLE carbon_region_emissions (
-	region varchar(16) NOT NULL,
+	region varchar(32) NOT NULL,
 	timestamp timestamp NOT NULL,
 	value bigint
 ) ;
@@ -94,7 +94,7 @@ CREATE TABLE config (
 	key varchar(64) NOT NULL,
 	value varchar(256) NOT NULL,
 	type varchar(64) NOT NULL,
-	vo varchar(16) NOT NULL,
+	vo varchar(32) NOT NULL,
 	descr varchar(256) NOT NULL
 ) ;
 COMMENT ON TABLE config IS E'Central configuration table for jedi and panda server';
@@ -263,7 +263,7 @@ CREATE TABLE global_shares (
 	queue_id integer,
 	throttled char(1),
 	transpath varchar(128),
-	rtype varchar(16)
+	rtype varchar(32)
 ) ;
 COMMENT ON TABLE global_shares IS E'Global share definitions';
 COMMENT ON COLUMN global_shares.campaign IS E'Campaign as in the jedi_tasks table. Can be python regexp';
@@ -312,7 +312,7 @@ CREATE TABLE harvester_command_lock (
 	resourcetype varchar(56) NOT NULL,
 	command varchar(200) NOT NULL,
 	lockedtime timestamp,
-	lockedby varchar(40)
+	lockedby varchar(56)
 ) ;
 COMMENT ON TABLE harvester_command_lock IS E'Exclusive locks to send commands to harvester';
 COMMENT ON COLUMN harvester_command_lock.command IS E'Command string';
@@ -546,7 +546,7 @@ CREATE TABLE jedi_datasets (
 	type varchar(20) NOT NULL,
 	creationtime timestamp NOT NULL,
 	modificationtime timestamp NOT NULL,
-	vo varchar(16),
+	vo varchar(32),
 	cloud varchar(10),
 	site varchar(60),
 	masterid bigint,
@@ -564,7 +564,7 @@ CREATE TABLE jedi_datasets (
 	nevents bigint,
 	neventstobeused bigint,
 	neventsused bigint,
-	lockedby varchar(40),
+	lockedby varchar(56),
 	lockedtime timestamp,
 	nfilesfinished bigint,
 	nfilesfailed bigint,
@@ -783,7 +783,7 @@ CREATE TABLE jedi_job_retry_history (
 	oldpandaid bigint NOT NULL,
 	newpandaid bigint NOT NULL,
 	ins_utc_tstamp timestamp NOT NULL DEFAULT ((CURRENT_TIMESTAMP(0) AT TIME ZONE 'UTC')),
-	relationtype varchar(16),
+	relationtype varchar(32),
 	originpandaid bigint
 ) PARTITION BY RANGE (ins_utc_tstamp) ;
 COMMENT ON COLUMN jedi_job_retry_history.jeditaskid IS E'JediTaskID of the jobs';
@@ -828,7 +828,7 @@ ALTER TABLE jedi_output_template ALTER COLUMN JEDITASKID SET NOT NULL;
 
 
 CREATE TABLE jedi_process_lock (
-	vo varchar(16) NOT NULL,
+	vo varchar(32) NOT NULL,
 	prodsourcelabel varchar(20) NOT NULL,
 	workqueue_id integer NOT NULL,
 	cloud varchar(10) NOT NULL,
@@ -868,7 +868,7 @@ CREATE TABLE jedi_tasks (
 	frozentime timestamp,
 	prodsourcelabel varchar(20),
 	workinggroup varchar(32),
-	vo varchar(16),
+	vo varchar(32),
 	corecount integer,
 	tasktype varchar(64),
 	processingtype varchar(64),
@@ -878,7 +878,7 @@ CREATE TABLE jedi_tasks (
 	transuses varchar(64),
 	transhome varchar(128),
 	transpath varchar(128),
-	lockedby varchar(40),
+	lockedby varchar(56),
 	lockedtime timestamp,
 	termcondition varchar(100),
 	splitrule varchar(200),
@@ -900,7 +900,7 @@ CREATE TABLE jedi_tasks (
 	parent_tid bigint,
 	eventservice smallint,
 	ticketid varchar(50),
-	ticketsystemtype varchar(16),
+	ticketsystemtype varchar(32),
 	statechangetime timestamp,
 	superstatus varchar(64),
 	campaign varchar(32),
@@ -1035,9 +1035,9 @@ ALTER TABLE jedi_tasks ALTER COLUMN USERNAME SET NOT NULL;
 
 CREATE TABLE jedi_work_queue (
 	queue_id integer NOT NULL,
-	queue_name varchar(16) NOT NULL,
-	queue_type varchar(16) NOT NULL,
-	vo varchar(16) NOT NULL,
+	queue_name varchar(32) NOT NULL,
+	queue_type varchar(32) NOT NULL,
+	vo varchar(32) NOT NULL,
 	status varchar(64),
 	partitionid integer,
 	stretchable smallint,
@@ -1154,7 +1154,7 @@ CREATE TABLE jobsactive4 (
 	lockedby varchar(128),
 	relocationflag smallint DEFAULT '0',
 	jobexecutionid bigint DEFAULT '0',
-	vo varchar(16),
+	vo varchar(32),
 	pilottiming varchar(100),
 	workinggroup varchar(20),
 	processingtype varchar(64),
@@ -1436,7 +1436,7 @@ CREATE TABLE jobsarchived4 (
 	lockedby varchar(128),
 	relocationflag smallint DEFAULT '0',
 	jobexecutionid bigint DEFAULT '0',
-	vo varchar(16),
+	vo varchar(32),
 	pilottiming varchar(100),
 	workinggroup varchar(20),
 	processingtype varchar(64),
@@ -1738,7 +1738,7 @@ CREATE TABLE jobsdefined4 (
 	lockedby varchar(128),
 	relocationflag smallint DEFAULT '0',
 	jobexecutionid bigint DEFAULT '0',
-	vo varchar(16),
+	vo varchar(32),
 	pilottiming varchar(100),
 	workinggroup varchar(20),
 	processingtype varchar(64),
@@ -1954,7 +1954,7 @@ CREATE TABLE jobsdefined_share_stats (
 	prorated_diskio_avg decimal(11,2),
 	njobs bigint,
 	hs bigint,
-	vo varchar(16),
+	vo varchar(32),
 	workqueue_id integer,
 	resource_type varchar(56)
 ) ;
@@ -2034,7 +2034,7 @@ CREATE TABLE jobswaiting4 (
 	lockedby varchar(128),
 	relocationflag smallint DEFAULT '0',
 	jobexecutionid bigint DEFAULT '0',
-	vo varchar(16),
+	vo varchar(32),
 	pilottiming varchar(100),
 	workinggroup varchar(20),
 	processingtype varchar(64),
@@ -2247,7 +2247,7 @@ CREATE TABLE jobs_share_stats (
 	maxpriority bigint,
 	njobs bigint,
 	hs bigint,
-	vo varchar(16),
+	vo varchar(32),
 	workqueue_id integer,
 	resource_type varchar(56),
 	prorated_diskio_avg decimal(11,2)
@@ -2303,7 +2303,7 @@ CREATE TABLE job_output_report (
 	attemptnr smallint NOT NULL,
 	data text,
 	timestamp timestamp NOT NULL,
-	lockedby varchar(40),
+	lockedby varchar(56),
 	lockedtime timestamp
 ) ;
 COMMENT ON TABLE job_output_report IS E'Table for parallel processing of the job output reports in Adder';
@@ -2323,7 +2323,7 @@ CREATE TABLE job_stats_hp (
 	gshare varchar(32),
 	jobstatus varchar(15),
 	workqueue_id integer,
-	vo varchar(16),
+	vo varchar(32),
 	max_priority bigint,
 	max_priority_count bigint
 ) ;
@@ -2377,7 +2377,7 @@ CREATE TABLE mv_jobsactive4_stats (
 	prodsourcelabel varchar(20),
 	currentpriority bigint,
 	num_of_jobs bigint,
-	vo varchar(16),
+	vo varchar(32),
 	workqueue_id integer
 ) ;
 COMMENT ON TABLE mv_jobsactive4_stats IS E'Table (was from Materialized view before, but was not reliable) which collects aggregated data on set of attributes(columns). The data is read from the JOBSACTIVE4 table by an Oracle scheduler job. The refresh interval is 2 min';
@@ -2398,7 +2398,7 @@ ALTER TABLE mv_jobsactive4_stats ALTER COLUMN JOBSTATUS SET NOT NULL;
 
 CREATE TABLE mv_running_jumbo_task_count (
 	cur_date timestamp,
-	vo varchar(16),
+	vo varchar(32),
 	cloud varchar(10),
 	prodsourcelabel varchar(20),
 	usejumbo char(1),
@@ -2775,8 +2775,8 @@ ALTER TABLE tmp_pandaids_relations ALTER COLUMN NEWJOBID SET NOT NULL;
 
 
 CREATE TABLE total_walltime_cache (
-	vo varchar(16) NOT NULL,
-	agg_type varchar(16) NOT NULL,
+	vo varchar(32) NOT NULL,
+	agg_type varchar(32) NOT NULL,
 	agg_key varchar(32) NOT NULL,
 	prodsourcelabel varchar(20) NOT NULL,
 	resource_type varchar(56) NOT NULL,
@@ -2789,8 +2789,8 @@ ALTER TABLE total_walltime_cache ADD PRIMARY KEY (vo,agg_type,agg_key,prodsource
 
 
 CREATE TABLE typical_num_input (
-	vo varchar(16) NOT NULL,
-	agg_type varchar(16) NOT NULL,
+	vo varchar(32) NOT NULL,
+	agg_type varchar(32) NOT NULL,
 	agg_key varchar(32) NOT NULL,
 	prodsourcelabel varchar(20) NOT NULL,
 	processingtype varchar(64) NOT NULL,
