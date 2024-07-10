@@ -34,8 +34,8 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 17);
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 17);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 18);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 18);
 
 --------------------------------------------------------
 --  DDL for Sequence CLOUDTASKS_ID_SEQ
@@ -548,6 +548,7 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
 	"PILOTENDTIME" DATE,
 	"PILOTSTATUS" VARCHAR2(80 BYTE),
 	"PILOTSTATUSSYNCTIME" DATE,
+    "MINRAMCOUNT" NUMBER(11,0)
    ) 
   PARTITION BY RANGE ("LASTUPDATE") INTERVAL (NUMTOYMINTERVAL(1,'MONTH')) 
  (PARTITION "DATA_BEFORE_01032017"  VALUES LESS THAN (TO_DATE(' 2017-03-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) )  ENABLE ROW MOVEMENT ;
@@ -582,6 +583,7 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
    COMMENT ON COLUMN "ATLAS_PANDA"."HARVESTER_WORKERS"."PILOTENDTIME" IS 'When the pilot ended on this worker';
    COMMENT ON COLUMN "ATLAS_PANDA"."HARVESTER_WORKERS"."PILOTSTATUS" IS 'Status of the worker according to the pilot';
    COMMENT ON COLUMN "ATLAS_PANDA"."HARVESTER_WORKERS"."PILOTSTATUSSYNCTIME" IS 'Last time the pilot status was synced to harvester';
+   COMMENT ON COLUMN "ATLAS_PANDA"."HARVESTER_WORKERS"."MINRAMCOUNT" IS 'Worker memory requirements';
    COMMENT ON TABLE "ATLAS_PANDA"."HARVESTER_WORKERS"  IS 'for workers submitted by harvesters. Combination of INSTANCEID and WORKERID is unique. Deletion policy is to delete all records with LASTUPDATE<NOW-N_days. To be enforced a data sliding window by partition removal although the PK has a global index (The ALTER TABLE ... DROP PARTITION ... UPDATE GLOBAL INDEXES)  to be used. ';
 
 --------------------------------------------------------
