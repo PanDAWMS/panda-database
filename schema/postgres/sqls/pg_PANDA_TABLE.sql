@@ -464,7 +464,8 @@ CREATE TABLE harvester_workers (
 	pilotstarttime timestamp,
 	pilotendtime timestamp,
 	pilotstatus varchar(80),
-	pilotstatussynctime timestamp
+	pilotstatussynctime timestamp,
+    minramcount integer
 ) PARTITION BY RANGE (lastupdate) ;
 COMMENT ON TABLE harvester_workers IS E'for workers submitted by harvesters. Combination of INSTANCEID and WORKERID is unique. Deletion policy is to delete all records with LASTUPDATE<NOW-N_days. To be enforced a data sliding window by partition removal although the PK has a global index (The ALTER TABLE ... DROP PARTITION ... UPDATE GLOBAL INDEXES)  to be used. ';
 COMMENT ON COLUMN harvester_workers.batchid IS E'Unique ID in the batch system';
@@ -497,6 +498,7 @@ COMMENT ON COLUMN harvester_workers.stdout IS E'URL for stdout';
 COMMENT ON COLUMN harvester_workers.submissionhost IS E'The host name of the submission node';
 COMMENT ON COLUMN harvester_workers.submittime IS E'Set when the worker is submitted';
 COMMENT ON COLUMN harvester_workers.workerid IS E'Identifier of the worker';
+COMMENT ON COLUMN harvester_workers.minramcount IS E'Worker memory requirements';
 ALTER  TABLE harvester_workers OWNER TO panda;
 CREATE INDEX harvester_workers_compsite_idx ON harvester_workers (computingsite);
 CREATE INDEX harvester_workers_status_idx ON harvester_workers (status, pilotstatus);
