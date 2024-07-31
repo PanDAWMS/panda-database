@@ -37,12 +37,6 @@
   INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 18);
   INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 18);
 
---------------------------------------------------------
---  DDL for Sequence CLOUDTASKS_ID_SEQ
---------------------------------------------------------
-
-   CREATE SEQUENCE  "ATLAS_PANDA"."CLOUDTASKS_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1883366 CACHE 10 NOORDER  NOCYCLE ;
-
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
 --------------------------------------------------------
@@ -108,29 +102,6 @@
 --------------------------------------------------------
 
    CREATE SEQUENCE  "ATLAS_PANDA"."SUBCOUNTER_SUBID_SEQ"  MINVALUE 1 MAXVALUE 9999999 INCREMENT BY 1 START WITH 7250902 NOCACHE  NOORDER  CYCLE ;
-
---------------------------------------------------------
---  DDL for Table CLOUDTASKS
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDA"."CLOUDTASKS" 
-   (	"ID" NUMBER(9,0), 
-	"TASKNAME" VARCHAR2(128 BYTE), 
-	"TASKID" NUMBER(9,0) DEFAULT NULL, 
-	"CLOUD" VARCHAR2(20 BYTE), 
-	"STATUS" VARCHAR2(20 BYTE), 
-	"TMOD" DATE DEFAULT sysdate, 
-	"TENTER" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss')
-   ) ;
-
-   COMMENT ON COLUMN "ATLAS_PANDA"."CLOUDTASKS"."ID" IS 'autoincremented id of the row generated from ATLAS_PANDA.CLOUDTASKS_ID_SEQ';
-   COMMENT ON COLUMN "ATLAS_PANDA"."CLOUDTASKS"."TASKNAME" IS 'the name of the task';
-   COMMENT ON COLUMN "ATLAS_PANDA"."CLOUDTASKS"."TASKID" IS 'task identifier comes from etask.taskid';
-   COMMENT ON COLUMN "ATLAS_PANDA"."CLOUDTASKS"."CLOUD" IS 'the cloud name where the task is assigned';
-   COMMENT ON COLUMN "ATLAS_PANDA"."CLOUDTASKS"."STATUS" IS 'status of the brokerage procedure';
-   COMMENT ON COLUMN "ATLAS_PANDA"."CLOUDTASKS"."TMOD" IS 'updated when status is changed';
-   COMMENT ON COLUMN "ATLAS_PANDA"."CLOUDTASKS"."TENTER" IS 'set when the task is inserted';
-   COMMENT ON TABLE "ATLAS_PANDA"."CLOUDTASKS"  IS 'Table for task brokerage which assigns production tasks to clouds by checking data locality and work distribution';
 
 --------------------------------------------------------
 --  DDL for Table CONFIG
@@ -3197,12 +3168,7 @@ COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."DATA" IS 'CLOB in JSON format conta
 
   CREATE UNIQUE INDEX "ATLAS_PANDA"."SCHEDCONFIG_JSON_PK" ON "ATLAS_PANDA"."SCHEDCONFIG_JSON" ("PANDA_QUEUE") 
   ;
---------------------------------------------------------
---  DDL for Index CLOUDTASKS_TASK_IDX
---------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDA"."CLOUDTASKS_TASK_IDX" ON "ATLAS_PANDA"."CLOUDTASKS" ("TASKNAME", "TASKID") 
-  ;
 --------------------------------------------------------
 --  DDL for Index JOBSARCHIVED4_JOBDEFID_IDX
 --------------------------------------------------------
@@ -3223,12 +3189,7 @@ COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."DATA" IS 'CLOB in JSON format conta
 
   CREATE UNIQUE INDEX "ATLAS_PANDA"."HARVESTER_COMMANDS_PK" ON "ATLAS_PANDA"."HARVESTER_COMMANDS" ("COMMAND_ID") 
   ;
---------------------------------------------------------
---  DDL for Index CLOUDTASKS_ID_PK
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDA"."CLOUDTASKS_ID_PK" ON "ATLAS_PANDA"."CLOUDTASKS" ("ID") 
-  ;
 --------------------------------------------------------
 --  DDL for Index JEDI_TASKS_STATUS3ATTR_IDX
 --------------------------------------------------------
@@ -6911,15 +6872,7 @@ END;
   ALTER TABLE "ATLAS_PANDA"."PANDA_SITE" ADD CONSTRAINT "PANDA_SITE_NAME_PK" PRIMARY KEY ("PANDA_SITE_NAME")
   USING INDEX  ENABLE;
   ALTER TABLE "ATLAS_PANDA"."PANDA_SITE" MODIFY ("SITE_NAME" CONSTRAINT "SITE_NAME_NN" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table CLOUDTASKS
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDA"."CLOUDTASKS" ADD CONSTRAINT "CLOUDTASKS_ID_PK" PRIMARY KEY ("ID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDA"."CLOUDTASKS" MODIFY ("TENTER" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDA"."CLOUDTASKS" MODIFY ("TMOD" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDA"."CLOUDTASKS" MODIFY ("ID" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table JOBS_SHARE_STATS
 --------------------------------------------------------

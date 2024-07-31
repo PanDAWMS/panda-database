@@ -63,31 +63,6 @@ ALTER TABLE sql_queue OWNER TO panda;
 ALTER TABLE sql_queue ADD PRIMARY KEY (topic, pandaid, execution_order);
 
 
-CREATE TABLE cloudtasks (
-	id integer NOT NULL,
-	taskname varchar(128),
-	taskid integer,
-	cloud varchar(20),
-	status varchar(20),
-	tmod timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	tenter timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss')
-) ;
-COMMENT ON TABLE cloudtasks IS E'Table for task brokerage which assigns production tasks to clouds by checking data locality and work distribution';
-COMMENT ON COLUMN cloudtasks.cloud IS E'the cloud name where the task is assigned';
-COMMENT ON COLUMN cloudtasks.id IS E'autoincremented id of the row generated from ATLAS_PANDA.CLOUDTASKS_ID_SEQ';
-COMMENT ON COLUMN cloudtasks.status IS E'status of the brokerage procedure';
-COMMENT ON COLUMN cloudtasks.taskid IS E'task identifier comes from etask.taskid';
-COMMENT ON COLUMN cloudtasks.taskname IS E'the name of the task';
-COMMENT ON COLUMN cloudtasks.tenter IS E'set when the task is inserted';
-COMMENT ON COLUMN cloudtasks.tmod IS E'updated when status is changed';
-ALTER  TABLE cloudtasks OWNER TO panda;
-CREATE INDEX cloudtasks_task_idx ON cloudtasks (taskname, taskid);
-ALTER TABLE cloudtasks ADD PRIMARY KEY (id);
-ALTER TABLE cloudtasks ALTER COLUMN ID SET NOT NULL;
-ALTER TABLE cloudtasks ALTER COLUMN TMOD SET NOT NULL;
-ALTER TABLE cloudtasks ALTER COLUMN TENTER SET NOT NULL;
-
-
 CREATE TABLE config (
 	app varchar(64) NOT NULL,
 	component varchar(64) NOT NULL,

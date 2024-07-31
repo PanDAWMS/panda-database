@@ -10,8 +10,6 @@ SET search_path = doma_panda,public;
 SET check_function_bodies = false;
 
 CREATE SCHEMA IF NOT EXISTS doma_panda;
-CREATE SEQUENCE cloudtasks_id_seq INCREMENT 1 MINVALUE 1 NO MAXVALUE START 1 CACHE 10;
-ALTER SEQUENCE cloudtasks_id_seq OWNER TO panda;
 CREATE SEQUENCE filestable4_row_id_seq INCREMENT 1 MINVALUE 1 NO MAXVALUE START 1 CACHE 20;
 ALTER SEQUENCE filestable4_row_id_seq OWNER TO panda;
 CREATE SEQUENCE group_jobid_seq INCREMENT 1 MINVALUE 1 NO MAXVALUE START 1;
