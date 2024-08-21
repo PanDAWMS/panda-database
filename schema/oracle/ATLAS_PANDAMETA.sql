@@ -21,11 +21,7 @@
 --------------------------------------------------------
 
    CREATE SEQUENCE  "ATLAS_PANDAMETA"."HISTORY_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  NOCYCLE ;
---------------------------------------------------------
---  DDL for Sequence JOBCLASS_ID_SEQ
---------------------------------------------------------
 
-   CREATE SEQUENCE  "ATLAS_PANDAMETA"."JOBCLASS_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 21 NOCACHE  NOORDER  NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence PASSWORDS_ID_SEQ
 --------------------------------------------------------
@@ -107,30 +103,6 @@
    ) ;
 
 --------------------------------------------------------
---  DDL for Table JDLLIST
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."JDLLIST" 
-   (	"NAME" VARCHAR2(60 CHAR), 
-	"HOST" VARCHAR2(60 CHAR), 
-	"SYSTEM" VARCHAR2(20 CHAR), 
-	"JDL" VARCHAR2(4000 CHAR)
-   ) ;
---------------------------------------------------------
---  DDL for Table JOBCLASS
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."JOBCLASS" 
-   (	"ID" NUMBER(7,0), 
-	"NAME" VARCHAR2(30 CHAR), 
-	"DESCRIPTION" VARCHAR2(30 CHAR), 
-	"RIGHTS" VARCHAR2(30 CHAR), 
-	"PRIORITY" NUMBER(7,0), 
-	"QUOTA1" NUMBER(19,0), 
-	"QUOTA7" NUMBER(19,0), 
-	"QUOTA30" NUMBER(19,0)
-   ) ;
---------------------------------------------------------
 --  DDL for Table LOGSTABLE
 --------------------------------------------------------
 
@@ -142,15 +114,6 @@
 	"LOG4" CLOB
    ) ;
 
---------------------------------------------------------
---  DDL for Table MULTICLOUD_HISTORY
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."MULTICLOUD_HISTORY" 
-   (	"SITE" VARCHAR2(60 BYTE), 
-	"MULTICLOUD" VARCHAR2(64 BYTE), 
-	"LAST_UPDATE" DATE
-   ) ;
 --------------------------------------------------------
 --  DDL for Table PANDACONFIG
 --------------------------------------------------------
@@ -174,32 +137,6 @@
 	"ORIGIN" VARCHAR2(80 CHAR), 
 	"MYPROXY" VARCHAR2(80 CHAR)
    ) ;
-
-
---------------------------------------------------------
---  DDL for Table SCHEDINSTANCE
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" 
-   (	"NAME" VARCHAR2(60 CHAR) DEFAULT 'default', 
-	"NICKNAME" VARCHAR2(60 CHAR), 
-	"PANDASITE" VARCHAR2(60 CHAR), 
-	"NQUEUE" NUMBER(10,0) DEFAULT '5', 
-	"NQUEUED" NUMBER(10,0) DEFAULT '0', 
-	"NRUNNING" NUMBER(10,0) DEFAULT '0', 
-	"NFINISHED" NUMBER(10,0) DEFAULT '0', 
-	"NFAILED" NUMBER(10,0) DEFAULT '0', 
-	"NABORTED" NUMBER(10,0) DEFAULT '0', 
-	"NJOBS" NUMBER(10,0) DEFAULT '0', 
-	"TVALID" DATE DEFAULT SYSDATE, 
-	"LASTMOD" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"ERRINFO" VARCHAR2(150 CHAR), 
-	"NDONE" NUMBER(10,0) DEFAULT '0', 
-	"TOTRUNT" NUMBER(10,0) DEFAULT '0', 
-	"COMMENT_" VARCHAR2(500 CHAR)
-   ) ;
-
-   COMMENT ON COLUMN "ATLAS_PANDAMETA"."SCHEDINSTANCE"."COMMENT_" IS 'ORIGINAL NAME:comment';
 
 --------------------------------------------------------
 --  DDL for Table SITEACCESS
@@ -262,40 +199,6 @@
    COMMENT ON COLUMN "ATLAS_PANDAMETA"."SITEDATA"."GETJOBABS" IS 'Absolute number of getJobs requests';
    COMMENT ON COLUMN "ATLAS_PANDAMETA"."SITEDATA"."UPDATEJOBABS" IS 'Absolute number of updateJobs';
    COMMENT ON COLUMN "ATLAS_PANDAMETA"."SITEDATA"."NOJOBABS" IS 'Absolute number of getJobs requests that did not get a Job';
-
---------------------------------------------------------
---  DDL for Table SITES_MATRIX_DATA
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."SITES_MATRIX_DATA" 
-   (	"SOURCE" VARCHAR2(256 BYTE), 
-	"DESTINATION" VARCHAR2(256 BYTE), 
-	"MEAS_DATE" DATE, 
-	"SONARSMLVAL" NUMBER, 
-	"SONARSMLDEV" NUMBER, 
-	"SONARMEDVAL" NUMBER, 
-	"SONARMEDDEV" NUMBER, 
-	"SONARLRGVAL" NUMBER, 
-	"SONARLRGDEV" NUMBER, 
-	"PERFSONARAVGVAL" NUMBER, 
-	"XRDCPVAL" NUMBER, 
-	"SONARSML_LAST_UPDATE" DATE, 
-	"SONARMED_LAST_UPDATE" DATE, 
-	"SONARLRG_LAST_UPDATE" DATE, 
-	"PERFSONARAVG_LAST_UPDATE" DATE, 
-	"XRDCP_LAST_UPDATE" DATE
-   ) ;
-
---------------------------------------------------------
---  DDL for Table TAGINFO
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."TAGINFO" 
-   (	"TAG" VARCHAR2(30 CHAR), 
-	"DESCRIPTION" VARCHAR2(100 CHAR), 
-	"NQUEUES" NUMBER(10,0) DEFAULT '0', 
-	"QUEUES" VARCHAR2(4000 CHAR)
-   ) ;
 
 --------------------------------------------------------
 --  DDL for Table USERCACHEUSAGE
@@ -371,39 +274,7 @@
 	"STATUS" VARCHAR2(20 CHAR), 
 	"VO" VARCHAR2(20 CHAR)
    ) ;
---------------------------------------------------------
---  DDL for Table USERSUBS
---------------------------------------------------------
 
-  CREATE TABLE "ATLAS_PANDAMETA"."USERSUBS" 
-   (	"DATASETNAME" VARCHAR2(255 BYTE), 
-	"SITE" VARCHAR2(64 BYTE), 
-	"CREATIONDATE" DATE, 
-	"MODIFICATIONDATE" DATE, 
-	"NUSED" NUMBER(5,0), 
-	"STATE" VARCHAR2(30 BYTE) DEFAULT 'subscribed', 
-	 CONSTRAINT "USERSUBS_PK" PRIMARY KEY ("DATASETNAME", "SITE") ENABLE
-   ) ORGANIZATION INDEX COMPRESS 1 ;
-
-
---------------------------------------------------------
---  DDL for Index INSTALLEDSW_SITERELCACHECMT_UK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."INSTALLEDSW_SITERELCACHECMT_UK" ON "ATLAS_PANDAMETA"."INSTALLEDSW" ("SITEID", "RELEASE", "CACHE", "CMTCONFIG") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_JOBCLASS
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_JOBCLASS" ON "ATLAS_PANDAMETA"."JOBCLASS" ("ID") 
-  ;
---------------------------------------------------------
---  DDL for Index USERSUBS_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."USERSUBS_PK" ON "ATLAS_PANDAMETA"."USERSUBS" ("DATASETNAME", "SITE") 
-  ;
 --------------------------------------------------------
 --  DDL for Index PRIMARY_PROXYKEY
 --------------------------------------------------------
@@ -426,12 +297,7 @@
    LOCAL
  (PARTITION "DATA_BEFORE_01062012" ) COMPRESS 1 ;
 
---------------------------------------------------------
---  DDL for Index INSTALLEDSW_RELID_SITE_INDX
---------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDAMETA"."INSTALLEDSW_RELID_SITE_INDX" ON "ATLAS_PANDAMETA"."INSTALLEDSW" ("RELEASE", "SITEID") 
-  ;
 --------------------------------------------------------
 --  DDL for Index USERS_NAME_IDX
 --------------------------------------------------------
@@ -447,13 +313,6 @@
   ;
 
 --------------------------------------------------------
---  DDL for Index JOBCLASS_NAME_IDX
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."JOBCLASS_NAME_IDX" ON "ATLAS_PANDAMETA"."JOBCLASS" ("NAME") 
-  ;
-
---------------------------------------------------------
 --  DDL for Index PRIMARY_CLOUDCFG
 --------------------------------------------------------
 
@@ -466,45 +325,12 @@
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."CACHE_PK" ON "ATLAS_PANDAMETA"."CACHE" ("TYPE", "VALUE") 
   ;
---------------------------------------------------------
---  DDL for Index PRIMARY_SCHEDINST
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_SCHEDINST" ON "ATLAS_PANDAMETA"."SCHEDINSTANCE" ("NICKNAME", "PANDASITE") 
-  ;
-
-
---------------------------------------------------------
---  DDL for Index PRIMARY_TAGINFO
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_TAGINFO" ON "ATLAS_PANDAMETA"."TAGINFO" ("TAG") 
-  ;
 
 --------------------------------------------------------
 --  DDL for Index SITEACCESS_ID_PRIMARY
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."SITEACCESS_ID_PRIMARY" ON "ATLAS_PANDAMETA"."SITEACCESS" ("ID") 
-  ;
-
---------------------------------------------------------
---  DDL for Index SITES_MATRIX_DATA_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."SITES_MATRIX_DATA_PK" ON "ATLAS_PANDAMETA"."SITES_MATRIX_DATA" ("SOURCE", "DESTINATION") 
-  ;
---------------------------------------------------------
---  DDL for Index MULTICLOUD_HISTORY_SITE_IDX
---------------------------------------------------------
-
-  CREATE INDEX "ATLAS_PANDAMETA"."MULTICLOUD_HISTORY_SITE_IDX" ON "ATLAS_PANDAMETA"."MULTICLOUD_HISTORY" ("SITE") 
-  ;
---------------------------------------------------------
---  DDL for Index PRIMARY_JDLLIST
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_JDLLIST" ON "ATLAS_PANDAMETA"."JDLLIST" ("NAME") 
   ;
 
 --------------------------------------------------------
@@ -537,12 +363,6 @@
   ;
 
 --------------------------------------------------------
---  DDL for Index SCHEDINSTANCE_NICKNAME_IDX
---------------------------------------------------------
-
-  CREATE INDEX "ATLAS_PANDAMETA"."SCHEDINSTANCE_NICKNAME_IDX" ON "ATLAS_PANDAMETA"."SCHEDINSTANCE" ("NICKNAME") 
-  ;
---------------------------------------------------------
 --  DDL for Index PRIMARY_GROUPS
 --------------------------------------------------------
 
@@ -570,26 +390,6 @@ END;
 ALTER TRIGGER "ATLAS_PANDAMETA"."CLOUDCONFIG_MODTIME_TRG" ENABLE;
 
 --------------------------------------------------------
---  DDL for Trigger FIFO_5ROWS_PERSITE
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."FIFO_5ROWS_PERSITE" BEFORE INSERT on atlas_pandameta.MULTICLOUD_HISTORY
-  FOR EACH ROW
-DECLARE
-    num number := 0;
-BEGIN
-
-	SELECT count(site) INTO num FROM atlas_pandameta.MULTICLOUD_HISTORY where SITE=:NEW.site ;
- 	IF (num >= 5) THEN
-		DELETE FROM atlas_pandameta.MULTICLOUD_HISTORY where SITE=:NEW.site AND last_update <= (SELECT MIN(last_update) FROM atlas_pandameta.MULTICLOUD_HISTORY where SITE=:NEW.site );
-         END IF;
-
-EXCEPTION
-        WHEN NO_DATA_FOUND THEN NULL;
-END;
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."FIFO_5ROWS_PERSITE" ENABLE;
---------------------------------------------------------
 --  DDL for Trigger GRANTS_UPDATE
 --------------------------------------------------------
 
@@ -607,40 +407,6 @@ ALTER TRIGGER "ATLAS_PANDAMETA"."FIFO_5ROWS_PERSITE" ENABLE;
 ALTER TRIGGER "ATLAS_PANDAMETA"."GRANTS_UPDATE" ENABLE;
 
 --------------------------------------------------------
---  DDL for Trigger JOBCLASS_ID_TRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."JOBCLASS_ID_TRG" BEFORE INSERT OR UPDATE ON jobclass
-FOR EACH ROW
-DECLARE
-v_newVal NUMBER(12) := 0;
-v_incval NUMBER(12) := 0;
-BEGIN
-  IF INSERTING AND :new.id IS NULL THEN
-    SELECT  jobclass_id_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
-    -- If this is the first time this table have been inserted into (sequence == 1)
-    IF v_newVal = 1 THEN
-      --get the max indentity value from the table
-      SELECT max(id) INTO v_newVal FROM jobclass;
-      v_newVal := v_newVal + 1;
-      --set the sequence to that value
-      LOOP
-           EXIT WHEN v_incval>=v_newVal;
-           SELECT jobclass_id_SEQ.nextval INTO v_incval FROM dual;
-      END LOOP;
-    END IF;
-    -- save this to emulate @@identity
-   mysql_utilities.identity := v_newVal;
-   -- assign the value from the sequence to emulate the identity column
-   :new.id := v_newVal;
-  END IF;
-END;
-
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."JOBCLASS_ID_TRG" ENABLE;
-
---------------------------------------------------------
 --  DDL for Trigger PROXYKEY_CREATED_TRG
 --------------------------------------------------------
 
@@ -653,20 +419,6 @@ END;
 
 /
 ALTER TRIGGER "ATLAS_PANDAMETA"."PROXYKEY_CREATED_TRG" ENABLE;
-
---------------------------------------------------------
---  DDL for Trigger SCHEDINSTANCE_TVALID_TRG
---------------------------------------------------------
-
-  CREATE OR REPLACE TRIGGER "ATLAS_PANDAMETA"."SCHEDINSTANCE_TVALID_TRG" BEFORE insert or UPDATE ON schedinstance
-FOR EACH ROW
-DECLARE
-BEGIN
-  :new.tvalid := sysdate;
-END;
-
-/
-ALTER TRIGGER "ATLAS_PANDAMETA"."SCHEDINSTANCE_TVALID_TRG" ENABLE;
 
 --------------------------------------------------------
 --  DDL for Trigger USERS_ID_TRG
@@ -933,6 +685,7 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."LOGSTABLE" MODIFY ("LOG2" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."LOGSTABLE" MODIFY ("LOG1" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."LOGSTABLE" MODIFY ("PANDAID" NOT NULL ENABLE);
+
 --------------------------------------------------------
 --  Constraints for Table SCHEDCONFIG
 --------------------------------------------------------
@@ -956,14 +709,6 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."SCHEDCONFIG" MODIFY ("SYSTEM" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."SCHEDCONFIG" MODIFY ("NICKNAME" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."SCHEDCONFIG" MODIFY ("NAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table TAGINFO
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."TAGINFO" ADD CONSTRAINT "PRIMARY_TAGINFO" PRIMARY KEY ("TAG")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."TAGINFO" MODIFY ("NQUEUES" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."TAGINFO" MODIFY ("DESCRIPTION" NOT NULL ENABLE);
 
 --------------------------------------------------------
 --  Constraints for Table PANDACONFIG
@@ -975,12 +720,6 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."PANDACONFIG" MODIFY ("NAME" NOT NULL ENABLE);
 
 --------------------------------------------------------
---  Constraints for Table MULTICLOUD_HISTORY
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."MULTICLOUD_HISTORY" MODIFY ("LAST_UPDATE" CONSTRAINT "LAST_UPDATE_NN" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."MULTICLOUD_HISTORY" MODIFY ("SITE" CONSTRAINT "SITE_NN" NOT NULL ENABLE);
---------------------------------------------------------
 --  Constraints for Table USERCACHEUSAGE
 --------------------------------------------------------
 
@@ -991,35 +730,6 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."USERCACHEUSAGE" MODIFY ("HOSTNAME" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."USERCACHEUSAGE" MODIFY ("FILENAME" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."USERCACHEUSAGE" MODIFY ("USERNAME" NOT NULL ENABLE);
-
---------------------------------------------------------
---  Constraints for Table SCHEDINSTANCE
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" ADD CONSTRAINT "PRIMARY_SCHEDINST" PRIMARY KEY ("NICKNAME", "PANDASITE")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("TOTRUNT" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("NDONE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("LASTMOD" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("TVALID" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("NJOBS" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("NABORTED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("NFAILED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("NFINISHED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("NRUNNING" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("NQUEUED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("NQUEUE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("NICKNAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SCHEDINSTANCE" MODIFY ("NAME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table JOBCLASS
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."JOBCLASS" ADD CONSTRAINT "PRIMARY_JOBCLASS" PRIMARY KEY ("ID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."JOBCLASS" MODIFY ("DESCRIPTION" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."JOBCLASS" MODIFY ("NAME" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."JOBCLASS" MODIFY ("ID" NOT NULL ENABLE);
 
 --------------------------------------------------------
 --  Constraints for Table SITEDATA
@@ -1044,24 +754,6 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."SITEDATA" MODIFY ("FLAG" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."SITEDATA" MODIFY ("SITE" NOT NULL ENABLE);
 
---------------------------------------------------------
---  Constraints for Table USERSUBS
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."USERSUBS" ADD CONSTRAINT "USERSUBS_PK" PRIMARY KEY ("DATASETNAME", "SITE")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."USERSUBS" MODIFY ("SITE" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."USERSUBS" MODIFY ("DATASETNAME" NOT NULL ENABLE);
-
---------------------------------------------------------
---  Constraints for Table SITES_MATRIX_DATA
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."SITES_MATRIX_DATA" ADD CONSTRAINT "SITES_MATRIX_DATA_PK" PRIMARY KEY ("SOURCE", "DESTINATION")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."SITES_MATRIX_DATA" MODIFY ("MEAS_DATE" CONSTRAINT "SITES_MATRIX_MEAS_DATE_NN" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITES_MATRIX_DATA" MODIFY ("DESTINATION" CONSTRAINT "SITE_DESTINATION_NN" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."SITES_MATRIX_DATA" MODIFY ("SOURCE" CONSTRAINT "SITE_SOURCE_NN" NOT NULL ENABLE);
 
 --------------------------------------------------------
 --  Constraints for Table PROXYKEY
@@ -1077,12 +769,4 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."PROXYKEY" MODIFY ("DN" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."PROXYKEY" MODIFY ("ID" NOT NULL ENABLE);
 
---------------------------------------------------------
---  Constraints for Table JDLLIST
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."JDLLIST" ADD CONSTRAINT "PRIMARY_JDLLIST" PRIMARY KEY ("NAME")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."JDLLIST" MODIFY ("SYSTEM" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."JDLLIST" MODIFY ("NAME" NOT NULL ENABLE);
 

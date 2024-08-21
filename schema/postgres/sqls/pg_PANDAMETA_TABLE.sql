@@ -102,37 +102,6 @@ CREATE TABLE incidents (
 ) ;
 ALTER  TABLE incidents OWNER TO panda;
 
-
-CREATE TABLE jdllist (
-	name varchar(60) NOT NULL,
-	host varchar(60),
-	system varchar(20) NOT NULL,
-	jdl varchar(4000)
-) ;
-ALTER  TABLE jdllist OWNER TO panda;
-ALTER TABLE jdllist ADD PRIMARY KEY (name);
-ALTER TABLE jdllist ALTER COLUMN NAME SET NOT NULL;
-ALTER TABLE jdllist ALTER COLUMN SYSTEM SET NOT NULL;
-
-
-CREATE TABLE jobclass (
-	id integer NOT NULL,
-	name varchar(30) NOT NULL,
-	description varchar(30) NOT NULL,
-	rights varchar(30),
-	priority integer,
-	quota1 bigint,
-	quota7 bigint,
-	quota30 bigint
-) ;
-ALTER  TABLE jobclass OWNER TO panda;
-CREATE UNIQUE INDEX jobclass_name_idx ON jobclass (name);
-ALTER TABLE jobclass ADD PRIMARY KEY (id);
-ALTER TABLE jobclass ALTER COLUMN ID SET NOT NULL;
-ALTER TABLE jobclass ALTER COLUMN NAME SET NOT NULL;
-ALTER TABLE jobclass ALTER COLUMN DESCRIPTION SET NOT NULL;
-
-
 CREATE TABLE logstable (
 	pandaid bigint NOT NULL DEFAULT '0',
 	log1 text NOT NULL,
@@ -147,17 +116,6 @@ ALTER TABLE logstable ALTER COLUMN LOG3 SET NOT NULL;
 ALTER TABLE logstable ALTER COLUMN LOG2 SET NOT NULL;
 ALTER TABLE logstable ALTER COLUMN LOG1 SET NOT NULL;
 ALTER TABLE logstable ALTER COLUMN PANDAID SET NOT NULL;
-
-
-CREATE TABLE multicloud_history (
-	site varchar(60) NOT NULL,
-	multicloud varchar(64),
-	last_update timestamp NOT NULL
-) ;
-ALTER  TABLE multicloud_history OWNER TO panda;
-CREATE INDEX multicloud_history_site_idx ON multicloud_history (site);
-ALTER TABLE multicloud_history ALTER COLUMN LAST_UPDATE SET NOT NULL;
-ALTER TABLE multicloud_history ALTER COLUMN SITE SET NOT NULL;
 
 
 CREATE TABLE pandaconfig (
@@ -189,44 +147,6 @@ ALTER TABLE proxykey ALTER COLUMN CREATED SET NOT NULL;
 ALTER TABLE proxykey ALTER COLUMN EXPIRES SET NOT NULL;
 ALTER TABLE proxykey ALTER COLUMN ORIGIN SET NOT NULL;
 ALTER TABLE proxykey ALTER COLUMN MYPROXY SET NOT NULL;
-
-
-CREATE TABLE schedinstance (
-	name varchar(60) NOT NULL DEFAULT 'default',
-	nickname varchar(60) NOT NULL,
-	pandasite varchar(60) NOT NULL,
-	nqueue bigint NOT NULL DEFAULT '5',
-	nqueued bigint NOT NULL DEFAULT '0',
-	nrunning bigint NOT NULL DEFAULT '0',
-	nfinished bigint NOT NULL DEFAULT '0',
-	nfailed bigint NOT NULL DEFAULT '0',
-	naborted bigint NOT NULL DEFAULT '0',
-	njobs bigint NOT NULL DEFAULT '0',
-	tvalid timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	lastmod timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	errinfo varchar(150),
-	ndone bigint NOT NULL DEFAULT '0',
-	totrunt bigint NOT NULL DEFAULT '0',
-	comment_ varchar(500)
-) ;
-COMMENT ON COLUMN schedinstance.comment_ IS E'ORIGINAL NAME:comment';
-ALTER  TABLE schedinstance OWNER TO panda;
-CREATE INDEX schedinstance_nickname_idx ON schedinstance (nickname);
-ALTER TABLE schedinstance ADD PRIMARY KEY (nickname,pandasite);
-ALTER TABLE schedinstance ALTER COLUMN NAME SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN NICKNAME SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN NQUEUE SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN NQUEUED SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN NRUNNING SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN NFINISHED SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN NFAILED SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN NABORTED SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN NJOBS SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN TVALID SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN LASTMOD SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN NDONE SET NOT NULL;
-ALTER TABLE schedinstance ALTER COLUMN TOTRUNT SET NOT NULL;
-
 
 CREATE TABLE siteaccess (
 	id bigint NOT NULL,
@@ -305,43 +225,6 @@ ALTER TABLE sitedata ALTER COLUMN TRANSFERRING SET NOT NULL;
 ALTER TABLE sitedata ALTER COLUMN GETJOB SET NOT NULL;
 ALTER TABLE sitedata ALTER COLUMN UPDATEJOB SET NOT NULL;
 ALTER TABLE sitedata ALTER COLUMN LASTMOD SET NOT NULL;
-
-
-CREATE TABLE sites_matrix_data (
-	source varchar(256) NOT NULL,
-	destination varchar(256) NOT NULL,
-	meas_date timestamp NOT NULL,
-	sonarsmlval bigint,
-	sonarsmldev bigint,
-	sonarmedval bigint,
-	sonarmeddev bigint,
-	sonarlrgval bigint,
-	sonarlrgdev bigint,
-	perfsonaravgval bigint,
-	xrdcpval bigint,
-	sonarsml_last_update timestamp,
-	sonarmed_last_update timestamp,
-	sonarlrg_last_update timestamp,
-	perfsonaravg_last_update timestamp,
-	xrdcp_last_update timestamp
-) ;
-ALTER  TABLE sites_matrix_data OWNER TO panda;
-ALTER TABLE sites_matrix_data ADD PRIMARY KEY (source,destination);
-ALTER TABLE sites_matrix_data ALTER COLUMN MEAS_DATE SET NOT NULL;
-ALTER TABLE sites_matrix_data ALTER COLUMN DESTINATION SET NOT NULL;
-ALTER TABLE sites_matrix_data ALTER COLUMN SOURCE SET NOT NULL;
-
-
-CREATE TABLE taginfo (
-	tag varchar(30) NOT NULL,
-	description varchar(100) NOT NULL,
-	nqueues bigint NOT NULL DEFAULT '0',
-	queues varchar(4000)
-) ;
-ALTER  TABLE taginfo OWNER TO panda;
-ALTER TABLE taginfo ADD PRIMARY KEY (tag);
-ALTER TABLE taginfo ALTER COLUMN DESCRIPTION SET NOT NULL;
-ALTER TABLE taginfo ALTER COLUMN NQUEUES SET NOT NULL;
 
 
 CREATE TABLE usercacheusage (
@@ -428,16 +311,3 @@ ALTER TABLE users ALTER COLUMN CACHETIME SET NOT NULL;
 ALTER TABLE users ALTER COLUMN NCURRENT SET NOT NULL;
 ALTER TABLE users ALTER COLUMN JOBID SET NOT NULL;
 
-
-CREATE TABLE usersubs (
-	datasetname varchar(255) NOT NULL,
-	site varchar(64) NOT NULL,
-	creationdate timestamp,
-	modificationdate timestamp,
-	nused integer,
-	state varchar(30) DEFAULT 'subscribed'
-) ;
-ALTER  TABLE usersubs OWNER TO panda;
-ALTER TABLE usersubs ADD PRIMARY KEY (datasetname,site);
-ALTER TABLE usersubs ALTER COLUMN DATASETNAME SET NOT NULL;
-ALTER TABLE usersubs ALTER COLUMN SITE SET NOT NULL;
