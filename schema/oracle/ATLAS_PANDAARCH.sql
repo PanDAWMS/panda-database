@@ -397,13 +397,6 @@
  (PARTITION "JOBSARCHIVED_JAN_2017_1") COMPRESS 3 ;
 
 --------------------------------------------------------
---  DDL for Index PANDAIDS_MODIFTIME_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAARCH"."PANDAIDS_MODIFTIME_PK" ON "ATLAS_PANDAARCH"."PANDAIDS_MODIFTIME_OLD" ("PANDAID", "MODIFTIME") 
-   LOCAL
- (PARTITION "PANDAIDS_10") ;
---------------------------------------------------------
 --  DDL for Index JOBS_JOBSETID_PRODUSERNAME_IDX
 --------------------------------------------------------
 
@@ -664,13 +657,6 @@ END;
   ALTER TABLE "ATLAS_PANDAARCH"."JOBSARCHIVED" MODIFY ("JOBDEFINITIONID" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAARCH"."JOBSARCHIVED" MODIFY ("PANDAID" NOT NULL ENABLE);
 
---------------------------------------------------------
---  Constraints for Table PANDAIDS_MODIFTIME_OLD
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAARCH"."PANDAIDS_MODIFTIME_OLD" ADD CONSTRAINT "PANDAIDS_MODIFTIME_PK" PRIMARY KEY ("PANDAID", "MODIFTIME")
-  USING INDEX  LOCAL
- (PARTITION "PANDAIDS_10")  ENABLE;
 --------------------------------------------------------
 --  Constraints for Table METATABLE_ARCH
 --------------------------------------------------------

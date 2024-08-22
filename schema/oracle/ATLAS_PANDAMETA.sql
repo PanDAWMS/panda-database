@@ -1,57 +1,20 @@
 --------------------------------------------------------
 --  File created - Wednesday-March-18-2020   
 --------------------------------------------------------
---------------------------------------------------------
---  DDL for Sequence CERTIFICATES_ID_SEQ
---------------------------------------------------------
 
-   CREATE SEQUENCE  "ATLAS_PANDAMETA"."CERTIFICATES_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  NOCYCLE ;
---------------------------------------------------------
---  DDL for Sequence DSLIST_ID_SEQ
---------------------------------------------------------
-
-   CREATE SEQUENCE  "ATLAS_PANDAMETA"."DSLIST_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  NOCYCLE ;
---------------------------------------------------------
---  DDL for Sequence GROUPS_ID_SEQ
---------------------------------------------------------
-
-   CREATE SEQUENCE  "ATLAS_PANDAMETA"."GROUPS_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 21 NOCACHE  NOORDER  NOCYCLE ;
---------------------------------------------------------
---  DDL for Sequence HISTORY_ID_SEQ
---------------------------------------------------------
-
-   CREATE SEQUENCE  "ATLAS_PANDAMETA"."HISTORY_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  NOCYCLE ;
-
---------------------------------------------------------
---  DDL for Sequence PASSWORDS_ID_SEQ
---------------------------------------------------------
-
-   CREATE SEQUENCE  "ATLAS_PANDAMETA"."PASSWORDS_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence PROXYKEY_ID_SEQ
 --------------------------------------------------------
 
    CREATE SEQUENCE  "ATLAS_PANDAMETA"."PROXYKEY_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1116973681 NOCACHE  NOORDER  NOCYCLE ;
---------------------------------------------------------
---  DDL for Sequence SERVICELIST_ID_SEQ
---------------------------------------------------------
 
-   CREATE SEQUENCE  "ATLAS_PANDAMETA"."SERVICELIST_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SITEACCESS_ID_SEQ
 --------------------------------------------------------
 
    CREATE SEQUENCE  "ATLAS_PANDAMETA"."SITEACCESS_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999999 INCREMENT BY 1 START WITH 1585 NOCACHE  NOORDER  NOCYCLE ;
---------------------------------------------------------
---  DDL for Sequence TAGS_ID_SEQ
---------------------------------------------------------
 
-   CREATE SEQUENCE  "ATLAS_PANDAMETA"."TAGS_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  NOCYCLE ;
---------------------------------------------------------
---  DDL for Sequence USAGEREPORT_ENTRY_SEQ
---------------------------------------------------------
 
-   CREATE SEQUENCE  "ATLAS_PANDAMETA"."USAGEREPORT_ENTRY_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence USERS_ID_SEQ
 --------------------------------------------------------
