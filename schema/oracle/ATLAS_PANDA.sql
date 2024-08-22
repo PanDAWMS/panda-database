@@ -2386,27 +2386,6 @@ COMMENT ON TABLE "ATLAS_PANDA"."JOB_STATS_HP"  IS 'highest priority job statisti
    COMMENT ON TABLE "ATLAS_PANDA"."PANDALOG"  IS 'Table with job logging information which contains log messages from various applications';
 
 --------------------------------------------------------
---  DDL for Table PANDALOG_FAX
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDA"."PANDALOG_FAX" 
-   (	"BINTIME" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"NAME" VARCHAR2(30 BYTE), 
-	"MODULE" VARCHAR2(30 BYTE), 
-	"LOGUSER" VARCHAR2(80 BYTE), 
-	"TYPE" VARCHAR2(20 BYTE), 
-	"PID" NUMBER(11,0) DEFAULT '0', 
-	"LOGLEVEL" NUMBER(9,0) DEFAULT '0', 
-	"LEVELNAME" VARCHAR2(30 BYTE), 
-	"TIME" VARCHAR2(30 BYTE), 
-	"FILENAME" VARCHAR2(100 BYTE), 
-	"LINE" NUMBER(9,0) DEFAULT '0', 
-	"MESSAGE" VARCHAR2(4000 BYTE)
-   ) 
-  PARTITION BY RANGE ("BINTIME") INTERVAL (NUMTOYMINTERVAL(1,'MONTH')) 
- (PARTITION "DATASETS_BEFORE_01112013"  VALUES LESS THAN (TO_DATE(' 2013-11-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) ) ;
-
---------------------------------------------------------
 --  DDL for Table PANDA_DDM_RELATION
 --------------------------------------------------------
 
@@ -6934,11 +6913,7 @@ ALTER TABLE "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS" MODIFY ("JOBSTATUS" NOT NULL
   USING INDEX  LOCAL
  (PARTITION "PART_INITIAL_01011970")  ENABLE;
   ALTER TABLE "ATLAS_PANDA"."METATABLE" MODIFY ("MODIFICATIONTIME" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table PANDALOG_FAX
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDA"."PANDALOG_FAX" MODIFY ("BINTIME" CONSTRAINT "PANDALOGFAX_BINTIME_NN" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table CONFIG
 --------------------------------------------------------

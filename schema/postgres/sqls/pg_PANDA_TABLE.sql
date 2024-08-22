@@ -2468,24 +2468,6 @@ ALTER TABLE pandalog ALTER COLUMN LOGLEVEL SET NOT NULL;
 ALTER TABLE pandalog ALTER COLUMN PID SET NOT NULL;
 
 
-CREATE TABLE pandalog_fax (
-	bintime timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	name varchar(30),
-	module varchar(30),
-	loguser varchar(80),
-	type varchar(20),
-	pid bigint DEFAULT '0',
-	loglevel integer DEFAULT '0',
-	levelname varchar(30),
-	time varchar(30),
-	filename varchar(100),
-	line integer DEFAULT '0',
-	message varchar(4000)
-) PARTITION BY RANGE (bintime) ;
-ALTER  TABLE pandalog_fax OWNER TO panda;
-ALTER TABLE pandalog_fax ALTER COLUMN BINTIME SET NOT NULL;
-
-
 CREATE TABLE panda_ddm_relation (
 	panda_site_name varchar(52) NOT NULL,
 	ddm_endpoint_name varchar(52) NOT NULL,
