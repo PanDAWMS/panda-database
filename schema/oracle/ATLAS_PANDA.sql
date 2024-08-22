@@ -2705,8 +2705,8 @@ CREATE TABLE "ATLAS_PANDA"."METRICS"
     "METRIC" VARCHAR2(128),
     "VALUE_JSON" CLOB,
     "TIMESTAMP" DATE,
-    CONSTRAINT ensure_json_metrics CHECK (value_json IS JSON),
-    CONSTRAINT METRICS_SITE_GSHARE_METRIC_UQ UNIQUE (computingsite, gshare, metric)
+    CONSTRAINT ensure_json_metrics CHECK ("VALUE_JSON" IS JSON),
+    CONSTRAINT METRICS_SITE_GSHARE_METRIC_UQ UNIQUE ("COMPUTINGSITE", "GSHARE", "METRIC")
   );
 
 --------------------------------------------------------
@@ -2719,8 +2719,8 @@ CREATE TABLE "ATLAS_PANDA"."TASK_EVALUATION"
   "METRIC" VARCHAR2(128),
   "VALUE_JSON" CLOB,
   "TIMESTAMP" DATE,
-  CONSTRAINT ensure_json_task_evaluation CHECK (value_json IS JSON),
-  CONSTRAINT TASK_EVALUATION_PK PRIMARY KEY(jeditaskid, metric)
+  CONSTRAINT ensure_json_task_evaluation CHECK ("VALUE_JSON" IS JSON),
+  CONSTRAINT TASK_EVALUATION_PK PRIMARY KEY("JEDITASKID", "METRIC")
 );
 
 COMMENT ON TABLE "ATLAS_PANDA"."TASK_EVALUATION"  IS 'Evaluation values for active user tasks used to improve analysis job brokerage';
