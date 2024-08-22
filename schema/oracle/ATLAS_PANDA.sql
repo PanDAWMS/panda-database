@@ -2597,43 +2597,43 @@ COMMENT ON TABLE "ATLAS_PANDA"."JOB_STATS_HP"  IS 'highest priority job statisti
 
 CREATE TABLE "ATLAS_PANDA"."TASK_ATTEMPTS"
   (
-    jeditaskid NUMBER(11),
-    attemptnr NUMBER(6),
-    starttime DATE,
-    endtime DATE,
-    startstatus VARCHAR2(32),
-    endstatus VARCHAR2(32),
-    CONSTRAINT TASK_ATTEMPTS_PK PRIMARY KEY (jeditaskid, attemptnr)
+    "JEDITASKID" NUMBER(11),
+    "ATTEMPTNR" NUMBER(6),
+    "STARTTIME" DATE,
+    "ENDTIME" DATE,
+    "STARTSTATUS" VARCHAR2(32),
+    "ENDSTATUS" VARCHAR2(32),
+    CONSTRAINT "TASK_ATTEMPTS_PK" PRIMARY KEY ("JEDITASKID", "ATTEMPTNR")
   )
-  PARTITION BY RANGE (starttime) INTERVAL (NUMTODSINTERVAL(1, 'DAY'))
-    (PARTITION "DATA_BEFORE_20220524" VALUES LESS THAN (TIMESTAMP '2022-05-24 00:00:00') )
+  PARTITION BY RANGE ("STARTTIME") INTERVAL (NUMTODSINTERVAL(1, 'DAY'))
+    (PARTITION "DATA_BEFORE_20220524" VALUES LESS THAN (TIMESTAMP '2022-05-24 00:00:00'))
   ;
 
-   COMMENT ON TABLE "ATLAS_PANDA"."TASK_ATTEMPTS"  IS 'Table to track task resubmission attempts and their timings';
-   COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."jeditaskid" IS 'JEDI task ID';
-   COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."attemptnr" IS 'Attempt number';
-   COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."starttime" IS 'When the attempt started';
-   COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."endtime" IS 'When the attempt finished';
-   COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."startstatus" IS 'Status before the resubmission';
-   COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."endstatus" IS 'Status at the end of the resubmission';
+COMMENT ON TABLE "ATLAS_PANDA"."TASK_ATTEMPTS" IS 'Table to track task resubmission attempts and their timings';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."JEDITASKID" IS 'JEDI task ID';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."ATTEMPTNR" IS 'Attempt number';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."STARTTIME" IS 'When the attempt started';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."ENDTIME" IS 'When the attempt finished';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."STARTSTATUS" IS 'Status before the resubmission';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASK_ATTEMPTS"."ENDSTATUS" IS 'Status at the end of the resubmission';
 
 --------------------------------------------------------
 --  DDL for Table JOB_OUTPUT_REPORT
 --------------------------------------------------------
-CREATE TABLE ATLAS_PANDA.JOB_OUTPUT_REPORT
+CREATE TABLE "ATLAS_PANDA"."JOB_OUTPUT_REPORT"
 (
-    PANDAID NUMBER(11) NOT NULL,
-    PRODSOURCELABEL VARCHAR2(20),
-    JOBSTATUS VARCHAR2(15) NOT NULL,
-    ATTEMPTNR NUMBER(3) NOT NULL,
-    DATA CLOB,
-    TIMESTAMP DATE NOT NULL,
-    LOCKEDBY VARCHAR2(40),
-    LOCKEDTIME DATE,
-    CONSTRAINT "JOB_OUTPUT_REPORT_PK" PRIMARY KEY(PANDAID, ATTEMPTNR)
+    "PANDAID" NUMBER(11) NOT NULL,
+    "PRODSOURCELABEL" VARCHAR2(20),
+    "JOBSTATUS" VARCHAR2(15) NOT NULL,
+    "ATTEMPTNR" NUMBER(3) NOT NULL,
+    "DATA" CLOB,
+    "TIMESTAMP" DATE NOT NULL,
+    "LOCKEDBY" VARCHAR2(40),
+    "LOCKEDTIME" DATE,
+    CONSTRAINT "JOB_OUTPUT_REPORT_PK" PRIMARY KEY("PANDAID", "ATTEMPTNR")
 );
 
-COMMENT ON TABLE "ATLAS_PANDA"."JOB_OUTPUT_REPORT"  IS 'Table for parallel processing of the job output reports in Adder';
+COMMENT ON TABLE "ATLAS_PANDA"."JOB_OUTPUT_REPORT" IS 'Table for parallel processing of the job output reports in Adder';
 
 --------------------------------------------------------
 --  DDL for Table TMP_PANDAIDS_RELATIONS
