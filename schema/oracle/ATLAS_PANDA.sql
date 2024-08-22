@@ -2511,6 +2511,22 @@ COMMENT ON TABLE "ATLAS_PANDA"."JOB_STATS_HP"  IS 'highest priority job statisti
    COMMENT ON COLUMN "ATLAS_PANDA"."SCHEDCONFIG_JSON"."LAST_UPDATE" IS 'Last time the PanDA queue was seen/updated';
    COMMENT ON TABLE "ATLAS_PANDA"."SCHEDCONFIG_JSON"  IS 'Table to store the AGIS''s JSON configuration for each panda queue';
 
+
+--------------------------------------------------------
+--  Constraints for Table SCHEDCONFIG_JSON
+--------------------------------------------------------
+
+  ALTER TABLE "ATLAS_PANDA"."SCHEDCONFIG_JSON" ADD CONSTRAINT "SCHEDCONFIG_JSON_PK" PRIMARY KEY ("PANDA_QUEUE")
+  USING INDEX  ENABLE;
+  ALTER TABLE "ATLAS_PANDA"."SCHEDCONFIG_JSON" ADD CONSTRAINT schedconfig_data_validation check (data is JSON);
+
+--------------------------------------------------------
+--  Initialize schedconfig_json with a placeholder row to allow later procedures to infer part of the json structure and compile properly
+--------------------------------------------------------
+INSERT INTO "ATLAS_PANDA_TB".schedconfig_json (PANDA_QUEUE, data, last_update)
+VALUES ('placeholder', '{"corepower": null}', sysdate);
+commit;
+
 --------------------------------------------------------
 --  DDL for Table SITE
 --------------------------------------------------------
@@ -2782,13 +2798,6 @@ COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."JEDITASKID" IS 'JEDI Task ID in cas
 COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."CREATIONTIME" IS 'Timestamp when the message was created';
 COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."DATA" IS 'CLOB in JSON format containing the SQL query and variables';
 
-
---------------------------------------------------------
---  DDL for Index TOTAL_WALLTIME_CACHE_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDA"."TOTAL_WALLTIME_CACHE_PK" ON "ATLAS_PANDA"."TOTAL_WALLTIME_CACHE" ("VO", "AGG_TYPE", "AGG_KEY", "PRODSOURCELABEL", "RESOURCE_TYPE") 
-  ;
 --------------------------------------------------------
 --  DDL for Index JEDI_DATASETCONTENT_LFN_IDX
 --------------------------------------------------------
@@ -3072,12 +3081,7 @@ COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."DATA" IS 'CLOB in JSON format conta
 
   CREATE INDEX "ATLAS_PANDA"."RETRYERRORS_RETRYACTION_IDX" ON "ATLAS_PANDA"."RETRYERRORS" ("RETRYACTION") 
   ;
---------------------------------------------------------
---  DDL for Index CONFIG_DATA_PK
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDA"."CONFIG_DATA_PK" ON "ATLAS_PANDA"."CONFIG" ("APP", "COMPONENT", "KEY", "VO") 
-  ;
 --------------------------------------------------------
 --  DDL for Index TASK_STATUSLOG_JEDITASKID_IDX
 --------------------------------------------------------
@@ -3110,12 +3114,7 @@ COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."DATA" IS 'CLOB in JSON format conta
   CREATE INDEX "ATLAS_PANDA"."JOBS_DESTINATIONDBLOCK_IDX" ON "ATLAS_PANDA"."JOBSARCHIVED4" ("DESTINATIONDBLOCK") 
    LOCAL
  (PARTITION "PART_JOBSARCHIVED4_15032020") COMPRESS 1 ;
---------------------------------------------------------
---  DDL for Index JEDI_AUX_STATUS_MINTASKID_PK
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDA"."JEDI_AUX_STATUS_MINTASKID_PK" ON "ATLAS_PANDA"."JEDI_AUX_STATUS_MINTASKID" ("STATUS") 
-  ;
 --------------------------------------------------------
 --  DDL for Index JOBSACTIVE4_PRODDBLOCK_ST_IDX
 --------------------------------------------------------
@@ -3847,6 +3846,26 @@ BEGIN
 END;
 /
 ALTER TRIGGER "ATLAS_PANDA"."JEDIWORKQUEUEID_AVOID_UPD_DEL" ENABLE;
+
+--------------------------------------------------------
+--  DDL for Function BITOR
+--------------------------------------------------------
+
+  CREATE OR REPLACE FUNCTION "ATLAS_PANDA"."BITOR" ( P_BITS1 IN NATURAL, P_BITS2 IN NATURAL )
+RETURN NATURAL
+IS
+BEGIN
+        RETURN UTL_RAW.CAST_TO_BINARY_INTEGER(
+                UTL_RAW.BIT_OR(
+                        UTL_RAW.CAST_FROM_BINARY_INTEGER(P_BITS1),
+                        UTL_RAW.CAST_FROM_BINARY_INTEGER(P_BITS2)
+                )
+        );
+END;
+
+
+/
+
 --------------------------------------------------------
 --  DDL for Trigger UPDATE_AMIFLAG_TRIG
 --------------------------------------------------------
@@ -6473,24 +6492,6 @@ END;
 
 
 
---------------------------------------------------------
---  DDL for Function BITOR
---------------------------------------------------------
-
-  CREATE OR REPLACE FUNCTION "ATLAS_PANDA"."BITOR" ( P_BITS1 IN NATURAL, P_BITS2 IN NATURAL )
-RETURN NATURAL
-IS
-BEGIN
-        RETURN UTL_RAW.CAST_TO_BINARY_INTEGER(
-                UTL_RAW.BIT_OR(
-                        UTL_RAW.CAST_FROM_BINARY_INTEGER(P_BITS1),
-                        UTL_RAW.CAST_FROM_BINARY_INTEGER(P_BITS2)
-                )
-        );
-END;
- 
-
-/
 
 
 
@@ -6762,13 +6763,7 @@ END;
 --------------------------------------------------------
 
   ALTER TABLE "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS" MODIFY ("JOBSTATUS" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table SCHEDCONFIG_JSON
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDA"."SCHEDCONFIG_JSON" ADD CONSTRAINT "SCHEDCONFIG_JSON_PK" PRIMARY KEY ("PANDA_QUEUE")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDA"."SCHEDCONFIG_JSON" ADD CONSTRAINT schedconfig_data_validation check (data is JSON);
 --------------------------------------------------------
 --  Constraints for Table HARVESTER_DIALOGS
 --------------------------------------------------------
