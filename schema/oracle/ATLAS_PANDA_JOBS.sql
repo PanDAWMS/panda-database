@@ -3,10 +3,10 @@ BEGIN
         job_name        => 'ADD_DAILYPART_PANDA',
         job_type        => 'PLSQL_BLOCK',
         job_action      => 'BEGIN
-                                ADD_DAILYPART(7, ''JOBSARCHIVED4'', ''ATLAS_PANDA_TB'');
-                                ADD_DAILYPART(7, ''FILESTABLE4'', ''ATLAS_PANDA_TB'');
-                                ADD_DAILYPART(7, ''JOBPARAMSTABLE'', ''ATLAS_PANDA_TB'');
-                                ADD_DAILYPART(7, ''METATABLE'', ''ATLAS_PANDA_TB'');
+                                ADD_DAILYPART(7, ''JOBSARCHIVED4'', ''ATLAS_PANDA_DATA02'');
+                                ADD_DAILYPART(7, ''FILESTABLE4'', ''ATLAS_PANDA_DATA02'');
+                                ADD_DAILYPART(7, ''JOBPARAMSTABLE'', ''ATLAS_PANDA_DATA02'');
+                                ADD_DAILYPART(7, ''METATABLE'', ''ATLAS_PANDA_DATA02'');
                             END;',
         start_date      => SYSTIMESTAMP,
         repeat_interval => 'FREQ=WEEKLY;INTERVAL=1',
@@ -15,7 +15,6 @@ BEGIN
         comments        => ''
     );
 END;
-/
 
 BEGIN
 dbms_scheduler.create_job(
@@ -134,15 +133,16 @@ dbms_scheduler.create_job(
 END;
 
 BEGIN
-dbms_scheduler.create_job(
-	job_name => 'PANDA_PANDALOG_SLWINDOW',
-	job_type => 'PLSQL_BLOCK',
-	job_action => 'BEGIN ATLAS_PANDA.PANDALOG_SL_WINDOW('PANDALOG', 10); END;',
-	start_date => SYSTIMESTAMP,
-	repeat_interval => 'FREQ=DAILY;INTERVAL=1',
-	auto_drop => FALSE,
-	enabled => TRUE,
-	comments =>  'Sustains at least 3 days of data sliding window on the PANDALOG table! The table is daily partitioned using the automatic INTERVAL approach');
+    dbms_scheduler.create_job(
+        job_name        => 'PANDA_PANDALOG_SLWINDOW',
+        job_type        => 'PLSQL_BLOCK',
+        job_action      => 'BEGIN ATLAS_PANDA.PANDALOG_SL_WINDOW(''PANDALOG'', 10); END;',
+        start_date      => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=DAILY;INTERVAL=1',
+        auto_drop       => FALSE,
+        enabled         => TRUE,
+        comments        => 'Sustains at least 3 days of data sliding window on the PANDALOG table! The table is daily partitioned using the automatic INTERVAL approach'
+    );
 END;
 
 BEGIN
