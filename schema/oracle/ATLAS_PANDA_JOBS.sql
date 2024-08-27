@@ -1,18 +1,21 @@
 BEGIN
-dbms_scheduler.create_job(
-	job_name => 'ADD_DAILYPART_PANDA',
-	job_type => 'PLSQL_BLOCK',
-	job_action => '"BEGIN ADD_DAILYPART(7, ''JOBSARCHIVED4', ''ATLAS_PANDA_DATA02'');
-			ADD_DAILYPART(7, ''FILESTABLE4'', ''ATLAS_PANDA_DATA02'');
-			ADD_DAILYPART(7, ''JOBPARAMSTABLE'', ''ATLAS_PANDA_DATA02'');
-			ADD_DAILYPART(7, ''METATABLE'', ''ATLAS_PANDA_DATA02'');
-		  END; "',
-	start_date => SYSTIMESTAMP,
-	repeat_interval => 'FREQ=WEEKLY;INTERVAL=1',
-	auto_drop => FALSE,
-	enabled => TRUE;
-    comments =>  '');
+    dbms_scheduler.create_job(
+        job_name        => 'ADD_DAILYPART_PANDA',
+        job_type        => 'PLSQL_BLOCK',
+        job_action      => 'BEGIN
+                                ADD_DAILYPART(7, ''JOBSARCHIVED4'', ''ATLAS_PANDA_TB'');
+                                ADD_DAILYPART(7, ''FILESTABLE4'', ''ATLAS_PANDA_TB'');
+                                ADD_DAILYPART(7, ''JOBPARAMSTABLE'', ''ATLAS_PANDA_TB'');
+                                ADD_DAILYPART(7, ''METATABLE'', ''ATLAS_PANDA_TB'');
+                            END;',
+        start_date      => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=WEEKLY;INTERVAL=1',
+        auto_drop       => FALSE,
+        enabled         => TRUE,
+        comments        => ''
+    );
 END;
+/
 
 BEGIN
 dbms_scheduler.create_job(
