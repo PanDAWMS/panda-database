@@ -216,7 +216,7 @@ BEGIN
 dbms_scheduler.create_job(
  job_name => 'UPDATE_JOBS_BY_GSHARE_JOB',
  job_type => 'PLSQL_BLOCK',
- job_action => '"BEGIN ATLAS_PANDA.UPDATE_JOBSACT_STATS_BY_GSHARE;	END;"',
+ job_action => 'BEGIN ATLAS_PANDA.UPDATE_JOBSACT_STATS_BY_GSHARE;	END;',
  start_date => SYSTIMESTAMP,
  repeat_interval => 'FREQ=MINUTELY;INTERVAL=1;',
  auto_drop => FALSE,
