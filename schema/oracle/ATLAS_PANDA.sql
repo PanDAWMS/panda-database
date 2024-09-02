@@ -34,8 +34,8 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 18);
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 18);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 19);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 19);
 
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
@@ -2270,7 +2270,8 @@ COMMENT ON TABLE "ATLAS_PANDA"."JOB_STATS_HP"  IS 'highest priority job statisti
 	"PROCESSINGTYPE" VARCHAR2(64 BYTE), 
 	"PRODSOURCELABEL" VARCHAR2(20 BYTE), 
 	"CURRENTPRIORITY" NUMBER, 
-	"NUM_OF_JOBS" NUMBER, 
+	"NUM_OF_JOBS" NUMBER,
+    "NUM_OF_CORES" NUMBER,
 	"VO" VARCHAR2(16 BYTE), 
 	"WORKQUEUE_ID" NUMBER(5,0)
    ) ;
@@ -2286,6 +2287,7 @@ COMMENT ON TABLE "ATLAS_PANDA"."JOB_STATS_HP"  IS 'highest priority job statisti
    COMMENT ON COLUMN "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"."PRODSOURCELABEL" IS 'activity name of the name such as managed, user, and ddm';
    COMMENT ON COLUMN "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"."CURRENTPRIORITY" IS 'actual priority value which is usually the same as assignedPriority, can be modified by Panda server';
    COMMENT ON COLUMN "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"."NUM_OF_JOBS" IS 'Number of jobs computed by grouping all set of attributes(columns) listed in that column,  ';
+   COMMENT ON COLUMN "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"."NUM_OF_CORES" IS 'Number of cores computed by grouping all set of attributes(columns) listed in that column,  ';
    COMMENT ON TABLE "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"  IS 'Table (was from Materialized view before, but was not reliable) which collects aggregated data on set of attributes(columns). The data is read from the JOBSACTIVE4 table by an Oracle scheduler job. The refresh interval is 2 min';
 
 
@@ -5303,6 +5305,8 @@ set define off;
 AS
 BEGIN
 
+-- ver 1.3 , last modified on 2nd September 2024
+-- added NUM_OF_CORES columns
 -- ver 1.2 , last modified on 2th July 2013
 -- added VO and WORKQUEUE_ID columns
 
@@ -5326,7 +5330,8 @@ INSERT INTO mv_jobsactive4_stats
   CURRENTPRIORITY,
   VO,
   WORKQUEUE_ID,
-  NUM_OF_JOBS
+  NUM_OF_JOBS,
+  NUM_OF_CORES
   )
   SELECT
     sysdate,
@@ -5341,7 +5346,8 @@ INSERT INTO mv_jobsactive4_stats
     TRUNC(currentPriority, -1) AS currentPriority,
     VO,
     WORKQUEUE_ID,
-    COUNT(*)  AS num_of_jobs
+    COUNT(*)  AS num_of_jobs,
+    SUM(COALESCE(actualcorecount, corecount)) AS num_of_cores
   FROM jobsActive4
   GROUP BY
     sysdate,
