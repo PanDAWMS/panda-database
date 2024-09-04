@@ -2355,7 +2355,8 @@ CREATE TABLE mv_jobsactive4_stats (
 	currentpriority bigint,
 	num_of_jobs bigint,
 	vo varchar(32),
-	workqueue_id integer
+	workqueue_id integer,
+    num_of_cores bigint
 ) ;
 COMMENT ON TABLE mv_jobsactive4_stats IS E'Table (was from Materialized view before, but was not reliable) which collects aggregated data on set of attributes(columns). The data is read from the JOBSACTIVE4 table by an Oracle scheduler job. The refresh interval is 2 min';
 COMMENT ON COLUMN mv_jobsactive4_stats.cloud IS E'cloud (associated with Tier 1) where the job is submitted to';
@@ -2369,6 +2370,7 @@ COMMENT ON COLUMN mv_jobsactive4_stats.processingtype IS E'type of the job comes
 COMMENT ON COLUMN mv_jobsactive4_stats.prodsourcelabel IS E'activity name of the name such as managed, user, and ddm';
 COMMENT ON COLUMN mv_jobsactive4_stats.relocationflag IS E'flag for submitting jobs to a single site. I.e. the brokerage is bypassed';
 COMMENT ON COLUMN mv_jobsactive4_stats.workinggroup IS E'working group name';
+COMMENT ON COLUMN mv_jobsactive4_stats.num_of_cores IS E'Number of cores computed by grouping all set of attributes(columns) listed in that column';
 ALTER  TABLE mv_jobsactive4_stats OWNER TO panda;
 ALTER TABLE mv_jobsactive4_stats ALTER COLUMN JOBSTATUS SET NOT NULL;
 
