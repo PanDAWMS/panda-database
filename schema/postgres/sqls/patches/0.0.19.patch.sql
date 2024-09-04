@@ -1,5 +1,5 @@
 -- patch to be used to upgrade from version 0.0.18
-ALTER TABLE doma_panda.mv_jobsactive4_stats ADD COLUMN num_of_cores integer;
+ALTER TABLE doma_panda.mv_jobsactive4_stats ADD COLUMN num_of_cores bigint;
 COMMENT ON COLUMN doma_panda.mv_jobsactive4_stats.num_of_cores IS E'Number of cores computed by grouping all set of attributes(columns) listed in that column';
 
 CREATE OR REPLACE PROCEDURE doma_panda.update_jobsactive_stats () AS $body$
