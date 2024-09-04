@@ -1221,6 +1221,8 @@ ALTER PROCEDURE tasks_statuslog_sl_window (DAYS_OFFSET bigint) owner TO panda;
 CREATE OR REPLACE PROCEDURE doma_panda.update_jobsactive_stats () AS $body$
 BEGIN
 
+-- ver 1.3 , last modified on 2nd September 2024
+-- added NUM_OF_CORES columns
 -- ver 1.2 , last modified on 2th July 2013
 -- added VO and WORKQUEUE_ID columns
 -- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
