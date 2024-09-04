@@ -1242,7 +1242,8 @@ INSERT INTO mv_jobsactive4_stats(CUR_DATE,
   CURRENTPRIORITY,
   VO,
   WORKQUEUE_ID,
-  NUM_OF_JOBS
+  NUM_OF_JOBS,
+  NUM_OF_CORES
   )
   SELECT
     clock_timestamp(),
@@ -1257,7 +1258,8 @@ INSERT INTO mv_jobsactive4_stats(CUR_DATE,
     TRUNC(currentPriority, -1) AS currentPriority,
     VO,
     WORKQUEUE_ID,
-    COUNT(*)  AS num_of_jobs
+    COUNT(*)  AS num_of_jobs,
+    SUM(COALESCE(actualcorecount, corecount)) AS num_of_cores
   FROM jobsActive4
   GROUP BY
     clock_timestamp(),
