@@ -87,7 +87,7 @@ CREATE TABLE rating (
 ALTER TABLE rating OWNER TO panda;
 CREATE INDEX rating_added_idx ON rating (added);
 CREATE INDEX rating_jeditaskid_idx ON rating (jeditaskid);
-ALTER TABLE visits ADD PRIMARY KEY (ratingid);
+ALTER TABLE rating ADD PRIMARY KEY (ratingid);
 
 DROP TRIGGER IF EXISTS rating_trigger ON rating CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_rating_trigger() RETURNS trigger AS $BODY$
