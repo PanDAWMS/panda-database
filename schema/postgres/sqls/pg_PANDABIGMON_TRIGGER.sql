@@ -291,3 +291,20 @@ CREATE TRIGGER visits_trigger
 	BEFORE INSERT ON visits FOR EACH ROW
 	EXECUTE PROCEDURE trigger_fct_visits_trigger();
 
+DROP TRIGGER IF EXISTS rating_trigger ON rating CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_rating_trigger() RETURNS trigger AS $BODY$
+BEGIN
+  SELECT nextval('rating_seq')
+  INTO STRICT   NEW.RATINGID
+;
+RETURN NEW;
+END
+$BODY$
+ LANGUAGE 'plpgsql';
+
+ALTER FUNCTION trigger_fct_rating_trigger() OWNER TO panda;
+
+CREATE TRIGGER rating_trigger
+	BEFORE INSERT ON rating FOR EACH ROW
+	EXECUTE PROCEDURE trigger_fct_rating_trigger();
+

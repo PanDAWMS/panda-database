@@ -285,3 +285,16 @@ COMMENT ON COLUMN visits.visitid IS E'Counter';
 ALTER TABLE visits OWNER TO panda;
 CREATE INDEX user_idx ON visits (userid);
 ALTER TABLE visits ADD PRIMARY KEY (visitid);
+
+CREATE TABLE rating (
+	ratingid bigint NOT NULL,
+    rating bigint,
+    userid smallint,
+    jeditaskid bigint,
+    feedback varchar(4000),
+    added timestamp DEFAULT CURRENT_TIMESTAMP
+) ;
+ALTER TABLE rating OWNER TO panda;
+CREATE INDEX rating_added_idx ON rating (added);
+CREATE INDEX rating_jeditaskid_idx ON rating (jeditaskid);
+ALTER TABLE rating ADD PRIMARY KEY (ratingid);

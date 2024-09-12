@@ -73,6 +73,39 @@ SECURITY DEFINER
 ALTER PROCEDURE update_jobsactive_stats () OWNER TO panda;
 
 
+CREATE SEQUENCE rating_seq INCREMENT 1 MINVALUE 1 NO MAXVALUE START 1 CACHE 20;
+ALTER SEQUENCE rating_seq OWNER TO panda;
+
+CREATE TABLE rating (
+	ratingid bigint NOT NULL,
+    rating bigint,
+    userid smallint,
+    jeditaskid bigint,
+    feedback varchar(4000),
+    added timestamp DEFAULT CURRENT_TIMESTAMP
+) ;
+ALTER TABLE rating OWNER TO panda;
+CREATE INDEX rating_added_idx ON rating (added);
+CREATE INDEX rating_jeditaskid_idx ON rating (jeditaskid);
+ALTER TABLE rating ADD PRIMARY KEY (ratingid);
+
+DROP TRIGGER IF EXISTS rating_trigger ON rating CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_rating_trigger() RETURNS trigger AS $BODY$
+BEGIN
+  SELECT nextval('rating_seq')
+  INTO STRICT   NEW.RATINGID
+;
+RETURN NEW;
+END
+$BODY$
+ LANGUAGE 'plpgsql';
+
+ALTER FUNCTION trigger_fct_rating_trigger() OWNER TO panda;
+
+CREATE TRIGGER rating_trigger
+	BEFORE INSERT ON rating FOR EACH ROW
+	EXECUTE PROCEDURE trigger_fct_rating_trigger();
+
 -- Update versions
 UPDATE doma_panda.pandadb_version SET major=0, minor=0, patch=19 where component='JEDI';
 UPDATE doma_panda.pandadb_version SET major=0, minor=0, patch=19 where component='SERVER';
