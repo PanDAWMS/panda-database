@@ -34,8 +34,8 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 19);
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 19);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 20);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 20);
 
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
@@ -2131,13 +2131,14 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
 	"GSHARE" VARCHAR2(32 BYTE), 
 	"COMPUTINGSITE" VARCHAR2(128 BYTE), 
 	"JOBSTATUS" VARCHAR2(15 BYTE), 
-	"MAXPRIORITY" NUMBER, 
+	"MAXPRIORITY" NUMBER,
+    "PRORATED_DISKIO_AVG" NUMBER(11,2),
+    "PRORATED_MEM_AVG" NUMBER(11,2)
 	"NJOBS" NUMBER, 
 	"HS" NUMBER, 
 	"VO" VARCHAR2(16 BYTE), 
 	"WORKQUEUE_ID" NUMBER(5,0), 
-	"RESOURCE_TYPE" VARCHAR2(56 BYTE),
-	"PRORATED_DISKIO_AVG" NUMBER(11,2)
+	"RESOURCE_TYPE" VARCHAR2(56 BYTE)
    ) ;
 
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."TS" IS 'Timestamp for the entry';
@@ -2151,6 +2152,7 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."WORKQUEUE_ID" IS 'Work queue';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."RESOURCE_TYPE" IS 'Resource type (SCORE, MCORE...)';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."PRORATED_DISKIO_AVG" IS 'avg(diskIO/corecount)';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."PRORATED_MEM_AVG" IS 'avg(minRamCount/corecount)';
    COMMENT ON TABLE "ATLAS_PANDA"."JOBS_SHARE_STATS"  IS 'njobs and HS06 statistics by share';
 
 --------------------------------------------------------
@@ -2164,6 +2166,7 @@ CREATE TABLE "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"
 	"JOBSTATUS" VARCHAR2(15 BYTE),
 	"MAXPRIORITY" NUMBER,
     "PRORATED_DISKIO_AVG" NUMBER(11,2),
+    "PRORATED_MEM_AVG" NUMBER(11,2),
 	"NJOBS" NUMBER,
 	"HS" NUMBER,
 	"VO" VARCHAR2(16 BYTE),
@@ -2171,18 +2174,19 @@ CREATE TABLE "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"
 	"RESOURCE_TYPE" VARCHAR2(56 BYTE)
    ) ;
 
-   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."TS" IS 'Timestamp for the entry';
-   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."GSHARE" IS 'Global share';
-   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."COMPUTINGSITE" IS 'Panda site';
-   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."JOBSTATUS" IS 'Jobstatus for the aggregation';
-   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."MAXPRIORITY" IS 'Max priority of share';
-   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."PRORATED_DISKIO_AVG" IS 'Dummy entry, only for compatibility';
-   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."NJOBS" IS 'Number of jobs';
-   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."HS" IS 'HS06 = core count x core power x njob';
-   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."VO" IS 'Virtual organization';
-   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."WORKQUEUE_ID" IS 'Work queue';
-   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."RESOURCE_TYPE" IS 'Resource type (SCORE, MCORE...)';
-   COMMENT ON TABLE "ATLAS_PANDA"."JOBS_SHARE_STATS"  IS 'njobs and HS06 statistics by share for table jobsdefined4';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."TS" IS 'Timestamp for the entry';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."GSHARE" IS 'Global share';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."COMPUTINGSITE" IS 'Panda site';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."JOBSTATUS" IS 'Jobstatus for the aggregation';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."MAXPRIORITY" IS 'Max priority of share';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."PRORATED_DISKIO_AVG" IS 'Dummy entry, only for compatibility';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."PRORATED_MEM_AVG" IS 'avg(minRamCount/corecount)';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."NJOBS" IS 'Number of jobs';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."HS" IS 'HS06 = core count x core power x njob';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."VO" IS 'Virtual organization';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."WORKQUEUE_ID" IS 'Work queue';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."RESOURCE_TYPE" IS 'Resource type (SCORE, MCORE...)';
+   COMMENT ON TABLE "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"  IS 'njobs and HS06 statistics by share for table jobsdefined4';
 
 --------------------------------------------------------
 --  DDL for Table JOB_STATS_HP
@@ -5437,10 +5441,11 @@ set define off;
 CREATE OR REPLACE PROCEDURE "ATLAS_PANDA"."UPDATE_JOBSACT_STATS_BY_GSHARE"
 AS
 BEGIN
+-- 16th Sept 2024 , ver 1.6
 -- 14th Nov 2023 , ver 1.5
 -- 27th Nov 2020 , ver 1.4
 -- 29th Jan 2018 , ver 1.3
--- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
+-- to easily identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
 DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Aggregates data by global share for the active jobs!');
 DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
 
@@ -5448,15 +5453,16 @@ DELETE from ATLAS_PANDA.JOBS_SHARE_STATS;
 
 INSERT INTO ATLAS_PANDA.JOBS_SHARE_STATS (TS, GSHARE, WORKQUEUE_ID, RESOURCE_TYPE,
                                           COMPUTINGSITE, JOBSTATUS,
-                                          MAXPRIORITY, PRORATED_DISKIO_AVG, NJOBS, HS, VO)
+                                          MAXPRIORITY, PRORATED_DISKIO_AVG, PRORATED_MEM_AVG, NJOBS, HS, VO)
 WITH
     sc_slimmed AS (
     SELECT /*+ MATERIALIZE */ sc.panda_queue AS pq, sc.data.corepower AS cp
     FROM ATLAS_PANDA.schedconfig_json sc
     )
 SELECT sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus,
-      MAX(currentPriority) AS maxPriority, AVG(diskIO/NVL(ja4.coreCount, 1)) AS proratedDiskioAvg, COUNT(*) AS num_of_jobs,
-      COUNT(*) * NVL(ja4.coreCount, 1) * sc_s.cp AS HS, VO
+      MAX(currentPriority) AS maxPriority,
+      AVG(diskIO/NVL(ja4.coreCount, 1)) AS proratedDiskioAvg, AVG(minRamCount/NVL(ja4.coreCount, 1)) AS proratedMemAvg,
+      COUNT(*) AS num_of_jobs, COUNT(*) * NVL(ja4.coreCount, 1) * sc_s.cp AS HS, VO
 FROM ATLAS_PANDA.jobsActive4 ja4, sc_slimmed sc_s
 WHERE ja4.computingsite = sc_s.pq
 GROUP BY sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO;
@@ -5479,11 +5485,11 @@ set define off;
 CREATE OR REPLACE PROCEDURE "ATLAS_PANDA"."UPDATE_JOBSDEF_STATS_BY_GSHARE"
 AS
 BEGIN
-
+-- 16th Sept 2024 , ver 1.2
 -- 14th Nov 2023 , ver 1.1
 -- 27th Nov 2020 , ver 1.0
 -- Based on UPDATE_JOBSACT_STATS_BY_GSHARE
--- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
+-- to easily identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
 DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Aggregates data by global share for the active jobs!');
 DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
 
@@ -5492,15 +5498,16 @@ DELETE from ATLAS_PANDA.JOBSDEFINED_SHARE_STATS;
 
 INSERT INTO ATLAS_PANDA.JOBSDEFINED_SHARE_STATS (TS, GSHARE, WORKQUEUE_ID, RESOURCE_TYPE,
                                           COMPUTINGSITE, JOBSTATUS,
-                                          MAXPRIORITY, PRORATED_DISKIO_AVG, NJOBS, HS, VO)
+                                          MAXPRIORITY, PRORATED_DISKIO_AVG, PRORATED_MEM_AVG, NJOBS, HS, VO)
 WITH
     sc_slimmed AS (
     SELECT /*+ MATERIALIZE */ sc.panda_queue AS pq, sc.data.corepower AS cp
     FROM ATLAS_PANDA.schedconfig_json sc
     )
 SELECT sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus,
-      MAX(currentPriority) AS maxPriority, AVG(diskIO/NVL(ja4.coreCount, 1)) AS proratedDiskioAvg, COUNT(*) AS num_of_jobs,
-      COUNT(*) * NVL(ja4.coreCount, 1) * sc_s.cp AS HS, VO
+      MAX(currentPriority) AS maxPriority,
+      AVG(diskIO/NVL(ja4.coreCount, 1)) AS proratedDiskioAvg, AVG(minRamCount/NVL(ja4.coreCount, 1)) AS proratedDiskioAvg,
+      COUNT(*) AS num_of_jobs, COUNT(*) * NVL(ja4.coreCount, 1) * sc_s.cp AS HS, VO
 FROM ATLAS_PANDA.jobsDefined4 ja4, sc_slimmed sc_s
 WHERE ja4.computingsite = sc_s.pq
 GROUP BY sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO;
