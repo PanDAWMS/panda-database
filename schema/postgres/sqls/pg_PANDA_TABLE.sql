@@ -1929,6 +1929,7 @@ CREATE TABLE jobsdefined_share_stats (
 	jobstatus varchar(15) NOT NULL,
 	maxpriority bigint,
 	prorated_diskio_avg decimal(11,2),
+    prorated_mem_avg decimal(11,2),
 	njobs bigint,
 	hs bigint,
 	vo varchar(32),
@@ -2222,12 +2223,13 @@ CREATE TABLE jobs_share_stats (
 	computingsite varchar(128),
 	jobstatus varchar(15) NOT NULL,
 	maxpriority bigint,
+    prorated_diskio_avg decimal(11,2),
+    prorated_mem_avg decimal(11,2),
 	njobs bigint,
 	hs bigint,
 	vo varchar(32),
 	workqueue_id integer,
-	resource_type varchar(56),
-	prorated_diskio_avg decimal(11,2)
+	resource_type varchar(56)
 ) ;
 COMMENT ON TABLE jobs_share_stats IS E'njobs and HS06 statistics by share for table jobsdefined4';
 COMMENT ON COLUMN jobs_share_stats.computingsite IS E'Panda site';
