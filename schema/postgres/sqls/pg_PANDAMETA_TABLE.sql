@@ -47,53 +47,6 @@ CREATE TABLE auth_user_user_permissions (
 ) ;
 ALTER TABLE auth_user_user_permissions OWNER TO panda;
 
-CREATE TABLE cloudconfig (
-	name varchar(20) NOT NULL,
-	description varchar(50) NOT NULL,
-	tier1 varchar(20) NOT NULL,
-	tier1se varchar(400) NOT NULL,
-	relocation varchar(10),
-	weight bigint NOT NULL DEFAULT '0',
-	server varchar(100) NOT NULL,
-	status varchar(20) NOT NULL,
-	transtimelo bigint NOT NULL DEFAULT '0',
-	transtimehi bigint NOT NULL DEFAULT '0',
-	waittime bigint NOT NULL DEFAULT '0',
-	comment_ varchar(200),
-	space bigint NOT NULL DEFAULT '0',
-	moduser varchar(30),
-	modtime timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	validation varchar(20),
-	mcshare bigint NOT NULL DEFAULT '0',
-	countries varchar(80),
-	fasttrack varchar(20),
-	nprestage bigint NOT NULL DEFAULT 0,
-	pilotowners varchar(300),
-	dn varchar(100),
-	email varchar(60),
-	fairshare varchar(256),
-	auto_mcu smallint DEFAULT 0
-) ;
-COMMENT ON COLUMN cloudconfig.comment_ IS E'ORIGINAL NAME:comment';
-ALTER  TABLE cloudconfig OWNER TO panda;
-ALTER TABLE cloudconfig ADD PRIMARY KEY (name);
-ALTER TABLE cloudconfig ADD CONSTRAINT cloudconfig_auto_mcu_check CHECK (auto_mcu IN (0,1));
-ALTER TABLE cloudconfig ALTER COLUMN auto_mcu SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN NAME SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN DESCRIPTION SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN TIER1 SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN TIER1SE SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN WEIGHT SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN SERVER SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN STATUS SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN TRANSTIMELO SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN TRANSTIMEHI SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN WAITTIME SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN SPACE SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN MODTIME SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN MCSHARE SET NOT NULL;
-ALTER TABLE cloudconfig ALTER COLUMN NPRESTAGE SET NOT NULL;
-
 
 CREATE TABLE incidents (
 	at_time timestamp,
@@ -147,22 +100,6 @@ ALTER TABLE proxykey ALTER COLUMN CREATED SET NOT NULL;
 ALTER TABLE proxykey ALTER COLUMN EXPIRES SET NOT NULL;
 ALTER TABLE proxykey ALTER COLUMN ORIGIN SET NOT NULL;
 ALTER TABLE proxykey ALTER COLUMN MYPROXY SET NOT NULL;
-
-CREATE TABLE siteaccess (
-	id bigint NOT NULL,
-	dn varchar(100),
-	pandasite varchar(100),
-	poffset bigint NOT NULL DEFAULT 0,
-	rights varchar(30),
-	status varchar(20),
-	workinggroups varchar(100),
-	created timestamp
-) ;
-ALTER  TABLE siteaccess OWNER TO panda;
-CREATE UNIQUE INDEX siteaccess_dnsite_idx ON siteaccess (dn, pandasite);
-ALTER TABLE siteaccess ADD PRIMARY KEY (id);
-ALTER TABLE siteaccess ALTER COLUMN ID SET NOT NULL;
-ALTER TABLE siteaccess ALTER COLUMN POFFSET SET NOT NULL;
 
 
 CREATE TABLE sitedata (
