@@ -16,28 +16,6 @@
    CREATE SEQUENCE  "ATLAS_PANDAMETA"."USERS_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  NOCYCLE ;
 
 --------------------------------------------------------
---  DDL for Table INCIDENTS
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."INCIDENTS" 
-   (	"AT_TIME" DATE, 
-	"TYPEKEY" VARCHAR2(20 BYTE), 
-	"DESCRIPTION" VARCHAR2(200 BYTE)
-   ) ;
-
---------------------------------------------------------
---  DDL for Table LOGSTABLE
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."LOGSTABLE" 
-   (	"PANDAID" NUMBER(10,0) DEFAULT '0', 
-	"LOG1" CLOB, 
-	"LOG2" CLOB, 
-	"LOG3" CLOB, 
-	"LOG4" CLOB
-   ) ;
-
---------------------------------------------------------
 --  DDL for Table PANDACONFIG
 --------------------------------------------------------
 
@@ -189,13 +167,6 @@
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_PROXYKEY" ON "ATLAS_PANDAMETA"."PROXYKEY" ("ID") 
-  ;
-
---------------------------------------------------------
---  DDL for Index PRIMARY_LOGSTABLE
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ATLAS_PANDAMETA"."PRIMARY_LOGSTABLE" ON "ATLAS_PANDAMETA"."LOGSTABLE" ("PANDAID") 
   ;
 
 --------------------------------------------------------
@@ -496,18 +467,6 @@ END mysql_utilities;
   ALTER TABLE "ATLAS_PANDAMETA"."USERS" MODIFY ("LASTMOD" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."USERS" MODIFY ("NAME" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDAMETA"."USERS" MODIFY ("ID" NOT NULL ENABLE);
-
---------------------------------------------------------
---  Constraints for Table LOGSTABLE
---------------------------------------------------------
-
-  ALTER TABLE "ATLAS_PANDAMETA"."LOGSTABLE" ADD CONSTRAINT "PRIMARY_LOGSTABLE" PRIMARY KEY ("PANDAID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDAMETA"."LOGSTABLE" MODIFY ("LOG4" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."LOGSTABLE" MODIFY ("LOG3" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."LOGSTABLE" MODIFY ("LOG2" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."LOGSTABLE" MODIFY ("LOG1" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDAMETA"."LOGSTABLE" MODIFY ("PANDAID" NOT NULL ENABLE);
 
 --------------------------------------------------------
 --  Constraints for Table PANDACONFIG

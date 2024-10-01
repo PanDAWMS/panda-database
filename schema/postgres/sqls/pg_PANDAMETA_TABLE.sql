@@ -47,30 +47,6 @@ CREATE TABLE auth_user_user_permissions (
 ) ;
 ALTER TABLE auth_user_user_permissions OWNER TO panda;
 
-
-CREATE TABLE incidents (
-	at_time timestamp,
-	typekey varchar(20),
-	description varchar(200)
-) ;
-ALTER  TABLE incidents OWNER TO panda;
-
-CREATE TABLE logstable (
-	pandaid bigint NOT NULL DEFAULT '0',
-	log1 text NOT NULL,
-	log2 text NOT NULL,
-	log3 text NOT NULL,
-	log4 text NOT NULL
-) ;
-ALTER  TABLE logstable OWNER TO panda;
-ALTER TABLE logstable ADD PRIMARY KEY (pandaid);
-ALTER TABLE logstable ALTER COLUMN LOG4 SET NOT NULL;
-ALTER TABLE logstable ALTER COLUMN LOG3 SET NOT NULL;
-ALTER TABLE logstable ALTER COLUMN LOG2 SET NOT NULL;
-ALTER TABLE logstable ALTER COLUMN LOG1 SET NOT NULL;
-ALTER TABLE logstable ALTER COLUMN PANDAID SET NOT NULL;
-
-
 CREATE TABLE pandaconfig (
 	name varchar(60) NOT NULL,
 	controller varchar(20) NOT NULL,
