@@ -2520,23 +2520,6 @@ ALTER TABLE panda_site ADD PRIMARY KEY (panda_site_name);
 ALTER TABLE panda_site ADD CONSTRAINT panda_site_is_local_check CHECK ( is_local IN ('Y', 'N'));
 ALTER TABLE panda_site ALTER COLUMN SITE_NAME SET NOT NULL;
 
-
-CREATE TABLE pilottoken (
-	token varchar(64) NOT NULL,
-	schedulerhost varchar(100),
-	scheduleruser varchar(150),
-	usages integer NOT NULL DEFAULT '1',
-	created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	expires timestamp NOT NULL DEFAULT to_date('01-JAN-70 00:00:00','dd-MON-yy hh24:mi:ss'),
-	schedulerid varchar(80)
-) ;
-ALTER  TABLE pilottoken OWNER TO panda;
-ALTER TABLE pilottoken ADD PRIMARY KEY (token);
-ALTER TABLE pilottoken ALTER COLUMN USAGES SET NOT NULL;
-ALTER TABLE pilottoken ALTER COLUMN CREATED SET NOT NULL;
-ALTER TABLE pilottoken ALTER COLUMN EXPIRES SET NOT NULL;
-
-
 CREATE TABLE resource_types (
 	resource_name varchar(56) NOT NULL,
 	mincore integer,

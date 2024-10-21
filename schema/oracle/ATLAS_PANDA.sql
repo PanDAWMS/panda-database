@@ -2438,20 +2438,6 @@ COMMENT ON TABLE "ATLAS_PANDA"."JOB_STATS_HP"  IS 'highest priority job statisti
    COMMENT ON TABLE "ATLAS_PANDA"."PANDA_SITE"  IS 'PanDA site/queue. Table needed for the "Configurator" agent. The table consolidate information from other sources (AGIS and Rucio ) and caches it so that Panda can easily retrieve it and use it for brokerage.';
 
 --------------------------------------------------------
---  DDL for Table PILOTTOKEN
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDA"."PILOTTOKEN" 
-   (	"TOKEN" VARCHAR2(64 BYTE), 
-	"SCHEDULERHOST" VARCHAR2(100 BYTE), 
-	"SCHEDULERUSER" VARCHAR2(150 BYTE), 
-	"USAGES" NUMBER(9,0) DEFAULT '1', 
-	"CREATED" DATE DEFAULT sysdate, 
-	"EXPIRES" DATE DEFAULT to_date('01-JAN-70 00:00:00', 'dd-MON-yy hh24:mi:ss'), 
-	"SCHEDULERID" VARCHAR2(80 BYTE)
-   ) ;
-
---------------------------------------------------------
 --  DDL for Table RESOURCE_TYPES
 --------------------------------------------------------
 
@@ -3373,12 +3359,7 @@ COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."DATA" IS 'CLOB in JSON format conta
   CREATE UNIQUE INDEX "ATLAS_PANDA"."JEDI_TASKPARAMS_JEDITASKID_PK" ON "ATLAS_PANDA"."JEDI_TASKPARAMS" ("JEDITASKID") 
    LOCAL
  (PARTITION "INITIAL_PARTITION") ;
---------------------------------------------------------
---  DDL for Index PILOTTOKEN_TOKEN_PK
---------------------------------------------------------
 
-  CREATE UNIQUE INDEX "ATLAS_PANDA"."PILOTTOKEN_TOKEN_PK" ON "ATLAS_PANDA"."PILOTTOKEN" ("TOKEN") 
-  ;
 --------------------------------------------------------
 --  DDL for Index JOBSARCH4_SPECIALHANDLING_IDX
 --------------------------------------------------------
@@ -6266,15 +6247,7 @@ END;
   ALTER TABLE "ATLAS_PANDA"."TASKS_STATUSLOG" MODIFY ("STATUS" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDA"."TASKS_STATUSLOG" MODIFY ("MODIFICATIONTIME" NOT NULL ENABLE);
   ALTER TABLE "ATLAS_PANDA"."TASKS_STATUSLOG" MODIFY ("JEDITASKID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table PILOTTOKEN
---------------------------------------------------------
 
-  ALTER TABLE "ATLAS_PANDA"."PILOTTOKEN" ADD CONSTRAINT "PILOTTOKEN_TOKEN_PK" PRIMARY KEY ("TOKEN")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ATLAS_PANDA"."PILOTTOKEN" MODIFY ("EXPIRES" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDA"."PILOTTOKEN" MODIFY ("CREATED" NOT NULL ENABLE);
-  ALTER TABLE "ATLAS_PANDA"."PILOTTOKEN" MODIFY ("USAGES" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table MV_JOBSACTIVE4_STATS
 --------------------------------------------------------
