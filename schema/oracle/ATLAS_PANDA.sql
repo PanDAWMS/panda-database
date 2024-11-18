@@ -34,8 +34,8 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 20);
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 20);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 21);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 21);
 
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
@@ -102,6 +102,12 @@
 --------------------------------------------------------
 
    CREATE SEQUENCE  "ATLAS_PANDA"."SUBCOUNTER_SUBID_SEQ"  MINVALUE 1 MAXVALUE 9999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  CYCLE ;
+
+--------------------------------------------------------
+--  DDL for Sequence JEDI_DATA_CAROUSEL_REQUEST_ID_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ATLAS_PANDA"."JEDI_DATA_CAROUSEL_REQUEST_ID_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER NOCYCLE;
 
 --------------------------------------------------------
 --  DDL for Table CONFIG
@@ -964,7 +970,8 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
 	"ATTEMPTNR" NUMBER(3,0), 
 	"CONTAINER_NAME" VARCHAR2(200 BYTE),
     "JOB_LABEL" VARCHAR2(20 BYTE),
-    "REALMODIFICATIONTIME" DATE
+    "REALMODIFICATIONTIME" DATE,
+    "FRAMEWORK" VARCHAR2(50)
    ) 
   PARTITION BY RANGE ("JEDITASKID") INTERVAL (500000) 
  (PARTITION "INITIAL_PARTITION"  VALUES LESS THAN (1)) ;
@@ -1048,6 +1055,7 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."MEMORY_LEAK_CORE" IS 'Average memory leak (kB/s) per core for the task, as measured by the task';
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."MEMORY_LEAK_X2" IS 'Memory leak chi square statistic';
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."REALMODIFICATIONTIME" IS 'Set ALWAYS to last modification time, without any tricks like old timestamps';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."FRAMEWORK" IS 'Submission framework that was used to generate the task';
 
 
 --------------------------------------------------------
@@ -2789,6 +2797,62 @@ COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."EXECUTION_ORDER" IS 'In case multip
 COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."JEDITASKID" IS 'JEDI Task ID in case the messages want to be batched';
 COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."CREATIONTIME" IS 'Timestamp when the message was created';
 COMMENT ON COLUMN "ATLAS_PANDA"."SQL_QUEUE"."DATA" IS 'CLOB in JSON format containing the SQL query and variables';
+
+
+--------------------------------------------------------
+--  DDL for Table DATA_CAROUSEL_REQUESTS
+--------------------------------------------------------
+
+TABLE "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS" (
+    "REQUEST_ID" NUMBER NOT NULL,
+    "DATASET" VARCHAR2(256 BYTE) NOT NULL,
+    "SOURCE_RSE" VARCHAR2(64 BYTE),
+    "DESTINATION_RSE" VARCHAR2(64 BYTE),
+    "DDM_RULE_ID" VARCHAR2(64 BYTE),
+    "STATUS" VARCHAR2(32 BYTE),
+    "TOTAL_FILES" NUMBER(9,0),
+    "STAGED_FILES" NUMBER(9,0),
+    "DATASET_SIZE" NUMBER(18,0),
+    "STAGED_SIZE" NUMBER(18,0),
+    "CREATION_TIME" DATE,
+    "START_TIME" DATE,
+    "END_TIME" DATE,
+    "MODIFICATION_TIME" DATE,
+    "CHECK_TIME" DATE,
+    CONSTRAINT "DATA_CAROU_REQ_PK" PRIMARY KEY ("REQUEST_ID") ENABLE
+);
+
+COMMENT ON TABLE "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS" IS 'Table of Data Carousel requests';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."REQUEST_ID" IS 'Sequential ID of the request, generated from Oracle sequence object ATLAS_PANDA.JEDI_DATA_CAROUSEL_REQUEST_ID_SEQ when new request is inserted';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."DATASET" IS 'Dataset to stage';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."SOURCE_RSE" IS 'Source RSE (usually tape) of staging';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."DESTINATION_RSE" IS 'Destination RSE (usually DATADISK) of staging';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."DDM_RULE_ID" IS 'DDM rule ID of the staging rule';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."STATUS" IS 'Status of the request';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."TOTAL_FILES" IS 'Number of total files of the dataset';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."STAGED_FILES" IS 'Number of files already staged';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."DATASET_SIZE" IS 'Size in bytes of the dataset';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."STAGED_SIZE" IS 'Size in bytes of files already staged';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."CREATION_TIME" IS 'Timestamp when the request is created';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."START_TIME" IS 'Timestamp when the request starts staging';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."END_TIME" IS 'Timestamp when the request ended';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."MODIFICATION_TIME" IS 'Timestamp of the last request update';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS"."CHECK_TIME" IS 'Last time when the request was checked';
+
+--------------------------------------------------------
+--  DDL for Table DATA_CAROUSEL_RELATIONS
+--------------------------------------------------------
+
+CREATE TABLE "ATLAS_PANDA"."DATA_CAROUSEL_RELATIONS" (
+    "REQUEST_ID" NUMBER(12,0) NOT NULL,
+    "TASK_ID" NUMBER(12,0) NOT NULL,
+    CONSTRAINT "DATA_CAROU_REL_UC" UNIQUE ("REQUEST_ID", "TASK_ID") ENABLE
+);
+
+COMMENT ON TABLE "ATLAS_PANDA"."DATA_CAROUSEL_RELATIONS" IS 'Table of mapping between Data Carousel requests and tasks';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_RELATIONS"."REQUEST_ID" IS 'ID of the request';
+COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_RELATIONS"."TASK_ID" IS 'ID of the task';
+
 
 --------------------------------------------------------
 --  DDL for Index JEDI_DATASETCONTENT_LFN_IDX
