@@ -912,7 +912,9 @@ CREATE TABLE jedi_tasks (
 	memory_leak_x2 decimal(14,3),
 	attemptnr smallint,
 	container_name varchar(200),
-	realmodificationtime timestamp
+    job_label varchar(20),
+	realmodificationtime timestamp,
+    framework varchar(50)
 ) PARTITION BY RANGE (jeditaskid) ;
 COMMENT ON COLUMN jedi_tasks.amiflag IS E'It will contain a mask, one bit per AMI task (AMI has two tasks) with default value at insertion for "amiflag" to 3 (0b00000011). A trigger when the field âcampaignâ is modified:	if "amiflag" is NULL then "amiflag" = 2 else "amiflag" = BITOR(AMIFLAG, 2)';
 COMMENT ON COLUMN jedi_tasks.architecture IS E'The architecture on which the task runs. Eg, $CMTCONFIG';
@@ -992,6 +994,7 @@ COMMENT ON COLUMN jedi_tasks.workdiskcount IS E'average size of work directory m
 COMMENT ON COLUMN jedi_tasks.workdiskunit IS E'unit of WORKDISKCOUNT';
 COMMENT ON COLUMN jedi_tasks.workinggroup IS E'The name of the working group which owns the task ';
 COMMENT ON COLUMN jedi_tasks.workqueue_id IS E'The work queue identifier to which the task belongs';
+COMMENT ON COLUMN jedi_tasks.framework IS E'Submission framework that was used to generate the task';
 ALTER  TABLE jedi_tasks OWNER TO panda;
 CREATE INDEX jedi_tasks_amiflag_idx ON jedi_tasks (amiflag);
 CREATE INDEX jedi_tasks_creation_idx ON jedi_tasks (creationdate);
@@ -2613,7 +2616,7 @@ COMMENT ON COLUMN site.tier_level IS E'Tier level (0/1/2/3) of the site';
 ALTER  TABLE site OWNER TO panda;
 ALTER TABLE site ADD PRIMARY KEY (site_name);
 
-
+7
 CREATE TABLE site_stats (
 	site_name varchar(52) NOT NULL,
 	key varchar(52) NOT NULL,
@@ -2745,3 +2748,51 @@ CREATE TABLE typical_num_input (
 COMMENT ON TABLE typical_num_input IS E'Cache for queued walltime aggregations';
 ALTER  TABLE typical_num_input OWNER TO panda;
 ALTER TABLE typical_num_input ADD PRIMARY KEY (vo,agg_type,agg_key,prodsourcelabel,processingtype);
+
+
+CREATE TABLE data_carousel_requests (
+    "request_id" bigint NOT NULL,
+    "dataset" varchar(256) NOT NULL,
+    "source_rse" varchar(64),
+    "destination_rse" varchar(64),
+    "ddm_rule_id" varchar(64),
+    "status" varchar(32),
+    "total_files" bigint,
+    "staged_files" bigint,
+    "dataset_size" bigint,
+    "staged_size" bigint,
+    "creation_time" timestamp,
+    "start_time" timestamp,
+    "end_time" timestamp,
+    "modification_time" timestamp,
+    "check_time" timestamp
+);
+COMMENT ON TABLE data_carousel_requests IS E'Table of Data Carousel requests';
+COMMENT ON COLUMN data_carousel_requests.request_id IS E'Sequential ID of the request, generated from PostgreSQL sequence object jedi_data_carousel_request_id_seq when new request is inserted';
+COMMENT ON COLUMN data_carousel_requests.dataset IS E'Dataset to stage';
+COMMENT ON COLUMN data_carousel_requests.source_rse IS E'Source RSE (usually tape) of staging';
+COMMENT ON COLUMN data_carousel_requests.destination_rse IS E'Destination RSE (usually DATADISK) of staging';
+COMMENT ON COLUMN data_carousel_requests.ddm_rule_id IS E'DDM rule ID of the staging rule';
+COMMENT ON COLUMN data_carousel_requests.status IS E'Status of the request';
+COMMENT ON COLUMN data_carousel_requests.total_files IS E'Number of total files of the dataset';
+COMMENT ON COLUMN data_carousel_requests.staged_files IS E'Number of files already staged';
+COMMENT ON COLUMN data_carousel_requests.dataset_size IS E'Size in bytes of the dataset';
+COMMENT ON COLUMN data_carousel_requests.staged_size IS E'Size in bytes of files already staged';
+COMMENT ON COLUMN data_carousel_requests.creation_time IS E'Timestamp when the request is created';
+COMMENT ON COLUMN data_carousel_requests.start_time IS E'Timestamp when the request starts staging';
+COMMENT ON COLUMN data_carousel_requests.end_time IS E'Timestamp when the request ended';
+COMMENT ON COLUMN data_carousel_requests.modification_time IS E'Timestamp of the last request update';
+COMMENT ON COLUMN data_carousel_requests.check_time IS E'Last time when the request was checked';
+ALTER TABLE data_carousel_requests OWNER TO panda;
+ALTER TABLE data_carousel_requests ADD PRIMARY KEY (request_id);
+
+
+CREATE TABLE data_carousel_relations (
+    "request_id" bigint NOT NULL,
+    "task_id" bigint NOT NULL
+);
+COMMENT ON TABLE data_carousel_relations IS E'Table of mapping between Data Carousel requests and tasks';
+COMMENT ON COLUMN data_carousel_relations.request_id IS E'ID of the request';
+COMMENT ON COLUMN data_carousel_relations.task_id IS E'ID of the task';
+ALTER TABLE data_carousel_relations OWNER TO panda;
+ALTER TABLE data_carousel_relations ADD PRIMARY KEY (request_id);
