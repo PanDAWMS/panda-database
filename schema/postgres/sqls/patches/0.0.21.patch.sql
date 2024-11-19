@@ -1,5 +1,5 @@
 -- patch to be used to upgrade from version 0.0.20
-CREATE SEQUENCE doma_panda.jedi_data_carousel_request_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 9999999999999999999999999999 START 1;
+CREATE SEQUENCE doma_panda.jedi_data_carousel_request_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1;
 ALTER SEQUENCE doma_panda.jedi_data_carousel_request_id_seq OWNER TO panda;
 
 ALTER TABLE doma_panda.jedi_tasks ADD COLUMN job_label varchar(20);
