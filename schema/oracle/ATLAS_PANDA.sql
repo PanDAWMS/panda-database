@@ -34,8 +34,8 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 21);
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 21);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 22);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 22);
 
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
@@ -2495,6 +2495,32 @@ COMMENT ON TABLE "ATLAS_PANDA"."JOB_STATS_HP"  IS 'highest priority job statisti
 	"DESCRIPTION" VARCHAR2(250 BYTE), 
 	"EXPIRATION_DATE" TIMESTAMP (0)
    ) ;
+
+--------------------------------------------------------
+--  DDL for Table ERROR_CLASSIFICATION
+--------------------------------------------------------
+
+CREATE TABLE "ATLAS_PANDA"."ERROR_CLASSIFICATION" (
+"ID" NUMBER GENERATED ALWAYS AS IDENTITY ( START WITH 1000000 INCREMENT BY 1 NOCACHE NOORDER ) NOT NULL,
+"ERROR_SOURCE" VARCHAR2(30 BYTE) NOT NULL,
+"ERROR_CODE" NUMBER(10, 0) NOT NULL,
+"ERROR_DIAG" VARCHAR2(256 BYTE) NOT NULL,
+"DESCRIPTION" VARCHAR2(250 BYTE),
+"ERROR_CLASS" VARCHAR2(30 BYTE) NOT NULL,
+"ACTIVE" CHAR(1 BYTE) NOT NULL,
+"REG_DATE" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+CONSTRAINT "PK_ERROR_CLASSIFICATION" PRIMARY KEY (ID)
+);
+
+COMMENT ON TABLE "ATLAS_PANDA"."ERROR_CLASSIFICATION" IS 'Classification of job error codes+messages to system, user or others';
+COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."ID" IS 'Sequential ID of the request. 1M offset to avoid overlapping IDs with retry module';
+COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."ERROR_SOURCE" IS 'Source of the error: pilotErrorCode, exeErrorCode, ddmErrorCode...';
+COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."ERROR_CODE" IS 'Error code number';
+COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."ERROR_DIAG" IS 'Error message';
+COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."DESCRIPTION" IS 'Any description or comment on the entry';
+COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."ERROR_CLASS" IS 'Error class: system, user,...';
+COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."ACTIVE" IS 'Y or N. Depending on whether the entry is confirmed';
+COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."REG_DATE" IS 'Registration date, defaults to current timestamp';
 
 --------------------------------------------------------
 --  DDL for Table SCHEDCONFIG_JSON
