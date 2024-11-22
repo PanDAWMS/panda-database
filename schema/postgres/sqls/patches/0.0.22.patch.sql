@@ -1,5 +1,5 @@
 CREATE TABLE doma_panda.error_classification (
-    "id" bigint NOT NULL,
+    id BIGINT GENERATED ALWAYS AS IDENTITY (START WITH 1000000 INCREMENT BY 1) NOT NULL,
     "error_source" VARCHAR(30) NOT NULL,
     "error_code" bigint NOT NULL,
     "error_diag" VARCHAR(256) NOT NULL,

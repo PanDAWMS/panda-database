@@ -2798,7 +2798,7 @@ ALTER TABLE data_carousel_relations OWNER TO panda;
 ALTER TABLE data_carousel_relations ADD PRIMARY KEY (request_id);
 
 CREATE TABLE error_classification (
-    "id" bigint NOT NULL,
+    id BIGINT GENERATED ALWAYS AS IDENTITY (START WITH 1000000 INCREMENT BY 1) NOT NULL,
     "error_source" VARCHAR(30) NOT NULL,
     "error_code" bigint NOT NULL,
     "error_diag" VARCHAR(256) NOT NULL,
