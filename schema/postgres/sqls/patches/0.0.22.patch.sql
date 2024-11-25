@@ -16,7 +16,7 @@ COMMENT ON COLUMN doma_panda.error_classification.error_diag IS E'Error message'
 COMMENT ON COLUMN doma_panda.error_classification.description IS E'Any description or comment on the entry';
 COMMENT ON COLUMN doma_panda.error_classification.error_class IS E'Error class: system, user,...';
 COMMENT ON COLUMN doma_panda.error_classification.active IS E'Y or N. Depending on whether the entry is confirmed';
-COMMENT ON COLUMN doma_panda.error_classification.reg_date IS E'Registration date, defaults to current timestamp';ALTER TABLE error_classification OWNER TO panda;
+COMMENT ON COLUMN doma_panda.error_classification.reg_date IS E'Registration date, defaults to current timestamp';
 ALTER TABLE doma_panda.error_classification OWNER TO panda;
 ALTER TABLE doma_panda.error_classification ADD PRIMARY KEY (id);
 
