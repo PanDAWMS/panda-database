@@ -34,8 +34,8 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 22);
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 22);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 23);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 23);
 
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
@@ -971,7 +971,9 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
 	"CONTAINER_NAME" VARCHAR2(200 BYTE),
     "JOB_LABEL" VARCHAR2(20 BYTE),
     "REALMODIFICATIONTIME" DATE,
-    "FRAMEWORK" VARCHAR2(50)
+    "FRAMEWORK" VARCHAR2(50),
+    "ACTIVATEDTIME" DATE,
+    "QUEUEDTIME" DATE
    ) 
   PARTITION BY RANGE ("JEDITASKID") INTERVAL (500000) 
  (PARTITION "INITIAL_PARTITION"  VALUES LESS THAN (1)) ;
@@ -1056,7 +1058,8 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."MEMORY_LEAK_X2" IS 'Memory leak chi square statistic';
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."REALMODIFICATIONTIME" IS 'Set ALWAYS to last modification time, without any tricks like old timestamps';
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."FRAMEWORK" IS 'Submission framework that was used to generate the task';
-
+   COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."ACTIVATEDTIME" IS 'Time of activation processing workload';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."QUEUEDTIME" IS 'Start time of queuing period ready to generate jobs';
 
 --------------------------------------------------------
 --  DDL for Table JEDI_WORK_QUEUE
@@ -2521,6 +2524,52 @@ COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."DESCRIPTION" IS 'Any des
 COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."ERROR_CLASS" IS 'Error class: system, user,...';
 COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."ACTIVE" IS 'Y or N. Depending on whether the entry is confirmed';
 COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_CLASSIFICATION"."REG_DATE" IS 'Registration date, defaults to current timestamp';
+
+--------------------------------------------------------
+--  DDL for Table JOB_METRICS
+--------------------------------------------------------
+
+CREATE TABLE "ATLAS_PANDA"."JOB_METRICS" (
+    "PANDAID" NUMBER(11) NOT NULL,
+    "JEDITASKID" NUMBER(11),
+    "CREATIONTIME" DATE,
+    "MODIFICATIONTIME" DATE,
+    "DATA" CLOB,
+    CONSTRAINT "PK_JOB_METRICS" PRIMARY KEY ("PANDAID")
+)
+PARTITION BY RANGE ("MODIFICATIONTIME")
+INTERVAL (NUMTOYMINTERVAL(1, 'MONTH')) (
+    PARTITION "P_BASE" VALUES LESS THAN (TO_DATE('2024-12-01', 'YYYY-MM-DD'))
+);
+
+COMMENT ON TABLE "ATLAS_PANDA"."JOB_METRICS" IS 'System metrics per job';
+COMMENT ON COLUMN "ATLAS_PANDA"."JOB_METRICS"."PANDAID" IS 'PandaID for the job';
+COMMENT ON COLUMN "ATLAS_PANDA"."JOB_METRICS"."JEDITASKID" IS 'JEDI task ID for the job';
+COMMENT ON COLUMN "ATLAS_PANDA"."JOB_METRICS"."CREATIONTIME" IS 'Time of data creation';
+COMMENT ON COLUMN "ATLAS_PANDA"."JOB_METRICS"."MODIFICATIONTIME" IS 'Time of last update';
+COMMENT ON COLUMN "ATLAS_PANDA"."JOB_METRICS"."DATA" IS 'Serialized dictionary of job metrics';
+
+--------------------------------------------------------
+--  DDL for Table TASK_METRICS
+--------------------------------------------------------
+
+CREATE TABLE "ATLAS_PANDA"."TASK_METRICS" (
+    "JEDITASKID" NUMBER(11) NOT NULL,
+    "CREATIONTIME" DATE,
+    "MODIFICATIONTIME" DATE,
+    "DATA" CLOB,
+    CONSTRAINT "PK_TASK_METRICS" PRIMARY KEY ("JEDITASKID")
+)
+PARTITION BY RANGE ("MODIFICATIONTIME")
+INTERVAL (NUMTOYMINTERVAL(1, 'MONTH')) (
+    PARTITION "P_BASE" VALUES LESS THAN (TO_DATE('2024-12-01', 'YYYY-MM-DD'))
+);
+
+COMMENT ON TABLE "ATLAS_PANDA"."TASK_METRICS" IS 'System metrics per task';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASK_METRICS"."JEDITASKID" IS 'JEDI task ID for the task';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASK_METRICS"."CREATIONTIME" IS 'Time of data creation';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASK_METRICS"."MODIFICATIONTIME" IS 'Time of last update';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASK_METRICS"."DATA" IS 'Serialized dictionary of task metrics';
 
 --------------------------------------------------------
 --  DDL for Table SCHEDCONFIG_JSON
