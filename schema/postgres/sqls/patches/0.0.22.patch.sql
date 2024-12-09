@@ -1,3 +1,4 @@
+-- patch to be used to upgrade from version 0.0.21
 CREATE TABLE doma_panda.error_classification (
     id BIGINT GENERATED ALWAYS AS IDENTITY (START WITH 1000000 INCREMENT BY 1) NOT NULL,
     "error_source" VARCHAR(30) NOT NULL,
