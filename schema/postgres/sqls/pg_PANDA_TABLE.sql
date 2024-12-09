@@ -70,7 +70,8 @@ CREATE TABLE config (
 	value varchar(256) NOT NULL,
 	type varchar(64) NOT NULL,
 	vo varchar(32) NOT NULL,
-	descr varchar(256) NOT NULL
+	descr varchar(256) NOT NULL,
+    value_json JSONB
 ) ;
 COMMENT ON TABLE config IS E'Central configuration table for jedi and panda server';
 COMMENT ON COLUMN config.app IS E'Application. E.g. jedi or pandaserver';
@@ -914,7 +915,9 @@ CREATE TABLE jedi_tasks (
 	container_name varchar(200),
     job_label varchar(20),
 	realmodificationtime timestamp,
-    framework varchar(50)
+    framework varchar(50),
+    activatedtime timestamp,
+    queuedtime timestamp
 ) PARTITION BY RANGE (jeditaskid) ;
 COMMENT ON COLUMN jedi_tasks.amiflag IS E'It will contain a mask, one bit per AMI task (AMI has two tasks) with default value at insertion for "amiflag" to 3 (0b00000011). A trigger when the field âcampaignâ is modified:	if "amiflag" is NULL then "amiflag" = 2 else "amiflag" = BITOR(AMIFLAG, 2)';
 COMMENT ON COLUMN jedi_tasks.architecture IS E'The architecture on which the task runs. Eg, $CMTCONFIG';
@@ -995,6 +998,8 @@ COMMENT ON COLUMN jedi_tasks.workdiskunit IS E'unit of WORKDISKCOUNT';
 COMMENT ON COLUMN jedi_tasks.workinggroup IS E'The name of the working group which owns the task ';
 COMMENT ON COLUMN jedi_tasks.workqueue_id IS E'The work queue identifier to which the task belongs';
 COMMENT ON COLUMN jedi_tasks.framework IS E'Submission framework that was used to generate the task';
+COMMENT ON COLUMN jedi_tasks.activatedtime IS E'Time of activation processing workload';
+COMMENT ON COLUMN jedi_tasks.queuedtime IS E'Start time of queuing period ready to generate jobs';
 ALTER  TABLE jedi_tasks OWNER TO panda;
 CREATE INDEX jedi_tasks_amiflag_idx ON jedi_tasks (amiflag);
 CREATE INDEX jedi_tasks_creation_idx ON jedi_tasks (creationdate);
@@ -2798,7 +2803,7 @@ ALTER TABLE data_carousel_relations OWNER TO panda;
 ALTER TABLE data_carousel_relations ADD PRIMARY KEY (request_id);
 
 CREATE TABLE error_classification (
-    id BIGINT GENERATED ALWAYS AS IDENTITY (START WITH 1000000 INCREMENT BY 1) NOT NULL,
+    "id" BIGINT GENERATED ALWAYS AS IDENTITY (START WITH 1000000 INCREMENT BY 1) NOT NULL,
     "error_source" VARCHAR(30) NOT NULL,
     "error_code" bigint NOT NULL,
     "error_diag" VARCHAR(256) NOT NULL,
@@ -2818,3 +2823,33 @@ COMMENT ON COLUMN error_classification.active IS E'Y or N. Depending on whether 
 COMMENT ON COLUMN error_classification.reg_date IS E'Registration date, defaults to current timestamp';ALTER TABLE error_classification OWNER TO panda;
 ALTER TABLE error_classification OWNER TO panda;
 ALTER TABLE error_classification ADD PRIMARY KEY (id);
+
+CREATE TABLE job_metrics (
+    "pandaid" BIGINT NOT NULL,
+    "jeditaskid" BIGINT,
+    "creationtime" TIMESTAMP,
+    "modificationtime" TIMESTAMP,
+    "data" TEXT
+) PARTITION BY RANGE (modificationtime);
+COMMENT ON TABLE job_metrics IS E'System metrics per job';
+COMMENT ON COLUMN job_metrics.pandaid IS E'PandaID for the job';
+COMMENT ON COLUMN job_metrics.jeditaskid IS E'JEDI task ID for the job';
+COMMENT ON COLUMN job_metrics.creationtime IS E'Time of data creation';
+COMMENT ON COLUMN job_metrics.modificationtime IS E'Time of last update';
+COMMENT ON COLUMN job_metrics.data IS E'Serialized dictionary of job metrics';
+ALTER TABLE job_metrics OWNER TO panda;
+ALTER TABLE job_metrics ADD PRIMARY KEY (pandaid, modificationtime);
+
+CREATE TABLE task_metrics (
+    "jeditaskid" BIGINT NOT NULL,
+    "creationtime" TIMESTAMP,
+    "modificationtime" TIMESTAMP,
+    "data" TEXT
+) PARTITION BY RANGE (modificationtime);
+COMMENT ON TABLE task_metrics IS E'System metrics per task';
+COMMENT ON COLUMN task_metrics.jeditaskid IS E'JEDI task ID for the task';
+COMMENT ON COLUMN task_metrics.creationtime IS E'Time of data creation';
+COMMENT ON COLUMN task_metrics.modificationtime IS E'Time of last update';
+COMMENT ON COLUMN task_metrics.data IS E'Serialized dictionary of task metrics';
+ALTER TABLE task_metrics OWNER TO panda;
+ALTER TABLE task_metrics ADD PRIMARY KEY (jeditaskid, modificationtime);
