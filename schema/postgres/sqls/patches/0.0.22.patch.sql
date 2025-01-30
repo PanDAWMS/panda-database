@@ -1,6 +1,6 @@
 -- patch to be used to upgrade from version 0.0.21
 CREATE TABLE doma_panda.error_classification (
-    id BIGINT GENERATED ALWAYS AS IDENTITY (START WITH 1000000 INCREMENT BY 1) NOT NULL,
+    "id" BIGINT GENERATED ALWAYS AS IDENTITY (START WITH 1000000 INCREMENT BY 1) NOT NULL,
     "error_source" VARCHAR(30) NOT NULL,
     "error_code" bigint NOT NULL,
     "error_diag" VARCHAR(256) NOT NULL,
@@ -19,7 +19,7 @@ COMMENT ON COLUMN doma_panda.error_classification.error_class IS E'Error class: 
 COMMENT ON COLUMN doma_panda.error_classification.active IS E'Y or N. Depending on whether the entry is confirmed';
 COMMENT ON COLUMN doma_panda.error_classification.reg_date IS E'Registration date, defaults to current timestamp';
 ALTER TABLE doma_panda.error_classification OWNER TO panda;
-ALTER TABLE doma_panda.error_classification ADD PRIMARY KEY (id);
+ALTER TABLE doma_panda.error_classification ADD PRIMARY KEY ("id");
 
 -- Update versions
 UPDATE doma_panda.pandadb_version SET major=0, minor=0, patch=22 where component='JEDI';
