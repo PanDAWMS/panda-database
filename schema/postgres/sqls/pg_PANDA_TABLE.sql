@@ -2621,7 +2621,7 @@ COMMENT ON COLUMN site.tier_level IS E'Tier level (0/1/2/3) of the site';
 ALTER  TABLE site OWNER TO panda;
 ALTER TABLE site ADD PRIMARY KEY (site_name);
 
-7
+
 CREATE TABLE site_stats (
 	site_name varchar(52) NOT NULL,
 	key varchar(52) NOT NULL,
