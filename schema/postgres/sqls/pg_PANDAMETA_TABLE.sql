@@ -47,16 +47,6 @@ CREATE TABLE auth_user_user_permissions (
 ) ;
 ALTER TABLE auth_user_user_permissions OWNER TO panda;
 
-CREATE TABLE pandaconfig (
-	name varchar(60) NOT NULL,
-	controller varchar(20) NOT NULL,
-	pathena varchar(20)
-) ;
-ALTER  TABLE pandaconfig OWNER TO panda;
-ALTER TABLE pandaconfig ADD PRIMARY KEY (name);
-ALTER TABLE pandaconfig ALTER COLUMN NAME SET NOT NULL;
-ALTER TABLE pandaconfig ALTER COLUMN CONTROLLER SET NOT NULL;
-
 
 CREATE TABLE proxykey (
 	id bigint NOT NULL,

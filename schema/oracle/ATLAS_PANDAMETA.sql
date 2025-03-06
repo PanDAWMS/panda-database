@@ -16,16 +16,6 @@
    CREATE SEQUENCE  "ATLAS_PANDAMETA"."USERS_ID_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  NOCYCLE ;
 
 --------------------------------------------------------
---  DDL for Table PANDACONFIG
---------------------------------------------------------
-
-  CREATE TABLE "ATLAS_PANDAMETA"."PANDACONFIG" 
-   (	"NAME" VARCHAR2(60 CHAR), 
-	"CONTROLLER" VARCHAR2(20 CHAR), 
-	"PATHENA" VARCHAR2(20 CHAR)
-   ) ;
-
---------------------------------------------------------
 --  DDL for Table PROXYKEY
 --------------------------------------------------------
 
