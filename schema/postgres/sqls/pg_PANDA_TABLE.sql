@@ -2770,7 +2770,9 @@ CREATE TABLE data_carousel_requests (
     "start_time" timestamp,
     "end_time" timestamp,
     "modification_time" timestamp,
-    "check_time" timestamp
+    "check_time" timestamp,
+    "source_tape" VARCHAR(64),
+    "parameters" JSONB NOT NULL
 );
 COMMENT ON TABLE data_carousel_requests IS E'Table of Data Carousel requests';
 COMMENT ON COLUMN data_carousel_requests.request_id IS E'Sequential ID of the request, generated from PostgreSQL sequence object jedi_data_carousel_request_id_seq when new request is inserted';
@@ -2788,6 +2790,8 @@ COMMENT ON COLUMN data_carousel_requests.start_time IS E'Timestamp when the requ
 COMMENT ON COLUMN data_carousel_requests.end_time IS E'Timestamp when the request ended';
 COMMENT ON COLUMN data_carousel_requests.modification_time IS E'Timestamp of the last request update';
 COMMENT ON COLUMN data_carousel_requests.check_time IS E'Last time when the request was checked';
+COMMENT ON COLUMN doma_panda.data_carousel_requests.source_tape IS E'Physical tape behind source RSE';
+COMMENT ON COLUMN doma_panda.data_carousel_requests.parameters IS E'Extra parameters of staging in JSON';
 ALTER TABLE data_carousel_requests OWNER TO panda;
 ALTER TABLE data_carousel_requests ADD PRIMARY KEY (request_id);
 
