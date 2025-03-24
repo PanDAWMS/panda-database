@@ -34,8 +34,8 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 24);
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 24);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 25);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 25);
 
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
@@ -2936,6 +2936,104 @@ CREATE TABLE "ATLAS_PANDA"."DATA_CAROUSEL_RELATIONS" (
 COMMENT ON TABLE "ATLAS_PANDA"."DATA_CAROUSEL_RELATIONS" IS 'Table of mapping between Data Carousel requests and tasks';
 COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_RELATIONS"."REQUEST_ID" IS 'ID of the request';
 COMMENT ON COLUMN "ATLAS_PANDA"."DATA_CAROUSEL_RELATIONS"."TASK_ID" IS 'ID of the task';
+
+--------------------------------------------------------
+--  DDL for Table WORKER_NODE
+--------------------------------------------------------
+
+CREATE TABLE "ATLAS_PANDA"."WORKER_NODE"(
+    "SITE" varchar2(128),
+    "HOST_NAME" varchar2(128),
+    "CPU_MODEL" varchar(128),
+    "N_LOGICAL_CPUS" number(9,0),
+    "N_SOCKETS" number(9,0),
+    "CORES_PER_SOCKET" number(9,0),
+    "THREADS_PER_CORE" number(9,0),
+    "CPU_ARCHITECTURE" varchar2(20),
+    "CPU_ARCHITECTURE_LEVEL" varchar2(20),
+    "CLOCK_SPEED" number(9,2),
+    "TOTAL_MEMORY" number(9,0),
+    "LAST_SEEN" date,
+    CONSTRAINT PK_WORKER_NODE PRIMARY KEY ("SITE", "HOST_NAME", "CPU_MODEL")
+)ORGANIZATION INDEX COMPRESS 1;
+
+CREATE INDEX IDX_WORKER_NODE_LAST_SEEN ON "ATLAS_PANDA"."WORKER_NODE"("LAST_SEEN");
+
+-- Table Comment
+COMMENT ON TABLE "ATLAS_PANDA"."WORKER_NODE" IS 'Stores information about worker nodes seen by PanDA pilots';
+
+-- Column Comments
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."SITE" IS 'The name of the site (not PanDA queue) where the worker node is located.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."HOST_NAME" IS 'The hostname of the worker node.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CPU_MODEL" IS 'The specific model of the CPU.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."N_LOGICAL_CPUS" IS 'Total number of logical CPUs (calculated as sockets * cores per socket * threads per core).';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."N_SOCKETS" IS 'Number of physical CPU sockets.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CORES_PER_SOCKET" IS 'Number of CPU cores per physical socket.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."THREADS_PER_CORE" IS 'Number of threads per CPU core.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CPU_ARCHITECTURE" IS 'The CPU architecture (e.g., x86_64, ARM).';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CPU_ARCHITECTURE_LEVEL" IS 'The specific level/version of the CPU architecture.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CLOCK_SPEED" IS 'Clock speed of the CPU in GHz.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."TOTAL_MEMORY" IS 'Total amount of RAM in MB.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."LAST_SEEN" IS 'Timestamp of the last time the worker node was active.';
+
+
+--------------------------------------------------------
+--  DDL for Table CPU_BENCHMARKS
+--------------------------------------------------------
+
+CREATE TABLE "ATLAS_PANDA"."CPU_BENCHMARKS" (
+    "CPU_TYPE" VARCHAR2(128),
+    "SMT_ENABLED" NUMBER(1),  -- 0 or 1
+    "SOCKETS" NUMBER(2),
+    "CORES_PER_SOCKET" NUMBER(9),
+    "NCORES" NUMBER(9),
+    "SITE" VARCHAR2(128),
+    "SCORE_PER_CORE" NUMBER(10,2),
+    "TIMESTAMP" DATE,
+    "SOURCE" VARCHAR2(256)
+);
+
+--------------------------------------------------------
+--  DDL for Table WORKER_NODE_MAP
+--------------------------------------------------------
+
+CREATE TABLE "ATLAS_PANDA"."WORKER_NODE_MAP"(
+    "ATLAS_SITE" varchar2(128),
+    "WORKER_NODE" varchar2(128),
+    "CPU_TYPE" varchar(128),
+    "LAST_SEEN" date,
+    "CORES" number(9,0),
+    "ARCHITECTURE_LEVEL" varchar2(20),
+    CONSTRAINT PK_WORKER_NODE_MAP PRIMARY KEY ("ATLAS_SITE", "WORKER_NODE")
+);
+
+--------------------------------------------------------
+--  DDL for Table WORKER_NODE_METRICS
+--------------------------------------------------------
+CREATE TABLE "ATLAS_PANDA"."WORKER_NODE_METRICS"(
+    "SITE" varchar2(128),
+    "HOST_NAME" varchar2(128),
+    "TIMESTAMP" TIMESTAMP DEFAULT SYSTIMESTAMP AT TIME ZONE 'UTC',
+    "KEY" varchar2(20),
+    "STATISTICS" varchar2(500),
+    CONSTRAINT wn_metrics_json CHECK ("STATISTICS" IS JSON) ENABLE
+)
+PARTITION BY RANGE ("TIMESTAMP")
+INTERVAL (NUMTOYMINTERVAL(1, 'MONTH')) (
+    PARTITION "WN_METRICS_BASE" VALUES LESS THAN (TO_DATE('2025-03-01', 'YYYY-MM-DD'))
+);
+
+CREATE INDEX mn_metrics_idx ON "ATLAS_PANDA"."WORKER_NODE_METRICS"("SITE", "HOST_NAME", "TIMESTAMP");
+
+-- Table Comment
+COMMENT ON TABLE "ATLAS_PANDA"."WORKER_NODE_METRICS" IS 'Metrics related to a worker node';
+
+-- Column Comments
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS"."SITE" IS 'The name of the site (not PanDA queue) where the worker node is located.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS"."HOST_NAME" IS 'The hostname of the worker node.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS"."TIMESTAMP" IS 'Timestamp the metrics were collected.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS"."KEY" IS 'Key of the metrics entry.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS"."STATISTICS" IS 'Metrics in json format.';
 
 
 --------------------------------------------------------
@@ -6141,6 +6239,199 @@ DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
 DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => null);
 
 END;
+
+/
+
+
+--------------------------------------------------------
+--  DDL for Procedure UPDATE_WORKER_NODE_MAP
+--------------------------------------------------------
+set define off;
+
+create or replace PROCEDURE UPDATE_WORKER_NODE_MAP
+AS
+BEGIN
+
+-- 2025 02 24, ver 1.0
+-- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
+DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Updates worker node map with last days job data');
+DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
+
+MERGE INTO ATLAS_PANDA.WORKER_NODE_MAP WNM
+USING (
+    WITH sc_slimmed AS (
+        SELECT
+            panda_queue,
+            scj.data.atlas_site AS atlas_site
+        FROM
+            atlas_panda.schedconfig_json scj
+    )
+    SELECT
+        DISTINCT
+        sc_slimmed.atlas_site,
+        CASE
+            WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
+            THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@(.+)', 1, 1, NULL, 1)
+            ELSE jobsarchived4.modificationhost
+        END AS WORKERNODE,
+        REGEXP_SUBSTR(
+            cpuconsumptionunit,
+            's?\+?(.+?)\s\d+-Core',
+            1, 1, NULL, 1
+        ) AS CPU_TYPE,
+        MAX(
+            CASE
+                WHEN cpuconsumptionunit IS NULL OR TRIM(cpuconsumptionunit) = ''
+                THEN 0
+                WHEN cpuconsumptionunit NOT LIKE '%-Core%'
+                THEN 0
+                ELSE
+                    TO_NUMBER(NVL(REGEXP_SUBSTR(cpuconsumptionunit, '(\d+)-Core', 1, 1, NULL, 1), -1))
+            END
+        ) AS NUM_CORE,
+        CPU_ARCHITECTURE_LEVEL
+    FROM
+        atlas_panda.jobsarchived4
+    JOIN
+        sc_slimmed
+        ON jobsarchived4.computingsite = sc_slimmed.panda_queue
+    WHERE
+        endtime > sysdate - interval '1' day
+        AND jobstatus IN ('finished', 'failed')
+        AND modificationhost NOT LIKE 'aipanda%'
+        AND CPU_ARCHITECTURE_LEVEL IS NOT NULL
+        AND REGEXP_SUBSTR(
+            cpuconsumptionunit,
+            's?\+?(.+?)\s\d+-Core',
+            1, 1, NULL, 1
+        ) IS NOT NULL
+    GROUP BY
+        sc_slimmed.atlas_site,
+        CASE
+            WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
+            THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@(.+)', 1, 1, NULL, 1)
+            ELSE jobsarchived4.modificationhost
+        END,
+        REGEXP_SUBSTR(
+            cpuconsumptionunit,
+            's?\+?(.+?)\s\d+-Core',
+            1, 1, NULL, 1
+        ),
+        CPU_ARCHITECTURE_LEVEL
+) source
+ON (
+    source.ATLAS_SITE = WNM.ATLAS_SITE
+    AND source.WORKERNODE = WNM.WORKER_NODE
+    AND source.CPU_TYPE = WNM.CPU_TYPE
+)
+WHEN MATCHED THEN
+    UPDATE SET
+        WNM.LAST_SEEN = SYSDATE
+WHEN NOT MATCHED THEN
+    INSERT (
+        ATLAS_SITE, WORKER_NODE, CPU_TYPE, CORES, ARCHITECTURE_LEVEL, LAST_SEEN
+    )
+    VALUES (
+        source.ATLAS_SITE, source.WORKERNODE, source.CPU_TYPE, source.NUM_CORE,
+        source.CPU_ARCHITECTURE_LEVEL, SYSDATE
+    );
+
+COMMIT;
+
+DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
+DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => null);
+
+end;
+
+/
+
+--------------------------------------------------------
+--  DDL for Procedure UPDATE_WORKER_NODE_METRICS
+--------------------------------------------------------
+set define off;
+
+create or replace PROCEDURE UPDATE_WORKER_NODE_METRICS
+AS
+BEGIN
+
+-- 2025 03 19, ver 1.0
+-- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
+DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Updates worker node statistics with last days job and worker data');
+DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
+
+
+INSERT INTO "ATLAS_PANDA"."WORKER_NODE_METRICS" (site, host_name, key, statistics)
+WITH sc_slimmed AS (
+    SELECT
+        panda_queue,
+        scj.data.atlas_site AS atlas_site
+    FROM
+        atlas_panda.schedconfig_json scj
+),
+pilot_statistics AS(
+SELECT
+    sc_slimmed.atlas_site,
+    CASE
+        WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
+        THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@(.+)', 1, 1, NULL, 1)
+        ELSE jobsarchived4.modificationhost
+    END as worker_node,
+    'jobs' as KEY,
+    JSON_OBJECT(
+        KEY 'jobs_failed' VALUE COUNT(CASE WHEN jobstatus = 'failed' THEN 1 END),
+        KEY 'jobs_finished' VALUE COUNT(CASE WHEN jobstatus = 'finished' THEN 1 END),
+        KEY 'hc_failed' VALUE COUNT(CASE WHEN jobstatus = 'failed' AND produsername = 'gangarbt' THEN 1 END),
+        KEY 'hc_finished' VALUE COUNT(CASE WHEN jobstatus = 'finished' AND produsername = 'gangarbt' THEN 1 END),
+        KEY 'hssec_failed' VALUE SUM(CASE WHEN jobstatus = 'failed' THEN hs06sec ELSE 0 END),
+        KEY 'hssec_finished' VALUE SUM(CASE WHEN jobstatus = 'finished' THEN hs06sec ELSE 0 END)
+    ) AS pilot
+FROM atlas_panda.jobsarchived4
+JOIN sc_slimmed ON computingsite = sc_slimmed.panda_queue
+WHERE endtime > CAST(SYSTIMESTAMP AT TIME ZONE 'UTC' AS DATE) - INTERVAL '1' DAY
+AND jobstatus IN ('finished', 'failed')
+AND modificationhost not like 'aipanda%'
+GROUP BY sc_slimmed.atlas_site,
+    CASE
+        WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
+        THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@(.+)', 1, 1, NULL, 1)
+        ELSE jobsarchived4.modificationhost
+    END),
+harvester_statistics AS (
+SELECT
+    sc_slimmed.atlas_site,
+    TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS timestamp,
+    'workers' AS KEY,
+    JSON_OBJECT(
+        KEY 'worker_failed' VALUE COUNT(CASE WHEN status = 'failed' THEN 1 END),
+        KEY 'worker_finished' VALUE COUNT(CASE WHEN status = 'finished' THEN 1 END),
+        KEY 'worker_cancelled' VALUE COUNT(CASE WHEN status = 'cancelled' THEN 1 END)
+    ) AS harvestor,
+    CASE
+        WHEN INSTR(nodeid, '@') > 0
+        THEN REGEXP_SUBSTR(nodeid, '@(.+)', 1, 1, NULL, 1)
+        ELSE nodeid
+    END AS workernode
+FROM atlas_panda.harvester_workers
+JOIN sc_slimmed ON computingsite = sc_slimmed.panda_queue
+WHERE endtime > CAST(SYSTIMESTAMP AT TIME ZONE 'UTC' AS DATE) - INTERVAL '1' DAY
+AND status IN ('finished', 'failed')
+GROUP BY
+    sc_slimmed.atlas_site,
+    CASE
+        WHEN INSTR(nodeid, '@') > 0
+        THEN REGEXP_SUBSTR(nodeid, '@(.+)', 1, 1, NULL, 1)
+        ELSE nodeid
+    END)
+SELECT atlas_site, worker_node, key, pilot FROM pilot_statistics
+UNION ALL
+SELECT atlas_site, workernode, key, harvestor FROM harvester_statistics;
+
+COMMIT;
+
+DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
+DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => null);
+
+end;
 
 /
 

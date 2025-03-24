@@ -289,3 +289,31 @@ dbms_scheduler.create_job(
  comments =>  '');
 END;
 /
+
+BEGIN
+dbms_scheduler.create_job(
+    job_name => 'UPDATE_WORKER_NODE_MAP_JOB',
+    job_type => 'PLSQL_BLOCK',
+    job_action => 'BEGIN ATLAS_PANDA.UPDATE_WORKER_NODE_MAP;	END;',
+    start_date => SYSTIMESTAMP,
+    repeat_interval => 'FREQ=DAILY; BYHOUR=8; BYMINUTE=0; BYSECOND=0;',
+    auto_drop => FALSE,
+    enabled => TRUE,
+    comments => 'Runs every day at 8 AM to refresh WORKER_NODE_MAP data.'
+    );
+END;
+/
+
+BEGIN
+dbms_scheduler.create_job(
+    job_name => 'UPDATE_WORKER_NODE_METRICS_JOB',
+    job_type => 'PLSQL_BLOCK',
+    job_action => 'BEGIN ATLAS_PANDA.UPDATE_WORKER_NODE_METRICS;	END;',
+    start_date => SYSTIMESTAMP,
+    repeat_interval => 'FREQ=DAILY; BYHOUR=8; BYMINUTE=0; BYSECOND=0;',
+    auto_drop => FALSE,
+    enabled => TRUE,
+    comments => 'Runs every day at 8 AM to refresh WORKER_NODE_METRICS data.'
+    );
+END;
+/
