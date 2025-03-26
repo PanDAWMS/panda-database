@@ -2857,3 +2857,81 @@ COMMENT ON COLUMN task_metrics.modificationtime IS E'Time of last update';
 COMMENT ON COLUMN task_metrics.data IS E'Serialized dictionary of task metrics';
 ALTER TABLE task_metrics OWNER TO panda;
 ALTER TABLE task_metrics ADD PRIMARY KEY (jeditaskid, modificationtime);
+
+CREATE TABLE worker_node (
+    "site" VARCHAR(128),
+    "host_name" VARCHAR(128),
+    "cpu_model" VARCHAR(128),
+    "n_logical_cpus" INTEGER,
+    "n_sockets" INTEGER,
+    "cores_per_socket" INTEGER,
+    "threads_per_core" INTEGER,
+    "cpu_architecture" VARCHAR(20),
+    "cpu_architecture_level" VARCHAR(20),
+    "clock_speed" NUMERIC(9,2),
+    "total_memory" BIGINT,
+    "last_seen" TIMESTAMP,
+    PRIMARY KEY ("site", "host_name", "cpu_model")
+);
+
+CREATE INDEX idx_worker_node_last_seen ON worker_node ("last_seen");
+
+COMMENT ON TABLE worker_node IS 'Stores information about worker nodes seen by PanDA pilots';
+COMMENT ON COLUMN worker_node."site" IS 'The name of the site (not PanDA queue) where the worker node is located.';
+COMMENT ON COLUMN worker_node."host_name" IS 'The hostname of the worker node.';
+COMMENT ON COLUMN worker_node."cpu_model" IS 'The specific model of the CPU.';
+COMMENT ON COLUMN worker_node."n_logical_cpus" IS 'Total number of logical CPUs (calculated as sockets * cores per socket * threads per core).';
+COMMENT ON COLUMN worker_node."n_sockets" IS 'Number of physical CPU sockets.';
+COMMENT ON COLUMN worker_node."cores_per_socket" IS 'Number of CPU cores per physical socket.';
+COMMENT ON COLUMN worker_node."threads_per_core" IS 'Number of threads per CPU core.';
+COMMENT ON COLUMN worker_node."cpu_architecture" IS 'The CPU architecture (e.g., x86_64, ARM).';
+COMMENT ON COLUMN worker_node."cpu_architecture_level" IS 'The specific level/version of the CPU architecture.';
+COMMENT ON COLUMN worker_node."clock_speed" IS 'Clock speed of the CPU in GHz.';
+COMMENT ON COLUMN worker_node."total_memory" IS 'Total amount of RAM in MB.';
+COMMENT ON COLUMN worker_node."last_seen" IS 'Timestamp of the last time the worker node was active.';
+
+ALTER TABLE worker_node OWNER TO panda;
+
+CREATE TABLE cpu_benchmarks (
+    "cpu_type" VARCHAR(128),
+    "smt_enabled" SMALLINT,
+    "sockets" SMALLINT,
+    "cores_per_socket" INTEGER,
+    "ncores" INTEGER,
+    "site" VARCHAR(128),
+    "score_per_core" NUMERIC(10,2),
+    "timestamp" TIMESTAMP,
+    "source" VARCHAR(256)
+);
+ALTER TABLE cpu_benchmarks OWNER TO panda;
+
+CREATE TABLE worker_node_map (
+    "atlas_site" VARCHAR(128),
+    "worker_node" VARCHAR(128),
+    "cpu_type" VARCHAR(128),
+    "last_seen" TIMESTAMP,
+    "cores" INTEGER,
+    "architecture_level" VARCHAR(20),
+    PRIMARY KEY ("atlas_site", "worker_node")
+);
+ALTER TABLE worker_node_map OWNER TO panda;
+
+
+CREATE TABLE worker_node_metrics (
+    "site" VARCHAR(128),
+    "host_name" VARCHAR(128),
+    "timestamp" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    "key" VARCHAR(20),
+    "statistics" JSONB,
+    PRIMARY KEY ("site", "host_name", "timestamp")
+) PARTITION BY RANGE ("timestamp");
+
+COMMENT ON TABLE worker_node_metrics IS 'Metrics related to a worker node';
+COMMENT ON COLUMN worker_node_metrics."site" IS 'The name of the site (not PanDA queue) where the worker node is located.';
+COMMENT ON COLUMN worker_node_metrics."host_name" IS 'The hostname of the worker node.';
+COMMENT ON COLUMN worker_node_metrics."timestamp" IS 'Timestamp the metrics were collected.';
+COMMENT ON COLUMN worker_node_metrics."key" IS 'Key of the metrics entry.';
+COMMENT ON COLUMN worker_node_metrics."statistics" IS 'Metrics in json format.';
+
+CREATE INDEX wn_metrics_idx ON worker_node_metrics ("site", "host_name", "timestamp");
+ALTER TABLE worker_node_metrics OWNER TO panda;
