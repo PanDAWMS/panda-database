@@ -291,3 +291,16 @@ SET infinite_time_partitions = true,
     retention = '12 months',
     retention_keep_table = false
 WHERE parent_table = 'doma_panda.task_metrics';
+
+SELECT partman.create_parent(
+    p_parent_table => 'doma_panda.worker_node_metrics',
+    p_control => 'timestamp',
+    p_type => 'range',
+    p_interval => '1 month',
+    p_premake => 3
+);
+UPDATE partman.part_config
+SET infinite_time_partitions = true,
+    retention = '12 months',
+    retention_keep_table = false
+WHERE parent_table = 'doma_panda.worker_node_metrics';
