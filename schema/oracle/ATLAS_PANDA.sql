@@ -2973,11 +2973,10 @@ COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CORES_PER_SOCKET" IS 'Number of C
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."THREADS_PER_CORE" IS 'Number of threads per CPU core.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CPU_ARCHITECTURE" IS 'The CPU architecture (e.g., x86_64, ARM).';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CPU_ARCHITECTURE_LEVEL" IS 'The specific level/version of the CPU architecture.';
-COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CLOCK_SPEED" IS 'Clock speed of the CPU in GHz.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CLOCK_SPEED" IS 'Clock speed of the CPU in MHz.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."TOTAL_MEMORY" IS 'Total amount of RAM in MB.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."LAST_SEEN" IS 'Timestamp of the last time the worker node was active.';
-
-
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."TOTAL_LOCAL_DISK" IS 'Total local disk in GB.';
 --------------------------------------------------------
 --  DDL for Table CPU_BENCHMARKS
 --------------------------------------------------------
