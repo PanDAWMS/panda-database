@@ -34,8 +34,8 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 25);
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 25);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 26);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 26);
 
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
@@ -2954,6 +2954,7 @@ CREATE TABLE "ATLAS_PANDA"."WORKER_NODE"(
     "CLOCK_SPEED" number(9,2),
     "TOTAL_MEMORY" number(9,0),
     "LAST_SEEN" date,
+    "TOTAL_LOCAL_DISK" number(9,0),
     CONSTRAINT PK_WORKER_NODE PRIMARY KEY ("SITE", "HOST_NAME", "CPU_MODEL")
 )ORGANIZATION INDEX COMPRESS 1;
 
