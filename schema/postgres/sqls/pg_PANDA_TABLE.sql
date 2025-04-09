@@ -2871,6 +2871,7 @@ CREATE TABLE worker_node (
     "clock_speed" NUMERIC(9,2),
     "total_memory" BIGINT,
     "last_seen" TIMESTAMP,
+    "total_local_disk" BIGINT,
     PRIMARY KEY ("site", "host_name", "cpu_model")
 );
 
@@ -2886,9 +2887,11 @@ COMMENT ON COLUMN worker_node."cores_per_socket" IS 'Number of CPU cores per phy
 COMMENT ON COLUMN worker_node."threads_per_core" IS 'Number of threads per CPU core.';
 COMMENT ON COLUMN worker_node."cpu_architecture" IS 'The CPU architecture (e.g., x86_64, ARM).';
 COMMENT ON COLUMN worker_node."cpu_architecture_level" IS 'The specific level/version of the CPU architecture.';
-COMMENT ON COLUMN worker_node."clock_speed" IS 'Clock speed of the CPU in GHz.';
+COMMENT ON COLUMN worker_node."clock_speed" IS 'Clock speed of the CPU in MHz.';
 COMMENT ON COLUMN worker_node."total_memory" IS 'Total amount of RAM in MB.';
 COMMENT ON COLUMN worker_node."last_seen" IS 'Timestamp of the last time the worker node was active.';
+COMMENT ON COLUMN worker_node."total_local_disk" IS 'Total local disk in GB.';
+
 
 ALTER TABLE worker_node OWNER TO panda;
 

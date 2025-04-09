@@ -34,8 +34,8 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 25);
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 25);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 26);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 26);
 
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
@@ -2954,6 +2954,7 @@ CREATE TABLE "ATLAS_PANDA"."WORKER_NODE"(
     "CLOCK_SPEED" number(9,2),
     "TOTAL_MEMORY" number(9,0),
     "LAST_SEEN" date,
+    "TOTAL_LOCAL_DISK" number(9,0),
     CONSTRAINT PK_WORKER_NODE PRIMARY KEY ("SITE", "HOST_NAME", "CPU_MODEL")
 )ORGANIZATION INDEX COMPRESS 1;
 
@@ -2972,11 +2973,10 @@ COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CORES_PER_SOCKET" IS 'Number of C
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."THREADS_PER_CORE" IS 'Number of threads per CPU core.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CPU_ARCHITECTURE" IS 'The CPU architecture (e.g., x86_64, ARM).';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CPU_ARCHITECTURE_LEVEL" IS 'The specific level/version of the CPU architecture.';
-COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CLOCK_SPEED" IS 'Clock speed of the CPU in GHz.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CLOCK_SPEED" IS 'Clock speed of the CPU in MHz.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."TOTAL_MEMORY" IS 'Total amount of RAM in MB.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."LAST_SEEN" IS 'Timestamp of the last time the worker node was active.';
-
-
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."TOTAL_LOCAL_DISK" IS 'Total local disk in GB.';
 --------------------------------------------------------
 --  DDL for Table CPU_BENCHMARKS
 --------------------------------------------------------
