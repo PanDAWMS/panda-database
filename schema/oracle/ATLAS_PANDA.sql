@@ -2152,7 +2152,8 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
 	"HS" NUMBER, 
 	"VO" VARCHAR2(16 BYTE), 
 	"WORKQUEUE_ID" NUMBER(5,0), 
-	"RESOURCE_TYPE" VARCHAR2(56 BYTE)
+	"RESOURCE_TYPE" VARCHAR2(56 BYTE),
+    "NUCLEUS" VARCHAR2(52 BYTE)
    ) ;
 
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."TS" IS 'Timestamp for the entry';
@@ -2167,7 +2168,9 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."RESOURCE_TYPE" IS 'Resource type (SCORE, MCORE...)';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."PRORATED_DISKIO_AVG" IS 'avg(diskIO/corecount)';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."PRORATED_MEM_AVG" IS 'avg(minRamCount/corecount)';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBS_SHARE_STATS"."NUCLEUS" IS 'Name of the site where the task is assigned in WORLD cloud';
    COMMENT ON TABLE "ATLAS_PANDA"."JOBS_SHARE_STATS"  IS 'njobs and HS06 statistics by share';
+
 
 --------------------------------------------------------
 --  DDL for Table JOBSDEFINED_SHARE_STATS
@@ -2185,7 +2188,8 @@ CREATE TABLE "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"
 	"HS" NUMBER,
 	"VO" VARCHAR2(16 BYTE),
 	"WORKQUEUE_ID" NUMBER(5,0),
-	"RESOURCE_TYPE" VARCHAR2(56 BYTE)
+	"RESOURCE_TYPE" VARCHAR2(56 BYTE),
+    "NUCLEUS" VARCHAR2(52 BYTE)
    ) ;
 
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."TS" IS 'Timestamp for the entry';
@@ -2200,6 +2204,7 @@ CREATE TABLE "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."VO" IS 'Virtual organization';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."WORKQUEUE_ID" IS 'Work queue';
    COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."RESOURCE_TYPE" IS 'Resource type (SCORE, MCORE...)';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"."NUCLEUS" IS 'Name of the site where the task is assigned in WORLD cloud';
    COMMENT ON TABLE "ATLAS_PANDA"."JOBSDEFINED_SHARE_STATS"  IS 'njobs and HS06 statistics by share for table jobsdefined4';
 
 --------------------------------------------------------
@@ -5680,7 +5685,7 @@ DELETE from ATLAS_PANDA.JOBS_SHARE_STATS;
 
 INSERT INTO ATLAS_PANDA.JOBS_SHARE_STATS (TS, GSHARE, WORKQUEUE_ID, RESOURCE_TYPE,
                                           COMPUTINGSITE, JOBSTATUS,
-                                          MAXPRIORITY, PRORATED_DISKIO_AVG, PRORATED_MEM_AVG, NJOBS, HS, VO)
+                                          MAXPRIORITY, PRORATED_DISKIO_AVG, PRORATED_MEM_AVG, NJOBS, HS, VO, NUCLEUS)
 WITH
     sc_slimmed AS (
     SELECT /*+ MATERIALIZE */ sc.panda_queue AS pq, sc.data.corepower AS cp
@@ -5689,10 +5694,10 @@ WITH
 SELECT sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus,
       MAX(currentPriority) AS maxPriority,
       AVG(diskIO/NVL(ja4.coreCount, 1)) AS proratedDiskioAvg, AVG(minRamCount/NVL(ja4.coreCount, 1)) AS proratedMemAvg,
-      COUNT(*) AS num_of_jobs, COUNT(*) * NVL(ja4.coreCount, 1) * sc_s.cp AS HS, VO
+      COUNT(*) AS num_of_jobs, COUNT(*) * NVL(ja4.coreCount, 1) * sc_s.cp AS HS, VO, NUCLEUS
 FROM ATLAS_PANDA.jobsActive4 ja4, sc_slimmed sc_s
 WHERE ja4.computingsite = sc_s.pq
-GROUP BY sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO;
+GROUP BY sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO, NUCLEUS;
 
 
 COMMIT;
@@ -5725,7 +5730,7 @@ DELETE from ATLAS_PANDA.JOBSDEFINED_SHARE_STATS;
 
 INSERT INTO ATLAS_PANDA.JOBSDEFINED_SHARE_STATS (TS, GSHARE, WORKQUEUE_ID, RESOURCE_TYPE,
                                           COMPUTINGSITE, JOBSTATUS,
-                                          MAXPRIORITY, PRORATED_DISKIO_AVG, PRORATED_MEM_AVG, NJOBS, HS, VO)
+                                          MAXPRIORITY, PRORATED_DISKIO_AVG, PRORATED_MEM_AVG, NJOBS, HS, VO, NUCLEUS)
 WITH
     sc_slimmed AS (
     SELECT /*+ MATERIALIZE */ sc.panda_queue AS pq, sc.data.corepower AS cp
@@ -5734,10 +5739,10 @@ WITH
 SELECT sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus,
       MAX(currentPriority) AS maxPriority,
       AVG(diskIO/NVL(ja4.coreCount, 1)) AS proratedDiskioAvg, AVG(minRamCount/NVL(ja4.coreCount, 1)) AS proratedDiskioAvg,
-      COUNT(*) AS num_of_jobs, COUNT(*) * NVL(ja4.coreCount, 1) * sc_s.cp AS HS, VO
+      COUNT(*) AS num_of_jobs, COUNT(*) * NVL(ja4.coreCount, 1) * sc_s.cp AS HS, VO, NUCLEUS
 FROM ATLAS_PANDA.jobsDefined4 ja4, sc_slimmed sc_s
 WHERE ja4.computingsite = sc_s.pq
-GROUP BY sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO;
+GROUP BY sysdate, gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO, NUCLEUS;
 
 
 COMMIT;
