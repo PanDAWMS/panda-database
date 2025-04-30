@@ -1942,13 +1942,15 @@ CREATE TABLE jobsdefined_share_stats (
 	hs bigint,
 	vo varchar(32),
 	workqueue_id integer,
-	resource_type varchar(56)
+	resource_type varchar(56),
+   	nucleus varchar(52)
 ) ;
 ALTER  TABLE jobsdefined_share_stats OWNER TO panda;
 CREATE INDEX jobsdef_share_stats_site_idx ON jobsdefined_share_stats (computingsite);
 CREATE INDEX jobsdef_share_stats_ss_idx ON jobsdefined_share_stats (gshare, jobstatus);
 ALTER TABLE jobsdefined_share_stats ALTER COLUMN JOBSTATUS SET NOT NULL;
 
+COMMENT ON COLUMN jobsdefined_share_stats.nucleus IS E'Name of the site where the task is assigned in WORLD cloud';
 
 CREATE TABLE jobswaiting4 (
 	pandaid bigint NOT NULL DEFAULT '0',
@@ -2237,7 +2239,8 @@ CREATE TABLE jobs_share_stats (
 	hs bigint,
 	vo varchar(32),
 	workqueue_id integer,
-	resource_type varchar(56)
+	resource_type varchar(56),
+  	nucleus varchar(52)
 ) ;
 COMMENT ON TABLE jobs_share_stats IS E'njobs and HS06 statistics by share for table jobsdefined4';
 COMMENT ON COLUMN jobs_share_stats.computingsite IS E'Panda site';
@@ -2251,6 +2254,7 @@ COMMENT ON COLUMN jobs_share_stats.resource_type IS E'Resource type (SCORE, MCOR
 COMMENT ON COLUMN jobs_share_stats.ts IS E'Timestamp for the entry';
 COMMENT ON COLUMN jobs_share_stats.vo IS E'Virtual organization';
 COMMENT ON COLUMN jobs_share_stats.workqueue_id IS E'Work queue';
+COMMENT ON COLUMN jobs_share_stats.nucleus IS E'Name of the site where the task is assigned in WORLD cloud';
 ALTER  TABLE jobs_share_stats OWNER TO panda;
 CREATE INDEX jobssharestats_gsharestatusidx ON jobs_share_stats (gshare, jobstatus);
 CREATE INDEX jobs_share_stats_compsite_idx ON jobs_share_stats (computingsite);
