@@ -136,17 +136,6 @@ ALTER TABLE django_session OWNER TO panda;
 CREATE INDEX django_session_inx_exp_date ON django_session (expire_date);
 ALTER TABLE django_session ADD PRIMARY KEY (session_key);
 
-CREATE TABLE jobspage_cumulative_result (
-	request_token bigint NOT NULL,
-	attr varchar(50) NOT NULL,
-	attr_value varchar(500) NOT NULL,
-	num_occur bigint,
-	num_iterations smallint,
-	token_insert_tstamp timestamp DEFAULT LOCALTIMESTAMP
-) ;
-ALTER TABLE jobspage_cumulative_result OWNER TO panda;
-ALTER TABLE jobspage_cumulative_result ADD PRIMARY KEY (request_token,attr,attr_value);
-
 CREATE TABLE objects_comparison (
 	id bigint NOT NULL,
 	userid bigint NOT NULL,
