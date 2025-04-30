@@ -1306,7 +1306,7 @@ DELETE from doma_panda.JOBS_SHARE_STATS;
 
 INSERT INTO doma_panda.JOBS_SHARE_STATS(TS, GSHARE, WORKQUEUE_ID, RESOURCE_TYPE,
                                           COMPUTINGSITE, JOBSTATUS,
-                                          MAXPRIORITY, PRORATED_DISKIO_AVG, PRORATED_MEM_AVG, NJOBS, HS, VO)
+                                          MAXPRIORITY, PRORATED_DISKIO_AVG, PRORATED_MEM_AVG, NJOBS, HS, VO, NUCLEUS)
 WITH
     sc_slimmed AS (
     SELECT sc.panda_queue AS pq, sc.data->>'corepower' AS cp
@@ -1314,10 +1314,10 @@ WITH
     )
 SELECT clock_timestamp(), gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus,
       MAX(currentPriority) AS maxPriority, AVG(diskIO/coalesce(ja4.coreCount, 1)) AS proratedDiskioAvg, AVG(minRamCount/coalesce(ja4.coreCount, 1)) AS proratedMemAvg,
-      COUNT(*) AS num_of_jobs, COUNT(*) * coalesce(ja4.coreCount, 1) * CAST(sc_s.cp as DOUBLE PRECISION) AS HS, VO
+      COUNT(*) AS num_of_jobs, COUNT(*) * coalesce(ja4.coreCount, 1) * CAST(sc_s.cp as DOUBLE PRECISION) AS HS, VO, NUCLEUS
 FROM doma_panda.jobsActive4 ja4, sc_slimmed sc_s
 WHERE ja4.computingsite = sc_s.pq
-GROUP BY clock_timestamp(), gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO;
+GROUP BY clock_timestamp(), gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO, NUCLEUS;
 
 
 --COMMIT;
@@ -1351,7 +1351,7 @@ DELETE from doma_panda.JOBSDEFINED_SHARE_STATS;
 
 INSERT INTO doma_panda.JOBSDEFINED_SHARE_STATS(TS, GSHARE, WORKQUEUE_ID, RESOURCE_TYPE,
                                           COMPUTINGSITE, JOBSTATUS,
-                                          MAXPRIORITY, PRORATED_DISKIO_AVG, PRORATED_MEM_AVG, NJOBS, HS, VO)
+                                          MAXPRIORITY, PRORATED_DISKIO_AVG, PRORATED_MEM_AVG, NJOBS, HS, VO, NUCLEUS)
 WITH
     sc_slimmed AS (
     SELECT sc.panda_queue AS pq, sc.data->>'corepower' AS cp
@@ -1359,10 +1359,10 @@ WITH
     )
 SELECT clock_timestamp(), gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus,
       MAX(currentPriority) AS maxPriority, AVG(diskIO/coalesce(ja4.coreCount, 1)) AS proratedDiskioAvg, AVG(minRamCount/coalesce(ja4.coreCount, 1)) AS proratedMemAvg,
-      COUNT(*) AS num_of_jobs, COUNT(*) * coalesce(ja4.coreCount, 1) * CAST(sc_s.cp as DOUBLE PRECISION) AS HS, VO
+      COUNT(*) AS num_of_jobs, COUNT(*) * coalesce(ja4.coreCount, 1) * CAST(sc_s.cp as DOUBLE PRECISION) AS HS, VO, NUCLEUS
 FROM doma_panda.jobsDefined4 ja4, sc_slimmed sc_s
 WHERE ja4.computingsite = sc_s.pq
-GROUP BY clock_timestamp(), gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO;
+GROUP BY clock_timestamp(), gshare, workqueue_id, ja4.resource_type, computingSite, jobStatus, ja4.coreCount, sc_s.cp, VO, NUCLEUS;
 
 
 --COMMIT;
