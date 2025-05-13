@@ -1,4 +1,5 @@
 -- patch to be used to upgrade from version 0.0.19
+SET search_path = doma_panda,public;
 ALTER TABLE doma_panda.jobs_share_stats ADD COLUMN prorated_mem_avg decimal(11,2);
 ALTER TABLE doma_panda.jobsdefined_share_stats ADD COLUMN prorated_mem_avg decimal(11,2);
 
