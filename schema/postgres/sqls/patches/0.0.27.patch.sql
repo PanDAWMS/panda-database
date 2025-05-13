@@ -48,7 +48,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE update_jobsact_stats_by_gshare () OWNER TO panda;
+ALTER PROCEDURE doma_panda.update_jobsact_stats_by_gshare () OWNER TO panda;
 
 
 
@@ -90,7 +90,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE update_jobsdef_stats_by_gshare () OWNER TO panda;
+ALTER PROCEDURE doma_panda.update_jobsdef_stats_by_gshare () OWNER TO panda;
 
 -- ========== VERSION UPDATE ==========
 UPDATE doma_panda.pandadb_version
