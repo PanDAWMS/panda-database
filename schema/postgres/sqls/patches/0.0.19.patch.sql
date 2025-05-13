@@ -70,7 +70,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE update_jobsactive_stats () OWNER TO panda;
+ALTER PROCEDURE doma_panda.update_jobsactive_stats () OWNER TO panda;
 
 SET search_path = doma_pandabigmon,public;
 
