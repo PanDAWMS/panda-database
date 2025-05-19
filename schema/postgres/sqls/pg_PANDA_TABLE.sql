@@ -2942,3 +2942,23 @@ COMMENT ON COLUMN worker_node_metrics."statistics" IS 'Metrics in json format.';
 
 CREATE INDEX wn_metrics_idx ON worker_node_metrics ("site", "host_name", "timestamp");
 ALTER TABLE worker_node_metrics OWNER TO panda;
+
+CREATE TABLE error_descriptions (
+    id BIGSERIAL PRIMARY KEY,
+    component VARCHAR(32) NOT NULL,
+    code INTEGER NOT NULL CHECK (code BETWEEN 0 AND 99999),
+    acronym VARCHAR(64),
+    diagnostics VARCHAR(256),
+    description VARCHAR(4000),
+    category SMALLINT NOT NULL
+);
+
+COMMENT ON COLUMN error_descriptions.id IS 'Unique identifier for each row (auto-increment)';
+COMMENT ON COLUMN error_descriptions.component IS 'Name of the component';
+COMMENT ON COLUMN error_descriptions.code IS 'The actual error code';
+COMMENT ON COLUMN error_descriptions.acronym IS 'Short acronym or label for the error';
+COMMENT ON COLUMN error_descriptions.diagnostics IS 'Brief error diagnostics';
+COMMENT ON COLUMN error_descriptions.description IS 'Detailed description of the error';
+COMMENT ON COLUMN error_descriptions.category IS 'ID of error category';
+
+ALTER TABLE error_descriptions OWNER TO panda;
