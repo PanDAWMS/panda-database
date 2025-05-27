@@ -3063,6 +3063,21 @@ COMMENT ON COLUMN "ATLAS_PANDA"."ERROR_DESCRIPTIONS"."CATEGORY" IS 'ID of error 
 
 
 --------------------------------------------------------
+--  DDL for Table SW_TAGS
+--------------------------------------------------------
+CREATE TABLE "ATLAS_PANDA"."SW_TAGS"
+(	"PANDA_QUEUE" VARCHAR2(50 BYTE),
+"DATA" CLOB,
+"LAST_UPDATE" DATE,
+ CONSTRAINT "SW_TAGS_DATA_VALIDATION" CHECK (DATA is JSON) ENABLE
+);
+
+COMMENT ON COLUMN "ATLAS_PANDA"."SW_TAGS"."PANDA_QUEUE" IS 'PanDA queue name';
+COMMENT ON COLUMN "ATLAS_PANDA"."SW_TAGS"."DATA" IS 'PanDA queue name';
+COMMENT ON COLUMN "ATLAS_PANDA"."SW_TAGS"."LAST_UPDATE" IS 'Last time the PanDA queue was seen/updated';
+COMMENT ON TABLE "ATLAS_PANDA"."SW_TAGS"  IS 'Table to store the SW Tag configuration for each panda queue in flat format';
+
+--------------------------------------------------------
 --  DDL for Index JEDI_DATASETCONTENT_LFN_IDX
 --------------------------------------------------------
 
