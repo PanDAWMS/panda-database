@@ -2776,7 +2776,10 @@ CREATE TABLE data_carousel_requests (
     "modification_time" timestamp,
     "check_time" timestamp,
     "source_tape" VARCHAR(64),
-    "parameters" JSONB NOT NULL
+    "parameters" JSONB NOT NULL,
+    "last_staged_time" TIMESTAMP,
+    "locked_by" VARCHAR(64),
+    "lock_time" TIMESTAMP
 );
 COMMENT ON TABLE data_carousel_requests IS E'Table of Data Carousel requests';
 COMMENT ON COLUMN data_carousel_requests.request_id IS E'Sequential ID of the request, generated from PostgreSQL sequence object jedi_data_carousel_request_id_seq when new request is inserted';
@@ -2794,8 +2797,12 @@ COMMENT ON COLUMN data_carousel_requests.start_time IS E'Timestamp when the requ
 COMMENT ON COLUMN data_carousel_requests.end_time IS E'Timestamp when the request ended';
 COMMENT ON COLUMN data_carousel_requests.modification_time IS E'Timestamp of the last request update';
 COMMENT ON COLUMN data_carousel_requests.check_time IS E'Last time when the request was checked';
-COMMENT ON COLUMN doma_panda.data_carousel_requests.source_tape IS E'Physical tape behind source RSE';
-COMMENT ON COLUMN doma_panda.data_carousel_requests.parameters IS E'Extra parameters of staging in JSON';
+COMMENT ON COLUMN data_carousel_requests.source_tape IS E'Physical tape behind source RSE';
+COMMENT ON COLUMN data_carousel_requests.parameters IS E'Extra parameters of staging in JSON';
+COMMENT ON COLUMN data_carousel_requests.last_staged_time IS E'Last time of update about staged files';
+COMMENT ON COLUMN data_carousel_requests.locked_by IS E'The process which locks the request entry';
+COMMENT ON COLUMN data_carousel_requests.lock_time IS E'Timestamp when the request entry was locked';
+
 ALTER TABLE data_carousel_requests OWNER TO panda;
 ALTER TABLE data_carousel_requests ADD PRIMARY KEY (request_id);
 
@@ -2898,6 +2905,53 @@ COMMENT ON COLUMN worker_node."total_local_disk" IS 'Total local disk in GB.';
 
 
 ALTER TABLE worker_node OWNER TO panda;
+
+CREATE TABLE worker_node_gpus (
+    site VARCHAR(128),
+    host_name VARCHAR(128),
+    vendor VARCHAR(128),
+    model VARCHAR(128),
+    count INTEGER,
+    vram BIGINT,
+    architecture VARCHAR(128),
+    framework VARCHAR(128),
+    framework_version VARCHAR(20),
+    driver_version VARCHAR(20),
+    last_seen TIMESTAMP,
+    PRIMARY KEY (site, host_name, vendor, model)
+);
+-- Comments on worker_node_gpus table and columns
+COMMENT ON TABLE worker_node_gpus IS
+    'Stores information about the GPUs associated to a worker node seen by PanDA pilots';
+COMMENT ON COLUMN worker_node_gpus.site IS
+    'The name of the site (not PanDA queue) where the worker node is located.';
+COMMENT ON COLUMN worker_node_gpus.host_name IS
+    'The hostname of the worker node.';
+COMMENT ON COLUMN worker_node_gpus.vendor IS
+    'GPU vendor, e.g. NVIDIA.';
+COMMENT ON COLUMN worker_node_gpus.model IS
+    'GPU model, e.g. A100 80GB.';
+COMMENT ON COLUMN worker_node_gpus.count IS
+    'Number of GPUs of this type in the worker node.';
+COMMENT ON COLUMN worker_node_gpus.vram IS
+    'VRAM memory in MB.';
+COMMENT ON COLUMN worker_node_gpus.architecture IS
+    'GPU architecture, e.g. Tesla, Ampere.';
+COMMENT ON COLUMN worker_node_gpus.framework IS
+    'Driver framework available, e.g. CUDA.';
+COMMENT ON COLUMN worker_node_gpus.framework_version IS
+    'Version of the driver framework, e.g. 12.2';
+COMMENT ON COLUMN worker_node_gpus.driver_version IS
+    'Version of the driver, e.g. 575.51.03.';
+COMMENT ON COLUMN worker_node_gpus.last_seen IS
+    'Timestamp of the last time the worker node was active.';
+
+-- Index on last_seen for efficient time-based queries
+CREATE INDEX idx_worker_node_gpu_last_seen
+    ON doma_panda.worker_node_gpus (last_seen);
+
+ALTER TABLE doma_panda.worker_node_gpus OWNER TO panda;
+
 
 CREATE TABLE cpu_benchmarks (
     "cpu_type" VARCHAR(128),

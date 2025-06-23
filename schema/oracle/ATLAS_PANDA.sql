@@ -2904,6 +2904,9 @@ CREATE TABLE "ATLAS_PANDA"."DATA_CAROUSEL_REQUESTS" (
     "CHECK_TIME" DATE,
     "SOURCE_TAPE" VARCHAR2(64 BYTE),
     "PARAMETERS" CLOB,
+    "LAST_STAGED_TIME" DATE,
+    "LOCKED_BY" VARCHAR2(64 BYTE),
+    "LOCK_TIME" DATE,
     CONSTRAINT ensure_json_parameters CHECK ("PARAMETERS" IS JSON) ENABLE,
     CONSTRAINT "DATA_CAROU_REQ_PK" PRIMARY KEY ("REQUEST_ID") ENABLE
 );
@@ -2982,6 +2985,40 @@ COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."CLOCK_SPEED" IS 'Clock speed of t
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."TOTAL_MEMORY" IS 'Total amount of RAM in MB.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."LAST_SEEN" IS 'Timestamp of the last time the worker node was active.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE"."TOTAL_LOCAL_DISK" IS 'Total local disk in GB.';
+
+--------------------------------------------------------
+--  DDL for Table WORKER_NODE_GPUS
+--------------------------------------------------------
+CREATE TABLE "ATLAS_PANDA"."WORKER_NODE_GPUS"(
+    "SITE" varchar2(128),
+    "HOST_NAME" varchar2(128),
+    "VENDOR" varchar(128),
+    "MODEL" varchar(128),
+    "COUNT" number(3, 0),
+    "VRAM" number(20, 0),
+    "ARCHITECTURE" varchar(128),
+    "FRAMEWORK" varchar(128),
+    "FRAMEWORK_VERSION" varchar(20),
+    "DRIVER_VERSION" varchar(20),
+    "LAST_SEEN" date,
+    CONSTRAINT PK_WORKER_NODE_GPU PRIMARY KEY ("SITE", "HOST_NAME", "VENDOR", "MODEL")
+)ORGANIZATION INDEX COMPRESS 1;
+
+CREATE INDEX IDX_WORKER_NODE_GPU_LAST_SEEN ON "ATLAS_PANDA"."WORKER_NODE_GPUS"("LAST_SEEN");-- Table Comment
+COMMENT ON TABLE "ATLAS_PANDA"."WORKER_NODE_GPUS" IS 'Stores information about the GPUs associated to a worker node seen by PanDA pilots';-- Column Comments
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."SITE" IS 'The name of the site (not PanDA queue) where the worker node is located.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."HOST_NAME" IS 'The hostname of the worker node.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."VENDOR" IS 'GPU vendor, e.g. NVIDIA.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."MODEL" IS 'GPU model, e.g. A100 80GB.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."COUNT" IS 'Number of GPUs of this type in the worker node.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."VRAM" IS 'VRAM memory in MB.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."ARCHITECTURE" IS 'GPU architecture, e.g. Tesla, Ampere.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."FRAMEWORK" IS 'Driver framework available, e.g. CUDA.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."FRAMEWORK_VERSION" IS 'Version of the driver framework, e.g. 12.2';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."DRIVER_VERSION" IS 'Version of the driver, e.g. 575.51.03.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."LAST_SEEN" IS 'Timestamp of the last time the worker node was active.';
+
+
 --------------------------------------------------------
 --  DDL for Table CPU_BENCHMARKS
 --------------------------------------------------------
