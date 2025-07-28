@@ -2995,6 +2995,8 @@ COMMENT ON COLUMN worker_node_metrics."key" IS 'Key of the metrics entry.';
 COMMENT ON COLUMN worker_node_metrics."statistics" IS 'Metrics in json format.';
 
 CREATE INDEX wn_metrics_idx ON worker_node_metrics ("site", "host_name", "timestamp");
+CREATE INDEX wn_metrics_timestamp_idx ON worker_node_metrics ("timestamp");
+
 ALTER TABLE worker_node_metrics OWNER TO panda;
 
 CREATE TABLE error_descriptions (
