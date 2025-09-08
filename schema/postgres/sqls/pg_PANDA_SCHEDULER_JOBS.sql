@@ -2491,7 +2491,7 @@ BEGIN
         WHERE j."endtime" > NOW() - INTERVAL '1 day'
           AND j."jobstatus" IN ('finished', 'failed')
           AND j."modificationhost" NOT LIKE 'aipanda%'
-          AND j."modificationhost" IS NOT NULL
+          AND j."modificationhost" NOT LIKE 'grid-job-%'
         GROUP BY sc_slimmed."atlas_site", "worker_node"
     ),
     harvester_stats AS (
@@ -2511,6 +2511,7 @@ BEGIN
         JOIN sc_slimmed ON h."computingsite" = sc_slimmed."panda_queue"
         WHERE h."endtime" > NOW() - INTERVAL '1 day'
           AND h."status" IN ('finished', 'failed', 'cancelled')
+          AND h."nodeid" NOT LIKE 'grid-job-%'
         GROUP BY sc_slimmed."atlas_site", "worker_node"
     )
     SELECT "atlas_site", "worker_node", "key", "stats" FROM pilot_stats
