@@ -144,7 +144,8 @@ CREATE TABLE ddm_endpoint (
 	space_expired bigint,
 	space_timestamp timestamp,
 	blacklisted_read char(1),
-	blacklisted_write char(1)
+	blacklisted_write char(1),
+    detailed_status JSONB
 ) ;
 COMMENT ON TABLE ddm_endpoint IS E'DDM/Rucio storage endpoint.Table needed for the "Configurator" agent. The table consolidate information from other sources (AGIS and Rucio ) and caches it so that Panda can easily retrieve it and use it for brokerage.';
 COMMENT ON COLUMN ddm_endpoint.blacklisted IS E'Defines whether a DDM endpoint is blacklisted or not (Y/N)';
@@ -160,6 +161,7 @@ COMMENT ON COLUMN ddm_endpoint.space_timestamp IS E'Timestamp reported by Rucio 
 COMMENT ON COLUMN ddm_endpoint.space_total IS E'Total space of a DDM endpoint as reported by Rucio. Value in GB';
 COMMENT ON COLUMN ddm_endpoint.space_used IS E'Used space of a DDM endpoint as reported by Rucio. Value in GB';
 COMMENT ON COLUMN ddm_endpoint.type IS E'Type of spacetoken, e.g. DATADISK, LOCALGROUPDISK...';
+COMMENT ON COLUMN ddm_endpoint.detailed_status IS 'Endpoint-specific detailed status (JSON)';
 ALTER  TABLE ddm_endpoint OWNER TO panda;
 CREATE INDEX ddm_endpoint_site_name_idx ON ddm_endpoint (site_name);
 ALTER TABLE ddm_endpoint ADD PRIMARY KEY (ddm_endpoint_name);
