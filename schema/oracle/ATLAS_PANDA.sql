@@ -6434,6 +6434,7 @@ AS
 BEGIN
 
 -- 2025 03 19, ver 1.0
+-- 2025 07 04, ver 1.1
 -- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
 DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Updates worker node statistics with last days job and worker data');
 DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
@@ -6469,6 +6470,7 @@ JOIN sc_slimmed ON computingsite = sc_slimmed.panda_queue
 WHERE endtime > CAST(SYSTIMESTAMP AT TIME ZONE 'UTC' AS DATE) - INTERVAL '1' DAY
 AND jobstatus IN ('finished', 'failed')
 AND modificationhost not like 'aipanda%'
+AND modificationhost not like 'grid-job-%'
 GROUP BY sc_slimmed.atlas_site,
     CASE
         WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
@@ -6484,7 +6486,7 @@ SELECT
         KEY 'worker_failed' VALUE COUNT(CASE WHEN status = 'failed' THEN 1 END),
         KEY 'worker_finished' VALUE COUNT(CASE WHEN status = 'finished' THEN 1 END),
         KEY 'worker_cancelled' VALUE COUNT(CASE WHEN status = 'cancelled' THEN 1 END)
-    ) AS harvestor,
+    ) AS harvester,
     CASE
         WHEN INSTR(nodeid, '@') > 0
         THEN REGEXP_SUBSTR(nodeid, '@(.+)', 1, 1, NULL, 1)
@@ -6494,6 +6496,7 @@ FROM atlas_panda.harvester_workers
 JOIN sc_slimmed ON computingsite = sc_slimmed.panda_queue
 WHERE endtime > CAST(SYSTIMESTAMP AT TIME ZONE 'UTC' AS DATE) - INTERVAL '1' DAY
 AND status IN ('finished', 'failed')
+AND nodeid not like 'grid-job-%'
 GROUP BY
     sc_slimmed.atlas_site,
     CASE
@@ -6503,7 +6506,7 @@ GROUP BY
     END)
 SELECT atlas_site, worker_node, key, pilot FROM pilot_statistics
 UNION ALL
-SELECT atlas_site, workernode, key, harvestor FROM harvester_statistics;
+SELECT atlas_site, workernode, key, harvester FROM harvester_statistics;
 
 COMMIT;
 
