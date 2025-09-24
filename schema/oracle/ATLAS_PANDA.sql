@@ -3040,20 +3040,6 @@ CREATE TABLE "ATLAS_PANDA"."CPU_BENCHMARKS" (
 );
 
 --------------------------------------------------------
---  DDL for Table WORKER_NODE_MAP
---------------------------------------------------------
-
-CREATE TABLE "ATLAS_PANDA"."WORKER_NODE_MAP"(
-    "ATLAS_SITE" varchar2(128),
-    "WORKER_NODE" varchar2(128),
-    "CPU_TYPE" varchar(128),
-    "LAST_SEEN" date,
-    "CORES" number(9,0),
-    "ARCHITECTURE_LEVEL" varchar2(20),
-    CONSTRAINT PK_WORKER_NODE_MAP PRIMARY KEY ("ATLAS_SITE", "WORKER_NODE")
-);
-
---------------------------------------------------------
 --  DDL for Table WORKER_NODE_METRICS
 --------------------------------------------------------
 CREATE TABLE "ATLAS_PANDA"."WORKER_NODE_METRICS"(
