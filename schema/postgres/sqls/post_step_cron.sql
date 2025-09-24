@@ -9,7 +9,6 @@ UPDATE cron.job SET database='panda_db',username='panda',nodename='' WHERE comma
 SELECT cron.schedule ('@daily', $$DELETE FROM cron.job_run_details WHERE end_time < now() – interval '3 days'$$);
 SELECT cron.schedule ('@daily', 'call partman.run_maintenance_proc()');
 UPDATE cron.job SET database='panda_db',nodename='' WHERE command like '%partman.run_maintenance_proc%';
-SELECT cron.schedule ('0 8 * * *', 'CALL doma_panda.update_worker_node_map()');
 SELECT cron.schedule ('0 8 * * *', 'CALL doma_panda.update_worker_node_metrics()');
 UPDATE cron.job SET database = 'panda_db',nodename = '' WHERE command LIKE '%update_worker_node_map%' OR command LIKE '%update_worker_node_metrics%';
 

@@ -2393,75 +2393,11 @@ ALTER PROCEDURE verif_drop_copiedpandapart_v3 (DAYS_OFFSET bigint) owner TO pand
 -- REVOKE ALL ON PROCEDURE doma_panda.verif_drop_copiedpandapart_v3 (DAYS_OFFSET bigint default 2) FROM PUBLIC;
 
 
-CREATE OR REPLACE PROCEDURE doma_panda.update_worker_node_map()
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    RAISE NOTICE 'PanDA scheduler job: update_worker_node_map started';
-
-    MERGE INTO doma_panda.worker_node_map AS wnm
-    USING (
-        WITH sc_slimmed AS (
-            SELECT
-                scj."data" ->> 'atlas_site' AS "atlas_site",
-                scj."panda_queue"
-            FROM doma_panda."schedconfig_json" scj
-        )
-        SELECT DISTINCT
-            sc_slimmed."atlas_site",
-            CASE
-                WHEN POSITION('@' IN j."modificationhost") > 0 THEN SUBSTRING(j."modificationhost" FROM '@(.+)' FOR '#')
-                ELSE j."modificationhost"
-            END AS "worker_node",
-            SUBSTRING(j."cpuconsumptionunit" FROM 's?\+?(.+?)\s\d+-Core') AS "cpu_type",
-            MAX(
-                CASE
-                    WHEN j."cpuconsumptionunit" IS NULL OR TRIM(j."cpuconsumptionunit") = '' THEN 0
-                    WHEN j."cpuconsumptionunit" NOT LIKE '%-Core%' THEN 0
-                    ELSE COALESCE((SUBSTRING(j."cpuconsumptionunit" FROM '(\d+)-Core'))::INTEGER, -1)
-                END
-            ) AS "cores",
-            j."cpu_architecture_level"
-        FROM doma_panda."jobsarchived4" j
-        JOIN sc_slimmed ON j."computingsite" = sc_slimmed."panda_queue"
-        WHERE j."endtime" > NOW() - INTERVAL '1 day'
-          AND j."jobstatus" IN ('finished', 'failed')
-          AND j."modificationhost" NOT LIKE 'aipanda%'
-          AND j."cpu_architecture_level" IS NOT NULL
-          AND j."cpuconsumptionunit" ~ 's?\+?(.+?)\s\d+-Core'
-        GROUP BY
-            sc_slimmed."atlas_site",
-            CASE
-                WHEN POSITION('@' IN j."modificationhost") > 0 THEN SUBSTRING(j."modificationhost" FROM '@(.+)' FOR '#')
-                ELSE j."modificationhost"
-            END,
-            SUBSTRING(j."cpuconsumptionunit" FROM 's?\+?(.+?)\s\d+-Core'),
-            j."cpu_architecture_level"
-    ) AS src
-    ON (
-        src."atlas_site" = wnm."atlas_site"
-        AND src.worker_node = wnm.worker_node
-        AND src."cpu_type" = wnm."cpu_type"
-    )
-    WHEN MATCHED THEN
-        UPDATE SET "last_seen" = NOW()
-    WHEN NOT MATCHED THEN
-        INSERT ("atlas_site", "worker_node", "cpu_type", "cores", "architecture_level", "last_seen")
-        VALUES (src."atlas_site", src.worker_node, src."cpu_type", src."cores", src."cpu_architecture_level", NOW());
-
-    COMMIT;
-
-    RAISE NOTICE 'PanDA scheduler job: update_worker_node_map completed';
-END;
-$$;
-
-ALTER PROCEDURE doma_panda.update_worker_node_map() OWNER TO panda;
-
 CREATE OR REPLACE PROCEDURE doma_panda.update_worker_node_metrics()
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    RAISE NOTICE 'PanDA scheduler job: update_worker_node_metrics started';
+    RAISE NOTICE 'PanDA scheduler job: Updates worker node statistics with last days job and worker data (started)';
 
     INSERT INTO doma_panda.worker_node_metrics ("site", "host_name", "key", "statistics")
     WITH sc_slimmed AS (
@@ -2474,7 +2410,11 @@ BEGIN
         SELECT
             sc_slimmed."atlas_site",
             CASE
-                WHEN POSITION('@' IN j."modificationhost") > 0 THEN SUBSTRING(j."modificationhost" FROM '@(.+)' FOR '#')
+                WHEN j."modificationhost" ~ '^[^@]+@atlprd[0-9]+-[^-]+-[^.]+\.cern\.ch$'
+                  THEN regexp_replace(j."modificationhost",
+                       '^.*@atlprd[0-9]+-[^-]+-([^.]+\.cern\.ch)$', '\1')
+                WHEN j."modificationhost" LIKE '%@%'
+                  THEN regexp_replace(j."modificationhost", '^.*@(.+)$', '\1')
                 ELSE j."modificationhost"
             END AS "worker_node",
             'jobs' AS "key",
@@ -2498,7 +2438,11 @@ BEGIN
         SELECT
             sc_slimmed."atlas_site",
             CASE
-                WHEN POSITION('@' IN h."nodeid") > 0 THEN SUBSTRING(h."nodeid" FROM '@(.+)' FOR '#')
+                WHEN h."nodeid" ~ '^[^@]+@atlprd[0-9]+-[^-]+-[^.]+\.cern\.ch$'
+                  THEN regexp_replace(h."nodeid",
+                       '^.*@atlprd[0-9]+-[^-]+-([^.]+\.cern\.ch)$', '\1')
+                WHEN h."nodeid" LIKE '%@%'
+                  THEN regexp_replace(h."nodeid", '^.*@(.+)$', '\1')
                 ELSE h."nodeid"
             END AS "worker_node",
             'workers' AS "key",
