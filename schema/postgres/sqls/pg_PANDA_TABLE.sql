@@ -2968,17 +2968,6 @@ CREATE TABLE cpu_benchmarks (
 );
 ALTER TABLE cpu_benchmarks OWNER TO panda;
 
-CREATE TABLE worker_node_map (
-    "atlas_site" VARCHAR(128),
-    "worker_node" VARCHAR(128),
-    "cpu_type" VARCHAR(128),
-    "last_seen" TIMESTAMP,
-    "cores" INTEGER,
-    "architecture_level" VARCHAR(20),
-    PRIMARY KEY ("atlas_site", "worker_node")
-);
-ALTER TABLE worker_node_map OWNER TO panda;
-
 
 CREATE TABLE worker_node_metrics (
     "site" VARCHAR(128),
