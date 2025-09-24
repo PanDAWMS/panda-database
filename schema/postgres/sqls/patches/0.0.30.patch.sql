@@ -1,4 +1,4 @@
--- patch to be used to upgrade from version 0.0.30
+-- patch to be used to upgrade from version 0.0.29
 -- Drop the old procedure
     DROP PROCEDURE IF EXISTS doma_panda.update_worker_node_map();
 
