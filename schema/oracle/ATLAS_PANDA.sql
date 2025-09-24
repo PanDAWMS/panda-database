@@ -3040,20 +3040,6 @@ CREATE TABLE "ATLAS_PANDA"."CPU_BENCHMARKS" (
 );
 
 --------------------------------------------------------
---  DDL for Table WORKER_NODE_MAP
---------------------------------------------------------
-
-CREATE TABLE "ATLAS_PANDA"."WORKER_NODE_MAP"(
-    "ATLAS_SITE" varchar2(128),
-    "WORKER_NODE" varchar2(128),
-    "CPU_TYPE" varchar(128),
-    "LAST_SEEN" date,
-    "CORES" number(9,0),
-    "ARCHITECTURE_LEVEL" varchar2(20),
-    CONSTRAINT PK_WORKER_NODE_MAP PRIMARY KEY ("ATLAS_SITE", "WORKER_NODE")
-);
-
---------------------------------------------------------
 --  DDL for Table WORKER_NODE_METRICS
 --------------------------------------------------------
 CREATE TABLE "ATLAS_PANDA"."WORKER_NODE_METRICS"(
@@ -6325,109 +6311,6 @@ END;
 
 /
 
-
---------------------------------------------------------
---  DDL for Procedure UPDATE_WORKER_NODE_MAP
---------------------------------------------------------
-set define off;
-
-create or replace PROCEDURE UPDATE_WORKER_NODE_MAP
-AS
-BEGIN
-
--- 2025 02 24, ver 1.0
--- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
-DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Updates worker node map with last days job data');
-DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
-
-MERGE INTO ATLAS_PANDA.WORKER_NODE_MAP WNM
-USING (
-    WITH sc_slimmed AS (
-        SELECT
-            panda_queue,
-            scj.data.atlas_site AS atlas_site
-        FROM
-            atlas_panda.schedconfig_json scj
-    )
-    SELECT
-        DISTINCT
-        sc_slimmed.atlas_site,
-        CASE
-            WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
-            THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@(.+)', 1, 1, NULL, 1)
-            ELSE jobsarchived4.modificationhost
-        END AS WORKERNODE,
-        REGEXP_SUBSTR(
-            cpuconsumptionunit,
-            's?\+?(.+?)\s\d+-Core',
-            1, 1, NULL, 1
-        ) AS CPU_TYPE,
-        MAX(
-            CASE
-                WHEN cpuconsumptionunit IS NULL OR TRIM(cpuconsumptionunit) = ''
-                THEN 0
-                WHEN cpuconsumptionunit NOT LIKE '%-Core%'
-                THEN 0
-                ELSE
-                    TO_NUMBER(NVL(REGEXP_SUBSTR(cpuconsumptionunit, '(\d+)-Core', 1, 1, NULL, 1), -1))
-            END
-        ) AS NUM_CORE,
-        CPU_ARCHITECTURE_LEVEL
-    FROM
-        atlas_panda.jobsarchived4
-    JOIN
-        sc_slimmed
-        ON jobsarchived4.computingsite = sc_slimmed.panda_queue
-    WHERE
-        endtime > sysdate - interval '1' day
-        AND jobstatus IN ('finished', 'failed')
-        AND modificationhost NOT LIKE 'aipanda%'
-        AND CPU_ARCHITECTURE_LEVEL IS NOT NULL
-        AND REGEXP_SUBSTR(
-            cpuconsumptionunit,
-            's?\+?(.+?)\s\d+-Core',
-            1, 1, NULL, 1
-        ) IS NOT NULL
-    GROUP BY
-        sc_slimmed.atlas_site,
-        CASE
-            WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
-            THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@(.+)', 1, 1, NULL, 1)
-            ELSE jobsarchived4.modificationhost
-        END,
-        REGEXP_SUBSTR(
-            cpuconsumptionunit,
-            's?\+?(.+?)\s\d+-Core',
-            1, 1, NULL, 1
-        ),
-        CPU_ARCHITECTURE_LEVEL
-) source
-ON (
-    source.ATLAS_SITE = WNM.ATLAS_SITE
-    AND source.WORKERNODE = WNM.WORKER_NODE
-    AND source.CPU_TYPE = WNM.CPU_TYPE
-)
-WHEN MATCHED THEN
-    UPDATE SET
-        WNM.LAST_SEEN = SYSDATE
-WHEN NOT MATCHED THEN
-    INSERT (
-        ATLAS_SITE, WORKER_NODE, CPU_TYPE, CORES, ARCHITECTURE_LEVEL, LAST_SEEN
-    )
-    VALUES (
-        source.ATLAS_SITE, source.WORKERNODE, source.CPU_TYPE, source.NUM_CORE,
-        source.CPU_ARCHITECTURE_LEVEL, SYSDATE
-    );
-
-COMMIT;
-
-DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
-DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => null);
-
-end;
-
-/
-
 --------------------------------------------------------
 --  DDL for Procedure UPDATE_WORKER_NODE_METRICS
 --------------------------------------------------------
@@ -6439,6 +6322,7 @@ BEGIN
 
 -- 2025 03 19, ver 1.0
 -- 2025 07 04, ver 1.1
+-- 2025 09 24, ver 1.2
 -- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
 DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Updates worker node statistics with last days job and worker data');
 DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
@@ -6456,6 +6340,8 @@ pilot_statistics AS(
 SELECT
     sc_slimmed.atlas_site,
     CASE
+        WHEN REGEXP_LIKE(jobsarchived4.modificationhost, '^[^@]+@atlprd[0-9]+-[^-]+-[^.]+\.cern\.ch$')
+        THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@atlprd[0-9]+-[^-]+-([^.]+\.cern\.ch)', 1, 1, NULL, 1)
         WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
         THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@(.+)', 1, 1, NULL, 1)
         ELSE jobsarchived4.modificationhost
@@ -6477,6 +6363,8 @@ AND modificationhost not like 'aipanda%'
 AND modificationhost not like 'grid-job-%'
 GROUP BY sc_slimmed.atlas_site,
     CASE
+        WHEN REGEXP_LIKE(jobsarchived4.modificationhost, '^[^@]+@atlprd[0-9]+-[^-]+-[^.]+\.cern\.ch$')
+        THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@atlprd[0-9]+-[^-]+-([^.]+\.cern\.ch)', 1, 1, NULL, 1)
         WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
         THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@(.+)', 1, 1, NULL, 1)
         ELSE jobsarchived4.modificationhost
@@ -6492,6 +6380,8 @@ SELECT
         KEY 'worker_cancelled' VALUE COUNT(CASE WHEN status = 'cancelled' THEN 1 END)
     ) AS harvester,
     CASE
+        WHEN REGEXP_LIKE(nodeid, '^[^@]+@atlprd[0-9]+-[^-]+-[^.]+\.cern\.ch$')
+        THEN REGEXP_SUBSTR(nodeid, '@atlprd[0-9]+-[^-]+-([^.]+\.cern\.ch)', 1, 1, NULL, 1)
         WHEN INSTR(nodeid, '@') > 0
         THEN REGEXP_SUBSTR(nodeid, '@(.+)', 1, 1, NULL, 1)
         ELSE nodeid
@@ -6504,6 +6394,8 @@ AND nodeid not like 'grid-job-%'
 GROUP BY
     sc_slimmed.atlas_site,
     CASE
+        WHEN REGEXP_LIKE(nodeid, '^[^@]+@atlprd[0-9]+-[^-]+-[^.]+\.cern\.ch$')
+        THEN REGEXP_SUBSTR(nodeid, '@atlprd[0-9]+-[^-]+-([^.]+\.cern\.ch)', 1, 1, NULL, 1)
         WHEN INSTR(nodeid, '@') > 0
         THEN REGEXP_SUBSTR(nodeid, '@(.+)', 1, 1, NULL, 1)
         ELSE nodeid
