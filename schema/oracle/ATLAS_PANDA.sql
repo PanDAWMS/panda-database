@@ -6322,6 +6322,7 @@ BEGIN
 
 -- 2025 03 19, ver 1.0
 -- 2025 07 04, ver 1.1
+-- 2025 09 24, ver 1.2
 -- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
 DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Updates worker node statistics with last days job and worker data');
 DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
