@@ -6362,6 +6362,8 @@ AND modificationhost not like 'aipanda%'
 AND modificationhost not like 'grid-job-%'
 GROUP BY sc_slimmed.atlas_site,
     CASE
+        WHEN REGEXP_LIKE(jobsarchived4.modificationhost, '^[^@]+@atlprd[0-9]+-[^-]+-[^.]+\.cern\.ch$')
+        THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@atlprd[0-9]+-[^-]+-([^.]+\.cern\.ch)', 1, 1, NULL, 1)
         WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
         THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@(.+)', 1, 1, NULL, 1)
         ELSE jobsarchived4.modificationhost
