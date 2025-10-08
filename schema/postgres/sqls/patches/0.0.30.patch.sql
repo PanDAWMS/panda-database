@@ -1,6 +1,6 @@
 -- patch to be used to upgrade from version 0.0.29
 -- Drop the old procedure
-    DROP PROCEDURE IF EXISTS doma_panda.update_worker_node_map();
+DROP PROCEDURE IF EXISTS doma_panda.update_worker_node_map();
 
 -- Drop the old table
 DROP TABLE IF EXISTS doma_panda.worker_node_map;
@@ -87,3 +87,18 @@ ALTER PROCEDURE doma_panda.update_worker_node_metrics() OWNER TO panda;
 SELECT cron.unschedule(
     (SELECT jobid FROM cron.job WHERE command = 'CALL doma_panda.update_worker_node_map()')
 );
+
+
+-- Add columns
+ALTER TABLE doma_panda.worker_node
+  ADD COLUMN cpu_model_normalized VARCHAR(128);
+
+ALTER TABLE doma_panda.cpu_benchmarks
+  ADD COLUMN cpu_type_normalized VARCHAR(128);
+
+-- Indices
+CREATE INDEX idx_worker_node_cpu_model_norm
+  ON doma_panda.worker_node (cpu_model_normalized);
+
+CREATE INDEX idx_worker_node_cpu_type_norm
+  ON doma_panda.cpu_benchmarks (cpu_type_normalized);
