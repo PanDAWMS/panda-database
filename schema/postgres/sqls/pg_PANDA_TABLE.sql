@@ -2885,10 +2885,12 @@ CREATE TABLE worker_node (
     "total_memory" BIGINT,
     "last_seen" TIMESTAMP,
     "total_local_disk" BIGINT,
+    "cpu_model_normalized" VARCHAR(128),
     PRIMARY KEY ("site", "host_name", "cpu_model")
 );
 
 CREATE INDEX idx_worker_node_last_seen ON worker_node ("last_seen");
+CREATE INDEX idx_worker_node_cpu_model_norm ON worker_node ("cpu_model_normalized");
 
 COMMENT ON TABLE worker_node IS 'Stores information about worker nodes seen by PanDA pilots';
 COMMENT ON COLUMN worker_node."site" IS 'The name of the site (not PanDA queue) where the worker node is located.';
@@ -2964,10 +2966,12 @@ CREATE TABLE cpu_benchmarks (
     "site" VARCHAR(128),
     "score_per_core" NUMERIC(10,2),
     "timestamp" TIMESTAMP,
-    "source" VARCHAR(256)
+    "source" VARCHAR(256),
+    "cpu_type_normalized" VARCHAR(128)
 );
 ALTER TABLE cpu_benchmarks OWNER TO panda;
 
+CREATE INDEX idx_worker_node_cpu_type_norm ON cpu_benchmarks ("cpu_type_normalized");
 
 CREATE TABLE worker_node_metrics (
     "site" VARCHAR(128),
