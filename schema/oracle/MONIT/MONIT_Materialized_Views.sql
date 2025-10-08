@@ -7,325 +7,1097 @@ CREATE MATERIALIZED VIEW atlas_panda.mv_monit_jobs_submitted
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-select jm.*, prodsys.simulation_type as "simulation_type"
-from (
-    select pandaid as "pandaid", jobname as "jobname", taskid as "taskid", parentid as "parentid", prodsourcelabel as "prodsourcelabel",
-        to_char(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime", jobdefinitionid as "jobdefinitionid", schedulerid as "schedulerid",
-        to_char(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime", creationhost as "creationhost", modificationhost as "modificationhost",
-        atlasrelease as "atlasrelease", transformation as "transformation", produserid as "produserid", attemptnr as "attemptnr", jobstatus as "atlasjobstatus",
-        case when jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled') then 'pending'
-            when jobstatus in ('holding', 'transferring', 'merging') then 'finalising'
-            else jobstatus
-            end as "jobstatus",
-        to_char(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime", to_char(endtime, 'YYYY-MM-DD HH24:MI:SS') "endtime", cpuconsumptiontime,
-        cpuconsumptionunit, transexitcode, piloterrorcode, piloterrordiag,
-        exeerrorcode, exeerrordiag, ddmerrorcode, ddmerrordiag,
-        jobdispatchererrorcode, jobdispatchererrordiag, taskbuffererrorcode,
-        taskbuffererrordiag, computingsite, computingelement, proddblock,
-        destinationdblock, destinationse, nevents, cpuconversion,
-        processingtype, produsername, ninputdatafiles, inputfiletype,
-        inputfileproject, inputfilebytes, workinggroup, cloud, jobsetid,
-        sourcesite, maxattempt, pilottiming, specialhandling,
-        noutputdatafiles, outputfilebytes, jobmetrics, corecount,
-        batchid, transfertype, eventservice, gshare, hs06,
-        to_char(statechangetime, 'YYYY-MM-DD HH24:MI:SS') "statechangetime", coalesce(actualcorecount, corecount, 1) as "actualcorecount",
-        assignedpriority, avgpss, avgrss, avgswap, avgvmem, cmtconfig,
-        commandtopilot, countrygroup, currentpriority, dispatchdblock,
-        failedattempt, hs06sec, homepackage, maxcpucount, maxdiskcount,
-        maxpss, maxrss, maxswap, maxvmem, maxwalltime, minramcount,
-        nucleus, raterbytes, raterchar, ratewbytes, ratewchar,
-        reqid, totrbytes, totrchar, totwchar, totwbytes, workqueue_id,
-        jeditaskid, pilotid,
-        to_char(trunc(sys_extract_utc(systimestamp),'mi') - numtodsinterval(mod(extract(minute from cast(sysdate as timestamp)), 10), 'minute'), 'YYYY-MM-DD HH24:MI:SS') as "currenttime",
-        container_name, resource_type as "job_resource_type"
-    from atlas_panda.jobsactive4
-    where creationtime >= sys_extract_utc(SYSTIMESTAMP) - INTERVAL '2' HOUR
-        and jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled', 'running', 'holding', 'transferring', 'merging')
-        and cloud != 'OSG'
-        and not (creationtime <= sys_extract_utc(SYSTIMESTAMP) AND modificationtime > sys_extract_utc(SYSTIMESTAMP))
-    union all
-    select pandaid as "pandaid", jobname as "jobname", taskid as "taskid", parentid as "parentid", prodsourcelabel as "prodsourcelabel",
-        to_char(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime", jobdefinitionid as "jobdefinitionid", schedulerid as "schedulerid",
-        to_char(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime", creationhost as "creationhost", modificationhost as "modificationhost",
-        atlasrelease as "atlasrelease", transformation as "transformation", produserid as "produserid", attemptnr as "attemptnr", jobstatus as "atlasjobstatus",
-        case when jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled') then 'pending'
-            when jobstatus in ('holding', 'transferring', 'merging') then 'finalising'
-            else jobstatus
-            end as "jobstatus", to_char(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
-        to_char(endtime, 'YYYY-MM-DD HH24:MI:SS') "endtime", cpuconsumptiontime, cpuconsumptionunit,
-        transexitcode, piloterrorcode, piloterrordiag, exeerrorcode,
-        exeerrordiag, ddmerrorcode, ddmerrordiag,
-        jobdispatchererrorcode, jobdispatchererrordiag, taskbuffererrorcode,
-        taskbuffererrordiag, computingsite, computingelement, proddblock,
-        destinationdblock, destinationse, nevents, cpuconversion, processingtype,
-        produsername, ninputdatafiles, inputfiletype, inputfileproject,
-        inputfilebytes, workinggroup, cloud, jobsetid, sourcesite, maxattempt,
-        pilottiming, specialhandling, noutputdatafiles, outputfilebytes, jobmetrics,
-        corecount, batchid, transfertype, eventservice, gshare, hs06,
-        to_char(statechangetime, 'YYYY-MM-DD HH24:MI:SS') "statechangetime", coalesce(actualcorecount, corecount, 1) as "actualcorecount", assignedpriority,
-        avgpss, avgrss, avgswap, avgvmem, cmtconfig, commandtopilot,
-        countrygroup, currentpriority, dispatchdblock, failedattempt, hs06sec,
-        homepackage, maxcpucount, maxdiskcount, maxpss, maxrss, maxswap,
-        maxvmem, maxwalltime, minramcount, nucleus, raterbytes, raterchar,
-        ratewbytes, ratewchar, reqid, totrbytes, totrchar, totwchar, totwbytes,
-        workqueue_id, jeditaskid, pilotid,
-        to_char(trunc(sys_extract_utc(systimestamp),'mi') - numtodsinterval(mod(extract(minute from cast(sysdate as timestamp)), 10), 'minute'), 'YYYY-MM-DD HH24:MI:SS') as "currenttime",
-        container_name, resource_type as "job_resource_type"
-    from atlas_panda.jobsdefined4
-    where creationtime >= sys_extract_utc(SYSTIMESTAMP) - interval '2' hour
-        and jobstatus is not null
-        and cloud != 'OSG'
-        and not (creationtime <= sys_extract_utc(SYSTIMESTAMP) AND modificationtime > sys_extract_utc(SYSTIMESTAMP))
-    union all
-    select pandaid as "pandaid", jobname as "jobname", taskid as "taskid", parentid as "parentid", prodsourcelabel as "prodsourcelabel",
-        to_char(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime", jobdefinitionid as "jobdefinitionid", schedulerid as "schedulerid",
-        to_char(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime", creationhost as "creationhost", modificationhost as "modificationhost",
-        atlasrelease as "atlasrelease", transformation as "transformation", produserid as "produserid", attemptnr as "attemptnr", jobstatus as "atlasjobstatus",
-        case when jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled') then 'pending'
-            when jobstatus in ('holding', 'transferring', 'merging') then 'finalising'
-            else jobstatus
-            end as "jobstatus", to_char(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
-        to_char(endtime, 'YYYY-MM-DD HH24:MI:SS') "endtime", cpuconsumptiontime, cpuconsumptionunit,
-        transexitcode, piloterrorcode, piloterrordiag, exeerrorcode,
-        exeerrordiag, ddmerrorcode, ddmerrordiag, jobdispatchererrorcode,
-        jobdispatchererrordiag, taskbuffererrorcode, taskbuffererrordiag,
-        computingsite, computingelement, proddblock, destinationdblock,
-        destinationse, nevents, cpuconversion, processingtype,
-        produsername, ninputdatafiles, inputfiletype, inputfileproject,
-        inputfilebytes, workinggroup, cloud, jobsetid, sourcesite, maxattempt,
-        pilottiming, specialhandling, noutputdatafiles, outputfilebytes,
-        jobmetrics, corecount, batchid, transfertype, eventservice, gshare,
-        hs06, to_char(statechangetime, 'YYYY-MM-DD HH24:MI:SS') "statechangetime", coalesce(actualcorecount, corecount, 1) as "actualcorecount",
-        assignedpriority, avgpss, avgrss, avgswap, avgvmem, cmtconfig,
-        commandtopilot, countrygroup, currentpriority, dispatchdblock,
-        failedattempt, hs06sec, homepackage, maxcpucount, maxdiskcount, maxpss,
-        maxrss, maxswap, maxvmem, maxwalltime, minramcount, nucleus,
-        raterbytes, raterchar, ratewbytes, ratewchar, reqid, totrbytes,
-        totrchar, totwchar, totwbytes, workqueue_id, jeditaskid, pilotid,
-        to_char(trunc(sys_extract_utc(systimestamp),'mi') - numtodsinterval(mod(extract(minute from cast(sysdate as timestamp)), 10), 'minute'), 'YYYY-MM-DD HH24:MI:SS') as "currenttime",
-        container_name, resource_type as "job_resource_type"
-    from atlas_panda.jobsarchived4
-    where creationtime >= sys_extract_utc(SYSTIMESTAMP) - interval '2' hour
-        and cloud != 'OSG'
-        and not (creationtime <= sys_extract_utc(SYSTIMESTAMP) AND modificationtime > sys_extract_utc(SYSTIMESTAMP))
+SELECT jm.*, prodsys.simulation_type AS "simulation_type"
+FROM (
+    SELECT
+        pandaid AS "pandaid",
+        jobname AS "jobname",
+        taskid AS "taskid",
+        parentid AS "parentid",
+        prodsourcelabel AS "prodsourcelabel",
+        TO_CHAR(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime",
+        jobdefinitionid AS "jobdefinitionid",
+        schedulerid AS "schedulerid",
+        TO_CHAR(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime",
+        creationhost AS "creationhost",
+        modificationhost AS "modificationhost",
+        atlasrelease AS "atlasrelease",
+        transformation AS "transformation",
+        produserid AS "produserid",
+        attemptnr AS "attemptnr",
+        jobstatus AS "atlasjobstatus",
+        CASE
+            WHEN jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled') THEN 'pending'
+            WHEN jobstatus IN ('holding','transferring','merging') THEN 'finalising'
+            ELSE jobstatus
+        END AS "jobstatus",
+        TO_CHAR(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
+        TO_CHAR(endtime,   'YYYY-MM-DD HH24:MI:SS') "endtime",
+        cpuconsumptiontime,
+        cpuconsumptionunit,
+        transexitcode,
+        piloterrorcode,
+        piloterrordiag,
+        exeerrorcode,
+        exeerrordiag,
+        ddmerrorcode,
+        ddmerrordiag,
+        jobdispatchererrorcode,
+        jobdispatchererrordiag,
+        taskbuffererrorcode,
+        taskbuffererrordiag,
+        computingsite,
+        computingelement,
+        proddblock,
+        destinationdblock,
+        destinationse,
+        nevents,
+        cpuconversion,
+        processingtype,
+        produsername,
+        ninputdatafiles,
+        inputfiletype,
+        inputfileproject,
+        inputfilebytes,
+        workinggroup,
+        cloud,
+        jobsetid,
+        sourcesite,
+        maxattempt,
+        pilottiming,
+        specialhandling,
+        noutputdatafiles,
+        outputfilebytes,
+        jobmetrics,
+        corecount,
+        batchid,
+        transfertype,
+        eventservice,
+        gshare,
+        hs06,
+        CAST(statechangetime AS TIMESTAMP) "statechangetime",
+        COALESCE(actualcorecount, corecount, 1) AS "actualcorecount",
+        assignedpriority,
+        avgpss,
+        avgrss,
+        avgswap,
+        avgvmem,
+        cmtconfig,
+        commandtopilot,
+        countrygroup,
+        currentpriority,
+        dispatchdblock,
+        failedattempt,
+        hs06sec,
+        homepackage,
+        maxcpucount,
+        maxdiskcount,
+        maxpss,
+        maxrss,
+        maxswap,
+        maxvmem,
+        maxwalltime,
+        minramcount,
+        nucleus,
+        raterbytes,
+        raterchar,
+        ratewbytes,
+        ratewchar,
+        reqid,
+        totrbytes,
+        totrchar,
+        totwchar,
+        totwbytes,
+        workqueue_id,
+        jeditaskid,
+        pilotid,
+        TO_CHAR(
+            TRUNC(SYS_EXTRACT_UTC(SYSTIMESTAMP),'MI')
+            - NUMTODSINTERVAL(MOD(EXTRACT(MINUTE FROM CAST(SYSDATE AS TIMESTAMP)), 10), 'MINUTE'),
+            'YYYY-MM-DD HH24:MI:SS'
+        ) AS "currenttime",
+        container_name,
+        resource_type AS "job_resource_type"
+    FROM atlas_panda.jobsactive4
+    WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 2)
+      AND jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
+      AND cloud <> 'OSG'
+      AND NOT (
+            creationtime    <= CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE)
+        AND modificationtime >  CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE)
+      )
+
+    UNION ALL
+
+    SELECT
+        pandaid AS "pandaid",
+        jobname AS "jobname",
+        taskid AS "taskid",
+        parentid AS "parentid",
+        prodsourcelabel AS "prodsourcelabel",
+        TO_CHAR(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime",
+        jobdefinitionid AS "jobdefinitionid",
+        schedulerid AS "schedulerid",
+        TO_CHAR(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime",
+        creationhost AS "creationhost",
+        modificationhost AS "modificationhost",
+        atlasrelease AS "atlasrelease",
+        transformation AS "transformation",
+        produserid AS "produserid",
+        attemptnr AS "attemptnr",
+        jobstatus AS "atlasjobstatus",
+        CASE
+            WHEN jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled') THEN 'pending'
+            WHEN jobstatus IN ('holding','transferring','merging') THEN 'finalising'
+            ELSE jobstatus
+        END AS "jobstatus",
+        TO_CHAR(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
+        TO_CHAR(endtime,   'YYYY-MM-DD HH24:MI:SS') "endtime",
+        cpuconsumptiontime,
+        cpuconsumptionunit,
+        transexitcode,
+        piloterrorcode,
+        piloterrordiag,
+        exeerrorcode,
+        exeerrordiag,
+        ddmerrorcode,
+        ddmerrordiag,
+        jobdispatchererrorcode,
+        jobdispatchererrordiag,
+        taskbuffererrorcode,
+        taskbuffererrordiag,
+        computingsite,
+        computingelement,
+        proddblock,
+        destinationdblock,
+        destinationse,
+        nevents,
+        cpuconversion,
+        processingtype,
+        produsername,
+        ninputdatafiles,
+        inputfiletype,
+        inputfileproject,
+        inputfilebytes,
+        workinggroup,
+        cloud,
+        jobsetid,
+        sourcesite,
+        maxattempt,
+        pilottiming,
+        specialhandling,
+        noutputdatafiles,
+        outputfilebytes,
+        jobmetrics,
+        corecount,
+        batchid,
+        transfertype,
+        eventservice,
+        gshare,
+        hs06,
+        CAST(statechangetime AS TIMESTAMP) "statechangetime",
+        COALESCE(actualcorecount, corecount, 1) AS "actualcorecount",
+        assignedpriority,
+        avgpss,
+        avgrss,
+        avgswap,
+        avgvmem,
+        cmtconfig,
+        commandtopilot,
+        countrygroup,
+        currentpriority,
+        dispatchdblock,
+        failedattempt,
+        hs06sec,
+        homepackage,
+        maxcpucount,
+        maxdiskcount,
+        maxpss,
+        maxrss,
+        maxswap,
+        maxvmem,
+        maxwalltime,
+        minramcount,
+        nucleus,
+        raterbytes,
+        raterchar,
+        ratewbytes,
+        ratewchar,
+        reqid,
+        totrbytes,
+        totrchar,
+        totwchar,
+        totwbytes,
+        workqueue_id,
+        jeditaskid,
+        pilotid,
+        TO_CHAR(
+            TRUNC(SYS_EXTRACT_UTC(SYSTIMESTAMP),'MI')
+            - NUMTODSINTERVAL(MOD(EXTRACT(MINUTE FROM CAST(SYSDATE AS TIMESTAMP)), 10), 'MINUTE'),
+            'YYYY-MM-DD HH24:MI:SS'
+        ) AS "currenttime",
+        container_name,
+        resource_type AS "job_resource_type"
+    FROM atlas_panda.jobsdefined4
+    WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 2)
+      AND jobstatus IS NOT NULL
+      AND cloud <> 'OSG'
+      AND NOT (
+            creationtime    <= CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE)
+        AND modificationtime >  CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE)
+      )
+
+    UNION ALL
+
+    SELECT
+        pandaid AS "pandaid",
+        jobname AS "jobname",
+        taskid AS "taskid",
+        parentid AS "parentid",
+        prodsourcelabel AS "prodsourcelabel",
+        TO_CHAR(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime",
+        jobdefinitionid AS "jobdefinitionid",
+        schedulerid AS "schedulerid",
+        TO_CHAR(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime",
+        creationhost AS "creationhost",
+        modificationhost AS "modificationhost",
+        atlasrelease AS "atlasrelease",
+        transformation AS "transformation",
+        produserid AS "produserid",
+        attemptnr AS "attemptnr",
+        jobstatus AS "atlasjobstatus",
+        CASE
+            WHEN jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled') THEN 'pending'
+            WHEN jobstatus IN ('holding','transferring','merging') THEN 'finalising'
+            ELSE jobstatus
+        END AS "jobstatus",
+        TO_CHAR(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
+        TO_CHAR(endtime,   'YYYY-MM-DD HH24:MI:SS') "endtime",
+        cpuconsumptiontime,
+        cpuconsumptionunit,
+        transexitcode,
+        piloterrorcode,
+        piloterrordiag,
+        exeerrorcode,
+        exeerrordiag,
+        ddmerrorcode,
+        ddmerrordiag,
+        jobdispatchererrorcode,
+        jobdispatchererrordiag,
+        taskbuffererrorcode,
+        taskbuffererrordiag,
+        computingsite,
+        computingelement,
+        proddblock,
+        destinationdblock,
+        destinationse,
+        nevents,
+        cpuconversion,
+        processingtype,
+        produsername,
+        ninputdatafiles,
+        inputfiletype,
+        inputfileproject,
+        inputfilebytes,
+        workinggroup,
+        cloud,
+        jobsetid,
+        sourcesite,
+        maxattempt,
+        pilottiming,
+        specialhandling,
+        noutputdatafiles,
+        outputfilebytes,
+        jobmetrics,
+        corecount,
+        batchid,
+        transfertype,
+        eventservice,
+        gshare,
+        hs06,
+        CAST(statechangetime AS TIMESTAMP) "statechangetime",
+        COALESCE(actualcorecount, corecount, 1) AS "actualcorecount",
+        assignedpriority,
+        avgpss,
+        avgrss,
+        avgswap,
+        avgvmem,
+        cmtconfig,
+        commandtopilot,
+        countrygroup,
+        currentpriority,
+        dispatchdblock,
+        failedattempt,
+        hs06sec,
+        homepackage,
+        maxcpucount,
+        maxdiskcount,
+        maxpss,
+        maxrss,
+        maxswap,
+        maxvmem,
+        maxwalltime,
+        minramcount,
+        nucleus,
+        raterbytes,
+        raterchar,
+        ratewbytes,
+        ratewchar,
+        reqid,
+        totrbytes,
+        totrchar,
+        totwchar,
+        totwbytes,
+        workqueue_id,
+        jeditaskid,
+        pilotid,
+        TO_CHAR(
+            TRUNC(SYS_EXTRACT_UTC(SYSTIMESTAMP),'MI')
+            - NUMTODSINTERVAL(MOD(EXTRACT(MINUTE FROM CAST(SYSDATE AS TIMESTAMP)), 10), 'MINUTE'),
+            'YYYY-MM-DD HH24:MI:SS'
+        ) AS "currenttime",
+        container_name,
+        resource_type AS "job_resource_type"
+    FROM atlas_panda.jobsarchived4
+    WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 2)
+      AND cloud <> 'OSG'
+      AND NOT (
+            creationtime    <= CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE)
+        AND modificationtime >  CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE)
+      )
 ) jm
-left join atlas_deft.t_production_task prodsys on prodsys.taskid = jm."taskid"
-where "atlasjobstatus" not in ('pending', 'defined', 'waiting');
+LEFT JOIN atlas_deft.t_production_task prodsys
+  ON prodsys.taskid = jm."taskid"
+WHERE "atlasjobstatus" NOT IN ('pending','defined','waiting');
+/
 
-
--- Materialized view for current jobs
 CREATE MATERIALIZED VIEW atlas_panda.mv_monit_jobs_current
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-select jm.*, prodsys.simulation_type as "simulation_type"
-from (
-    select pandaid as "pandaid", jobname as "jobname", taskid as "taskid", parentid as "parentid", prodsourcelabel as "prodsourcelabel",
-        to_char(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime", jobdefinitionid as "jobdefinitionid", schedulerid as "schedulerid",
-        to_char(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime", creationhost as "creationhost", modificationhost as "modificationhost",
-        atlasrelease as "atlasrelease", transformation as "transformation", produserid as "produserid", attemptnr as "attemptnr", jobstatus as "atlasjobstatus",
-        case when jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled') then 'pending'
-            when jobstatus in ('holding', 'transferring', 'merging') then 'finalising'
-            else jobstatus
-            end as "jobstatus",
-        to_char(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime", to_char(endtime, 'YYYY-MM-DD HH24:MI:SS') "endtime", cpuconsumptiontime,
-        cpuconsumptionunit, transexitcode, piloterrorcode, piloterrordiag,
-        exeerrorcode, exeerrordiag, ddmerrorcode, ddmerrordiag,
-        jobdispatchererrorcode, jobdispatchererrordiag, taskbuffererrorcode,
-        taskbuffererrordiag, computingsite, computingelement, proddblock,
-        destinationdblock, destinationse, nevents, cpuconversion,
-        processingtype, produsername, ninputdatafiles, inputfiletype,
-        inputfileproject, inputfilebytes, workinggroup, cloud, jobsetid,
-        sourcesite, maxattempt, pilottiming, specialhandling,
-        noutputdatafiles, outputfilebytes, jobmetrics, corecount,
-        batchid, transfertype, eventservice, gshare, hs06,
-        to_char(statechangetime, 'YYYY-MM-DD HH24:MI:SS') "statechangetime", coalesce(actualcorecount, corecount, 1) as "actualcorecount",
-        assignedpriority, avgpss, avgrss, avgswap, avgvmem, cmtconfig,
-        commandtopilot, countrygroup, currentpriority, dispatchdblock,
-        failedattempt, hs06sec, homepackage, maxcpucount, maxdiskcount,
-        maxpss, maxrss, maxswap, maxvmem, maxwalltime, minramcount,
-        nucleus, raterbytes, raterchar, ratewbytes, ratewchar,
-        reqid, totrbytes, totrchar, totwchar, totwbytes, workqueue_id,
-        jeditaskid, pilotid,
-        to_char(trunc(sys_extract_utc(systimestamp),'mi') - numtodsinterval(mod(extract(minute from cast(sysdate as timestamp)), 10), 'minute'), 'YYYY-MM-DD HH24:MI:SS') as "currenttime",
-        container_name, resource_type as "job_resource_type"
-    from atlas_panda.jobsactive4
-    where ((statechangetime >= sys_extract_utc(SYSTIMESTAMP))
-        or jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled', 'running', 'holding', 'transferring', 'merging')
-        and cloud != 'OSG') and jobstatus not in ('failed')
-    union all
-    select pandaid as "pandaid", jobname as "jobname", taskid as "taskid", parentid as "parentid", prodsourcelabel as "prodsourcelabel",
-        to_char(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime", jobdefinitionid as "jobdefinitionid", schedulerid as "schedulerid",
-        to_char(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime", creationhost as "creationhost", modificationhost as "modificationhost",
-        atlasrelease as "atlasrelease", transformation as "transformation", produserid as "produserid", attemptnr as "attemptnr", jobstatus as "atlasjobstatus",
-        case when jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled') then 'pending'
-            when jobstatus in ('holding', 'transferring', 'merging') then 'finalising'
-            else jobstatus
-            end as "jobstatus", to_char(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
-        to_char(endtime, 'YYYY-MM-DD HH24:MI:SS') "endtime", cpuconsumptiontime, cpuconsumptionunit,
-        transexitcode, piloterrorcode, piloterrordiag, exeerrorcode,
-        exeerrordiag, ddmerrorcode, ddmerrordiag,
-        jobdispatchererrorcode, jobdispatchererrordiag, taskbuffererrorcode,
-        taskbuffererrordiag, computingsite, computingelement, proddblock,
-        destinationdblock, destinationse, nevents, cpuconversion, processingtype,
-        produsername, ninputdatafiles, inputfiletype, inputfileproject,
-        inputfilebytes, workinggroup, cloud, jobsetid, sourcesite, maxattempt,
-        pilottiming, specialhandling, noutputdatafiles, outputfilebytes, jobmetrics,
-        corecount, batchid, transfertype, eventservice, gshare, hs06,
-        to_char(statechangetime, 'YYYY-MM-DD HH24:MI:SS') "statechangetime", coalesce(actualcorecount, corecount, 1) as "actualcorecount", assignedpriority,
-        avgpss, avgrss, avgswap, avgvmem, cmtconfig, commandtopilot,
-        countrygroup, currentpriority, dispatchdblock, failedattempt, hs06sec,
-        homepackage, maxcpucount, maxdiskcount, maxpss, maxrss, maxswap,
-        maxvmem, maxwalltime, minramcount, nucleus, raterbytes, raterchar,
-        ratewbytes, ratewchar, reqid, totrbytes, totrchar, totwchar, totwbytes,
-        workqueue_id, jeditaskid, pilotid,
-        to_char(trunc(sys_extract_utc(systimestamp),'mi') - numtodsinterval(mod(extract(minute from cast(sysdate as timestamp)), 10), 'minute'), 'YYYY-MM-DD HH24:MI:SS') as "currenttime",
-        container_name, resource_type as "job_resource_type"
-    from atlas_panda.jobsdefined4
-    where jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled', 'running', 'holding', 'transferring', 'merging')
-        and cloud != 'OSG'
-    union all
-    select pandaid as "pandaid", jobname as "jobname", taskid as "taskid", parentid as "parentid", prodsourcelabel as "prodsourcelabel",
-        to_char(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime", jobdefinitionid as "jobdefinitionid", schedulerid as "schedulerid",
-        to_char(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime", creationhost as "creationhost", modificationhost as "modificationhost",
-        atlasrelease as "atlasrelease", transformation as "transformation", produserid as "produserid", attemptnr as "attemptnr", jobstatus as "atlasjobstatus",
-        case when jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled') then 'pending'
-            when jobstatus in ('holding', 'transferring', 'merging') then 'finalising'
-            else jobstatus
-            end as "jobstatus", to_char(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
-        to_char(endtime, 'YYYY-MM-DD HH24:MI:SS') "endtime", cpuconsumptiontime, cpuconsumptionunit,
-        transexitcode, piloterrorcode, piloterrordiag, exeerrorcode,
-        exeerrordiag, ddmerrorcode, ddmerrordiag,
-        jobdispatchererrorcode, jobdispatchererrordiag, taskbuffererrorcode,
-        taskbuffererrordiag, computingsite, computingelement, proddblock,
-        destinationdblock, destinationse, nevents, cpuconversion, processingtype,
-        produsername, ninputdatafiles, inputfiletype, inputfileproject,
-        inputfilebytes, workinggroup, cloud, jobsetid, sourcesite, maxattempt,
-        pilottiming, specialhandling, noutputdatafiles, outputfilebytes, jobmetrics,
-        corecount, batchid, transfertype, eventservice, gshare, hs06,
-        to_char(statechangetime, 'YYYY-MM-DD HH24:MI:SS') "statechangetime", coalesce(actualcorecount, corecount, 1) as "actualcorecount", assignedpriority,
-        avgpss, avgrss, avgswap, avgvmem, cmtconfig, commandtopilot, countrygroup,
-        currentpriority, dispatchdblock, failedattempt, hs06sec, homepackage,
-        maxcpucount, maxdiskcount, maxpss, maxrss, maxswap, maxvmem,
-        maxwalltime, minramcount, nucleus, raterbytes, raterchar,
-        ratewbytes, ratewchar, reqid, totrbytes, totrchar, totwchar,
-        totwbytes, workqueue_id, jeditaskid, pilotid,
-        to_char(trunc(sys_extract_utc(systimestamp),'mi') - numtodsinterval(mod(extract(minute from cast(sysdate as timestamp)), 10), 'minute'), 'YYYY-MM-DD HH24:MI:SS') as "currenttime",
-        container_name, resource_type as "job_resource_type"
-    from atlas_panda.jobswaiting4
-    where jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled', 'running', 'holding', 'transferring', 'merging')
-        and cloud != 'OSG'
-    union all
-    select pandaid as "pandaid", jobname as "jobname", taskid as "taskid", parentid as "parentid", prodsourcelabel as "prodsourcelabel",
-        to_char(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime", jobdefinitionid as "jobdefinitionid", schedulerid as "schedulerid",
-        to_char(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime", creationhost as "creationhost", modificationhost as "modificationhost",
-        atlasrelease as "atlasrelease", transformation as "transformation", produserid as "produserid", attemptnr as "attemptnr", jobstatus as "atlasjobstatus",
-        case when jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled') then 'pending'
-            when jobstatus in ('holding', 'transferring', 'merging') then 'finalising'
-            else jobstatus
-            end as "jobstatus", to_char(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
-        to_char(endtime, 'YYYY-MM-DD HH24:MI:SS') "endtime", cpuconsumptiontime, cpuconsumptionunit,
-        transexitcode, piloterrorcode, piloterrordiag, exeerrorcode,
-        exeerrordiag, ddmerrorcode, ddmerrordiag, jobdispatchererrorcode,
-        jobdispatchererrordiag, taskbuffererrorcode, taskbuffererrordiag,
-        computingsite, computingelement, proddblock, destinationdblock,
-        destinationse, nevents, cpuconversion, processingtype,
-        produsername, ninputdatafiles, inputfiletype, inputfileproject,
-        inputfilebytes, workinggroup, cloud, jobsetid, sourcesite, maxattempt,
-        pilottiming, specialhandling, noutputdatafiles, outputfilebytes,
-        jobmetrics, corecount, batchid, transfertype, eventservice, gshare,
-        hs06, to_char(statechangetime, 'YYYY-MM-DD HH24:MI:SS') "statechangetime", coalesce(actualcorecount, corecount, 1) as "actualcorecount",
-        assignedpriority, avgpss, avgrss, avgswap, avgvmem, cmtconfig,
-        commandtopilot, countrygroup, currentpriority, dispatchdblock,
-        failedattempt, hs06sec, homepackage, maxcpucount, maxdiskcount, maxpss,
-        maxrss, maxswap, maxvmem, maxwalltime, minramcount, nucleus,
-        raterbytes, raterchar, ratewbytes, ratewchar, reqid, totrbytes,
-        totrchar, totwchar, totwbytes, workqueue_id, jeditaskid, pilotid,
-        to_char(trunc(sys_extract_utc(systimestamp),'mi') - numtodsinterval(mod(extract(minute from cast(sysdate as timestamp)), 10), 'minute'), 'YYYY-MM-DD HH24:MI:SS') as "currenttime",
-        container_name, resource_type as "job_resource_type"
-    from atlas_panda.jobsarchived4
-    where statechangetime >= sys_extract_utc(SYSTIMESTAMP)
-        and jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled', 'running', 'holding', 'transferring', 'merging')
-        and cloud != 'OSG'
-) jm
-left join atlas_deft.t_production_task prodsys on prodsys.taskid = jm."taskid"
-order by "statechangetime";
+SELECT jm.*, prodsys.simulation_type AS "simulation_type"
+FROM (
+    /* -------- jobsactive4 -------- */
+    SELECT
+        pandaid AS "pandaid",
+        jobname AS "jobname",
+        taskid AS "taskid",
+        parentid AS "parentid",
+        prodsourcelabel AS "prodsourcelabel",
+        TO_CHAR(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime",
+        jobdefinitionid AS "jobdefinitionid",
+        schedulerid AS "schedulerid",
+        TO_CHAR(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime",
+        creationhost AS "creationhost",
+        modificationhost AS "modificationhost",
+        atlasrelease AS "atlasrelease",
+        transformation AS "transformation",
+        produserid AS "produserid",
+        attemptnr AS "attemptnr",
+        jobstatus AS "atlasjobstatus",
+        CASE
+            WHEN jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled') THEN 'pending'
+            WHEN jobstatus IN ('holding','transferring','merging') THEN 'finalising'
+            ELSE jobstatus
+        END AS "jobstatus",
+        TO_CHAR(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
+        TO_CHAR(endtime,   'YYYY-MM-DD HH24:MI:SS') "endtime",
+        cpuconsumptiontime,
+        cpuconsumptionunit,
+        transexitcode,
+        piloterrorcode,
+        piloterrordiag,
+        exeerrorcode,
+        exeerrordiag,
+        ddmerrorcode,
+        ddmerrordiag,
+        jobdispatchererrorcode,
+        jobdispatchererrordiag,
+        taskbuffererrorcode,
+        taskbuffererrordiag,
+        computingsite,
+        computingelement,
+        proddblock,
+        destinationdblock,
+        destinationse,
+        nevents,
+        cpuconversion,
+        processingtype,
+        produsername,
+        ninputdatafiles,
+        inputfiletype,
+        inputfileproject,
+        inputfilebytes,
+        workinggroup,
+        cloud,
+        jobsetid,
+        sourcesite,
+        maxattempt,
+        pilottiming,
+        specialhandling,
+        noutputdatafiles,
+        outputfilebytes,
+        jobmetrics,
+        corecount,
+        batchid,
+        transfertype,
+        eventservice,
+        gshare,
+        hs06,
+        CAST(statechangetime AS TIMESTAMP) "statechangetime",
+        COALESCE(actualcorecount, corecount, 1) AS "actualcorecount",
+        assignedpriority,
+        avgpss,
+        avgrss,
+        avgswap,
+        avgvmem,
+        cmtconfig,
+        commandtopilot,
+        countrygroup,
+        currentpriority,
+        dispatchdblock,
+        failedattempt,
+        hs06sec,
+        homepackage,
+        maxcpucount,
+        maxdiskcount,
+        maxpss,
+        maxrss,
+        maxswap,
+        maxvmem,
+        maxwalltime,
+        minramcount,
+        nucleus,
+        raterbytes,
+        raterchar,
+        ratewbytes,
+        ratewchar,
+        reqid,
+        totrbytes,
+        totrchar,
+        totwchar,
+        totwbytes,
+        workqueue_id,
+        jeditaskid,
+        pilotid,
+        TO_CHAR(
+            TRUNC(SYS_EXTRACT_UTC(SYSTIMESTAMP),'MI')
+            - NUMTODSINTERVAL(MOD(EXTRACT(MINUTE FROM CAST(SYSDATE AS TIMESTAMP)), 10), 'MINUTE'),
+            'YYYY-MM-DD HH24:MI:SS'
+        ) AS "currenttime",
+        container_name,
+        resource_type AS "job_resource_type"
+    FROM atlas_panda.jobsactive4
+    WHERE (
+            statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - (2/24))
+         OR jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
+          )
+      AND cloud <> 'OSG'
+      AND jobstatus <> 'failed'
 
--- Materialized view for completed jobs
+    UNION ALL
+
+    /* -------- jobsdefined4 -------- */
+    SELECT
+        pandaid AS "pandaid",
+        jobname AS "jobname",
+        taskid AS "taskid",
+        parentid AS "parentid",
+        prodsourcelabel AS "prodsourcelabel",
+        TO_CHAR(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime",
+        jobdefinitionid AS "jobdefinitionid",
+        schedulerid AS "schedulerid",
+        TO_CHAR(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime",
+        creationhost AS "creationhost",
+        modificationhost AS "modificationhost",
+        atlasrelease AS "atlasrelease",
+        transformation AS "transformation",
+        produserid AS "produserid",
+        attemptnr AS "attemptnr",
+        jobstatus AS "atlasjobstatus",
+        CASE
+            WHEN jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled') THEN 'pending'
+            WHEN jobstatus IN ('holding','transferring','merging') THEN 'finalising'
+            ELSE jobstatus
+        END AS "jobstatus",
+        TO_CHAR(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
+        TO_CHAR(endtime,   'YYYY-MM-DD HH24:MI:SS') "endtime",
+        cpuconsumptiontime,
+        cpuconsumptionunit,
+        transexitcode,
+        piloterrorcode,
+        piloterrordiag,
+        exeerrorcode,
+        exeerrordiag,
+        ddmerrorcode,
+        ddmerrordiag,
+        jobdispatchererrorcode,
+        jobdispatchererrordiag,
+        taskbuffererrorcode,
+        taskbuffererrordiag,
+        computingsite,
+        computingelement,
+        proddblock,
+        destinationdblock,
+        destinationse,
+        nevents,
+        cpuconversion,
+        processingtype,
+        produsername,
+        ninputdatafiles,
+        inputfiletype,
+        inputfileproject,
+        inputfilebytes,
+        workinggroup,
+        cloud,
+        jobsetid,
+        sourcesite,
+        maxattempt,
+        pilottiming,
+        specialhandling,
+        noutputdatafiles,
+        outputfilebytes,
+        jobmetrics,
+        corecount,
+        batchid,
+        transfertype,
+        eventservice,
+        gshare,
+        hs06,
+        CAST(statechangetime AS TIMESTAMP) "statechangetime",
+        COALESCE(actualcorecount, corecount, 1) AS "actualcorecount",
+        assignedpriority,
+        avgpss,
+        avgrss,
+        avgswap,
+        avgvmem,
+        cmtconfig,
+        commandtopilot,
+        countrygroup,
+        currentpriority,
+        dispatchdblock,
+        failedattempt,
+        hs06sec,
+        homepackage,
+        maxcpucount,
+        maxdiskcount,
+        maxpss,
+        maxrss,
+        maxswap,
+        maxvmem,
+        maxwalltime,
+        minramcount,
+        nucleus,
+        raterbytes,
+        raterchar,
+        ratewbytes,
+        ratewchar,
+        reqid,
+        totrbytes,
+        totrchar,
+        totwchar,
+        totwbytes,
+        workqueue_id,
+        jeditaskid,
+        pilotid,
+        TO_CHAR(
+            TRUNC(SYS_EXTRACT_UTC(SYSTIMESTAMP),'MI')
+            - NUMTODSINTERVAL(MOD(EXTRACT(MINUTE FROM CAST(SYSDATE AS TIMESTAMP)), 10), 'MINUTE'),
+            'YYYY-MM-DD HH24:MI:SS'
+        ) AS "currenttime",
+        container_name,
+        resource_type AS "job_resource_type"
+    FROM atlas_panda.jobsdefined4
+    WHERE jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
+      AND cloud <> 'OSG'
+
+    UNION ALL
+
+    /* -------- jobswaiting4 -------- */
+    SELECT
+        pandaid AS "pandaid",
+        jobname AS "jobname",
+        taskid AS "taskid",
+        parentid AS "parentid",
+        prodsourcelabel AS "prodsourcelabel",
+        TO_CHAR(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime",
+        jobdefinitionid AS "jobdefinitionid",
+        schedulerid AS "schedulerid",
+        TO_CHAR(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime",
+        creationhost AS "creationhost",
+        modificationhost AS "modificationhost",
+        atlasrelease AS "atlasrelease",
+        transformation AS "transformation",
+        produserid AS "produserid",
+        attemptnr AS "attemptnr",
+        jobstatus AS "atlasjobstatus",
+        CASE
+            WHEN jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled') THEN 'pending'
+            WHEN jobstatus IN ('holding','transferring','merging') THEN 'finalising'
+            ELSE jobstatus
+        END AS "jobstatus",
+        TO_CHAR(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
+        TO_CHAR(endtime,   'YYYY-MM-DD HH24:MI:SS') "endtime",
+        cpuconsumptiontime,
+        cpuconsumptionunit,
+        transexitcode,
+        piloterrorcode,
+        piloterrordiag,
+        exeerrorcode,
+        exeerrordiag,
+        ddmerrorcode,
+        ddmerrordiag,
+        jobdispatchererrorcode,
+        jobdispatchererrordiag,
+        taskbuffererrorcode,
+        taskbuffererrordiag,
+        computingsite,
+        computingelement,
+        proddblock,
+        destinationdblock,
+        destinationse,
+        nevents,
+        cpuconversion,
+        processingtype,
+        produsername,
+        ninputdatafiles,
+        inputfiletype,
+        inputfileproject,
+        inputfilebytes,
+        workinggroup,
+        cloud,
+        jobsetid,
+        sourcesite,
+        maxattempt,
+        pilottiming,
+        specialhandling,
+        noutputdatafiles,
+        outputfilebytes,
+        jobmetrics,
+        corecount,
+        batchid,
+        transfertype,
+        eventservice,
+        gshare,
+        hs06,
+        CAST(statechangetime AS TIMESTAMP) "statechangetime",
+        COALESCE(actualcorecount, corecount, 1) AS "actualcorecount",
+        assignedpriority,
+        avgpss,
+        avgrss,
+        avgswap,
+        avgvmem,
+        cmtconfig,
+        commandtopilot,
+        countrygroup,
+        currentpriority,
+        dispatchdblock,
+        failedattempt,
+        hs06sec,
+        homepackage,
+        maxcpucount,
+        maxdiskcount,
+        maxpss,
+        maxrss,
+        maxswap,
+        maxvmem,
+        maxwalltime,
+        minramcount,
+        nucleus,
+        raterbytes,
+        raterchar,
+        ratewbytes,
+        ratewchar,
+        reqid,
+        totrbytes,
+        totrchar,
+        totwchar,
+        totwbytes,
+        workqueue_id,
+        jeditaskid,
+        pilotid,
+        TO_CHAR(
+            TRUNC(SYS_EXTRACT_UTC(SYSTIMESTAMP),'MI')
+            - NUMTODSINTERVAL(MOD(EXTRACT(MINUTE FROM CAST(SYSDATE AS TIMESTAMP)), 10), 'MINUTE'),
+            'YYYY-MM-DD HH24:MI:SS'
+        ) AS "currenttime",
+        container_name,
+        resource_type AS "job_resource_type"
+    FROM atlas_panda.jobswaiting4
+    WHERE jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
+      AND cloud <> 'OSG'
+
+    UNION ALL
+
+    /* -------- jobsarchived4 -------- */
+    SELECT
+        pandaid AS "pandaid",
+        jobname AS "jobname",
+        taskid AS "taskid",
+        parentid AS "parentid",
+        prodsourcelabel AS "prodsourcelabel",
+        TO_CHAR(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime",
+        jobdefinitionid AS "jobdefinitionid",
+        schedulerid AS "schedulerid",
+        TO_CHAR(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime",
+        creationhost AS "creationhost",
+        modificationhost AS "modificationhost",
+        atlasrelease AS "atlasrelease",
+        transformation AS "transformation",
+        produserid AS "produserid",
+        attemptnr AS "attemptnr",
+        jobstatus AS "atlasjobstatus",
+        CASE
+            WHEN jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled') THEN 'pending'
+            WHEN jobstatus IN ('holding','transferring','merging') THEN 'finalising'
+            ELSE jobstatus
+        END AS "jobstatus",
+        TO_CHAR(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
+        TO_CHAR(endtime,   'YYYY-MM-DD HH24:MI:SS') "endtime",
+        cpuconsumptiontime,
+        cpuconsumptionunit,
+        transexitcode,
+        piloterrorcode,
+        piloterrordiag,
+        exeerrorcode,
+        exeerrordiag,
+        ddmerrorcode,
+        ddmerrordiag,
+        jobdispatchererrorcode,
+        jobdispatchererrordiag,
+        taskbuffererrorcode,
+        taskbuffererrordiag,
+        computingsite,
+        computingelement,
+        proddblock,
+        destinationdblock,
+        destinationse,
+        nevents,
+        cpuconversion,
+        processingtype,
+        produsername,
+        ninputdatafiles,
+        inputfiletype,
+        inputfileproject,
+        inputfilebytes,
+        workinggroup,
+        cloud,
+        jobsetid,
+        sourcesite,
+        maxattempt,
+        pilottiming,
+        specialhandling,
+        noutputdatafiles,
+        outputfilebytes,
+        jobmetrics,
+        corecount,
+        batchid,
+        transfertype,
+        eventservice,
+        gshare,
+        hs06,
+        CAST(statechangetime AS TIMESTAMP) "statechangetime",
+        COALESCE(actualcorecount, corecount, 1) AS "actualcorecount",
+        assignedpriority,
+        avgpss,
+        avgrss,
+        avgswap,
+        avgvmem,
+        cmtconfig,
+        commandtopilot,
+        countrygroup,
+        currentpriority,
+        dispatchdblock,
+        failedattempt,
+        hs06sec,
+        homepackage,
+        maxcpucount,
+        maxdiskcount,
+        maxpss,
+        maxrss,
+        maxswap,
+        maxvmem,
+        maxwalltime,
+        minramcount,
+        nucleus,
+        raterbytes,
+        raterchar,
+        ratewbytes,
+        ratewchar,
+        reqid,
+        totrbytes,
+        totrchar,
+        totwchar,
+        totwbytes,
+        workqueue_id,
+        jeditaskid,
+        pilotid,
+        TO_CHAR(
+            TRUNC(SYS_EXTRACT_UTC(SYSTIMESTAMP),'MI')
+            - NUMTODSINTERVAL(MOD(EXTRACT(MINUTE FROM CAST(SYSDATE AS TIMESTAMP)), 10), 'MINUTE'),
+            'YYYY-MM-DD HH24:MI:SS'
+        ) AS "currenttime",
+        container_name,
+        resource_type AS "job_resource_type"
+    FROM atlas_panda.jobsarchived4
+    WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - (2/24))
+      AND jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
+      AND cloud <> 'OSG'
+) jm
+LEFT JOIN atlas_deft.t_production_task prodsys
+  ON prodsys.taskid = jm."taskid";
+/
+
 CREATE MATERIALIZED VIEW atlas_panda.mv_monit_jobs_completed
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-select jm.*, prodsys.simulation_type as "simulation_type"
-from (
-    select pandaid as "pandaid", jobname as "jobname", coalesce(taskid, -1) as "taskid", parentid as "parentid", prodsourcelabel as "prodsourcelabel",
-        to_char(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime", jobdefinitionid as "jobdefinitionid", schedulerid as "schedulerid",
-        to_char(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime", creationhost as "creationhost", modificationhost as "modificationhost",
-        atlasrelease as "atlasrelease", transformation as "transformation", produserid as "produserid", attemptnr as "attemptnr", jobstatus as "atlasjobstatus",
-        case when jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled') then 'pending'
-            when jobstatus in ('holding', 'transferring', 'merging') then 'finalising'
-            else jobstatus
-            end as "jobstatus",
-        to_char(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime", to_char(endtime, 'YYYY-MM-DD HH24:MI:SS') "endtime", cpuconsumptiontime,
-        cpuconsumptionunit, transexitcode, piloterrorcode, piloterrordiag,
-        exeerrorcode, exeerrordiag, ddmerrorcode, ddmerrordiag,
-        jobdispatchererrorcode, jobdispatchererrordiag, taskbuffererrorcode,
-        taskbuffererrordiag, computingsite, computingelement, proddblock,
-        destinationdblock, destinationse, nevents, cpuconversion,
-        processingtype, produsername, ninputdatafiles, inputfiletype,
-        inputfileproject, inputfilebytes, workinggroup, cloud, jobsetid,
-        sourcesite, maxattempt, pilottiming, specialhandling,
-        noutputdatafiles, outputfilebytes, jobmetrics, corecount,
-        batchid, transfertype, eventservice, gshare, hs06,
-        to_char(statechangetime, 'YYYY-MM-DD HH24:MI:SS') "statechangetime", coalesce(actualcorecount, 1) as "actualcorecount",
-        assignedpriority, avgpss, avgrss, avgswap, avgvmem, cmtconfig,
-        commandtopilot, countrygroup, currentpriority, dispatchdblock,
-        failedattempt, hs06sec, homepackage, maxcpucount, maxdiskcount,
-        maxpss, maxrss, maxswap, maxvmem, maxwalltime, minramcount,
-        nucleus, raterbytes, raterchar, ratewbytes, ratewchar,
-        coalesce(reqid, -1) as "reqid", totrbytes, totrchar, totwchar, totwbytes, workqueue_id,
-        jeditaskid, pilotid,
-        to_char(trunc(sys_extract_utc(systimestamp),'mi') - numtodsinterval(mod(extract(minute from cast(sysdate as timestamp)), 10), 'minute'), 'YYYY-MM-DD HH24:MI:SS') as "currenttime",
-        container_name, resource_type as "job_resource_type", gco2_global, gco2_regional
-    from atlas_panda.jobsactive4
-    where (statechangetime >= sys_extract_utc(SYSTIMESTAMP) - interval '10' minute)
-        and jobstatus not in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled', 'running', 'holding', 'transferring', 'merging')
-        and cloud != 'OSG'
-    union all
-    select pandaid as "pandaid", jobname as "jobname", coalesce(taskid, -1) as "taskid", parentid as "parentid", prodsourcelabel as "prodsourcelabel",
-        to_char(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime", jobdefinitionid as "jobdefinitionid", schedulerid as "schedulerid",
-        to_char(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime", creationhost as "creationhost", modificationhost as "modificationhost",
-        atlasrelease as "atlasrelease", transformation as "transformation", produserid as "produserid", attemptnr as "attemptnr", jobstatus as "atlasjobstatus",
-        case when jobstatus in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled') then 'pending'
-            when jobstatus in ('holding', 'transferring', 'merging') then 'finalising'
-            else jobstatus
-            end as "jobstatus", to_char(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
-        to_char(endtime, 'YYYY-MM-DD HH24:MI:SS') "endtime", cpuconsumptiontime, cpuconsumptionunit,
-        transexitcode, piloterrorcode, piloterrordiag, exeerrorcode,
-        exeerrordiag, ddmerrorcode, ddmerrordiag, jobdispatchererrorcode,
-        jobdispatchererrordiag, taskbuffererrorcode, taskbuffererrordiag,
-        computingsite, computingelement, proddblock, destinationdblock,
-        destinationse, nevents, cpuconversion, processingtype,
-        produsername, ninputdatafiles, inputfiletype, inputfileproject,
-        inputfilebytes, workinggroup, cloud, jobsetid, sourcesite, maxattempt,
-        pilottiming, specialhandling, noutputdatafiles, outputfilebytes,
-        jobmetrics, corecount, batchid, transfertype, eventservice, gshare,
-        hs06, to_char(statechangetime, 'YYYY-MM-DD HH24:MI:SS') "statechangetime", coalesce(actualcorecount, 1) as "actualcorecount",
-        assignedpriority, avgpss, avgrss, avgswap, avgvmem, cmtconfig,
-        commandtopilot, countrygroup, currentpriority, dispatchdblock,
-        failedattempt, hs06sec, homepackage, maxcpucount, maxdiskcount, maxpss,
-        maxrss, maxswap, maxvmem, maxwalltime, minramcount, nucleus,
-        raterbytes, raterchar, ratewbytes, ratewchar, coalesce(reqid, -1) as "reqid", totrbytes,
-        totrchar, totwchar, totwbytes, workqueue_id, jeditaskid, pilotid,
-        to_char(trunc(sys_extract_utc(systimestamp),'mi') - numtodsinterval(mod(extract(minute from cast(sysdate as timestamp)), 10), 'minute'), 'YYYY-MM-DD HH24:MI:SS') as "currenttime",
-        container_name, resource_type as "job_resource_type", gco2_global, gco2_regional
-    from atlas_panda.jobsarchived4
-    where statechangetime >= sys_extract_utc(SYSTIMESTAMP) - interval '10' minute
-        and jobstatus not in ('pending', 'defined', 'waiting', 'assigned', 'activated', 'sent', 'starting', 'throttled', 'running', 'holding', 'transferring', 'merging')
-        and cloud != 'OSG'
+SELECT jm.*, prodsys.simulation_type AS "simulation_type"
+FROM (
+    /* -------- jobsactive4 -------- */
+    SELECT
+        pandaid AS "pandaid",
+        jobname AS "jobname",
+        COALESCE(taskid, -1) AS "taskid",
+        parentid AS "parentid",
+        prodsourcelabel AS "prodsourcelabel",
+        TO_CHAR(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime",
+        jobdefinitionid AS "jobdefinitionid",
+        schedulerid AS "schedulerid",
+        TO_CHAR(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime",
+        creationhost AS "creationhost",
+        modificationhost AS "modificationhost",
+        atlasrelease AS "atlasrelease",
+        transformation AS "transformation",
+        produserid AS "produserid",
+        attemptnr AS "attemptnr",
+        jobstatus AS "atlasjobstatus",
+        CASE
+            WHEN jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled') THEN 'pending'
+            WHEN jobstatus IN ('holding','transferring','merging') THEN 'finalising'
+            ELSE jobstatus
+        END AS "jobstatus",
+        TO_CHAR(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
+        TO_CHAR(endtime,   'YYYY-MM-DD HH24:MI:SS') "endtime",
+        cpuconsumptiontime,
+        cpuconsumptionunit,
+        transexitcode,
+        piloterrorcode,
+        piloterrordiag,
+        exeerrorcode,
+        exeerrordiag,
+        ddmerrorcode,
+        ddmerrordiag,
+        jobdispatchererrorcode,
+        jobdispatchererrordiag,
+        taskbuffererrorcode,
+        taskbuffererrordiag,
+        computingsite,
+        computingelement,
+        proddblock,
+        destinationdblock,
+        destinationse,
+        nevents,
+        cpuconversion,
+        processingtype,
+        produsername,
+        ninputdatafiles,
+        inputfiletype,
+        inputfileproject,
+        inputfilebytes,
+        workinggroup,
+        cloud,
+        jobsetid,
+        sourcesite,
+        maxattempt,
+        pilottiming,
+        specialhandling,
+        noutputdatafiles,
+        outputfilebytes,
+        jobmetrics,
+        corecount,
+        batchid,
+        transfertype,
+        eventservice,
+        gshare,
+        hs06,
+        CAST(statechangetime AS TIMESTAMP) "statechangetime",
+        COALESCE(actualcorecount, 1) AS "actualcorecount",
+        assignedpriority,
+        avgpss,
+        avgrss,
+        avgswap,
+        avgvmem,
+        cmtconfig,
+        commandtopilot,
+        countrygroup,
+        currentpriority,
+        dispatchdblock,
+        failedattempt,
+        hs06sec,
+        homepackage,
+        maxcpucount,
+        maxdiskcount,
+        maxpss,
+        maxrss,
+        maxswap,
+        maxvmem,
+        maxwalltime,
+        minramcount,
+        nucleus,
+        raterbytes,
+        raterchar,
+        ratewbytes,
+        ratewchar,
+        COALESCE(reqid, -1) AS "reqid",
+        totrbytes,
+        totrchar,
+        totwchar,
+        totwbytes,
+        workqueue_id,
+        jeditaskid,
+        pilotid,
+        TO_CHAR(
+            TRUNC(SYS_EXTRACT_UTC(SYSTIMESTAMP),'MI')
+            - NUMTODSINTERVAL(MOD(EXTRACT(MINUTE FROM CAST(SYSDATE AS TIMESTAMP)), 10), 'MINUTE'),
+            'YYYY-MM-DD HH24:MI:SS'
+        ) AS "currenttime",
+        container_name,
+        resource_type AS "job_resource_type",
+        gco2_global,
+        gco2_regional
+    FROM atlas_panda.jobsactive4
+    WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 2)
+      AND jobstatus NOT IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
+      AND cloud <> 'OSG'
+
+    UNION ALL
+
+    /* -------- jobsarchived4 -------- */
+    SELECT
+        pandaid AS "pandaid",
+        jobname AS "jobname",
+        COALESCE(taskid, -1) AS "taskid",
+        parentid AS "parentid",
+        prodsourcelabel AS "prodsourcelabel",
+        TO_CHAR(modificationtime, 'YYYY-MM-DD HH24:MI:SS') "modificationtime",
+        jobdefinitionid AS "jobdefinitionid",
+        schedulerid AS "schedulerid",
+        TO_CHAR(creationtime, 'YYYY-MM-DD HH24:MI:SS') "creationtime",
+        creationhost AS "creationhost",
+        modificationhost AS "modificationhost",
+        atlasrelease AS "atlasrelease",
+        transformation AS "transformation",
+        produserid AS "produserid",
+        attemptnr AS "attemptnr",
+        jobstatus AS "atlasjobstatus",
+        CASE
+            WHEN jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled') THEN 'pending'
+            WHEN jobstatus IN ('holding','transferring','merging') THEN 'finalising'
+            ELSE jobstatus
+        END AS "jobstatus",
+        TO_CHAR(starttime, 'YYYY-MM-DD HH24:MI:SS') "starttime",
+        TO_CHAR(endtime,   'YYYY-MM-DD HH24:MI:SS') "endtime",
+        cpuconsumptiontime,
+        cpuconsumptionunit,
+        transexitcode,
+        piloterrorcode,
+        piloterrordiag,
+        exeerrorcode,
+        exeerrordiag,
+        ddmerrorcode,
+        ddmerrordiag,
+        jobdispatchererrorcode,
+        jobdispatchererrordiag,
+        taskbuffererrorcode,
+        taskbuffererrordiag,
+        computingsite,
+        computingelement,
+        proddblock,
+        destinationdblock,
+        destinationse,
+        nevents,
+        cpuconversion,
+        processingtype,
+        produsername,
+        ninputdatafiles,
+        inputfiletype,
+        inputfileproject,
+        inputfilebytes,
+        workinggroup,
+        cloud,
+        jobsetid,
+        sourcesite,
+        maxattempt,
+        pilottiming,
+        specialhandling,
+        noutputdatafiles,
+        outputfilebytes,
+        jobmetrics,
+        corecount,
+        batchid,
+        transfertype,
+        eventservice,
+        gshare,
+        hs06,
+        CAST(statechangetime AS TIMESTAMP) "statechangetime",
+        COALESCE(actualcorecount, 1) AS "actualcorecount",
+        assignedpriority,
+        avgpss,
+        avgrss,
+        avgswap,
+        avgvmem,
+        cmtconfig,
+        commandtopilot,
+        countrygroup,
+        currentpriority,
+        dispatchdblock,
+        failedattempt,
+        hs06sec,
+        homepackage,
+        maxcpucount,
+        maxdiskcount,
+        maxpss,
+        maxrss,
+        maxswap,
+        maxvmem,
+        maxwalltime,
+        minramcount,
+        nucleus,
+        raterbytes,
+        raterchar,
+        ratewbytes,
+        ratewchar,
+        COALESCE(reqid, -1) AS "reqid",
+        totrbytes,
+        totrchar,
+        totwchar,
+        totwbytes,
+        workqueue_id,
+        jeditaskid,
+        pilotid,
+        TO_CHAR(
+            TRUNC(SYS_EXTRACT_UTC(SYSTIMESTAMP),'MI')
+            - NUMTODSINTERVAL(MOD(EXTRACT(MINUTE FROM CAST(SYSDATE AS TIMESTAMP)), 10), 'MINUTE'),
+            'YYYY-MM-DD HH24:MI:SS'
+        ) AS "currenttime",
+        container_name,
+        resource_type AS "job_resource_type",
+        gco2_global,
+        gco2_regional
+    FROM atlas_panda.jobsarchived4
+    WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 2)
+      AND jobstatus NOT IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
+      AND cloud <> 'OSG'
 ) jm
-left join atlas_deft.t_production_task prodsys on prodsys.taskid = jm."taskid"
-order by "statechangetime";
+LEFT JOIN atlas_deft.t_production_task prodsys
+  ON prodsys.taskid = jm."taskid";
+/
+
+GRANT SELECT ON atlas_panda.mv_monit_jobs_submitted TO atlas_panda_reader;
+GRANT SELECT ON atlas_panda.mv_monit_jobs_current   TO atlas_panda_reader;
+GRANT SELECT ON atlas_panda.mv_monit_jobs_completed TO atlas_panda_reader;
+
 
 
 -- Scheduler job to refresh the MONIT materialized views every 10 minutes
