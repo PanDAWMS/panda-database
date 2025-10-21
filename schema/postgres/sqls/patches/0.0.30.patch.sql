@@ -145,3 +145,11 @@ CREATE INDEX idx_worker_node_cpu_model_norm
 
 CREATE INDEX idx_worker_node_cpu_type_norm
   ON doma_panda.cpu_benchmarks (cpu_type_normalized);
+
+-- Update schema version
+-- first delete server and jedi entries
+TRUNCATE TABLE doma_panda.pandadb_version;
+
+INSERT INTO doma_panda.pandadb_version (component, major, minor, patch)
+VALUES ('PanDA', 0, 0, 30);
+commit;
