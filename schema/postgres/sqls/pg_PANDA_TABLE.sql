@@ -875,7 +875,7 @@ CREATE TABLE jedi_tasks (
 	workqueue_id integer,
 	progress smallint,
 	failurerate smallint,
-	errordialog varchar(255),
+	errordialog varchar(510),
 	countrygroup varchar(20),
 	parent_tid bigint,
 	eventservice smallint,
