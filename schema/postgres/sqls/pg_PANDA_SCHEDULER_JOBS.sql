@@ -689,7 +689,7 @@ BEGIN
                       JOIN doma_panda.JEDI_Events PARTITION ('||p.PARTITION_NAME||') e 
                       ON (t.JEDITASKID = e.JEDITASKID)
                       WHERE t.STATUS IN (''done'', ''finished'', ''aborted'', ''failed'', ''broken'') 
-                      AND t.MODIFICATIONTIME < sysdate - 90' into STRICT taskid_cnt;
+                      AND t.MODIFICATIONTIME < sysdate - 30' into STRICT taskid_cnt;
 
     if (rows_cnt = taskid_cnt and rows_cnt <> 0) then
       --dbms_output.put_line('ALTER TABLE doma_panda.JEDI_Events DROP PARTITION '||p.PARTITION_NAME||' update global indexes;');

@@ -1,4 +1,47 @@
 -- patch to be used to upgrade from version 0.0.29
+ALTER TABLE doma_panda.jeditasks
+  ALTER COLUMN errordialog VARCHAR(510);
+
+CREATE OR REPLACE PROCEDURE doma_panda.delete_jedi_events_proc () AS $body$
+DECLARE
+
+  rows_cnt bigint;
+  taskid_cnt bigint;
+  --row_sum bigint := 0;
+  --part_cnt bigint := 1;
+  p RECORD;
+
+BEGIN
+  EXECUTE 'alter session set ddl_lock_timeout=30';
+
+  for p in (select PARTITION_NAME from user_tab_partitions where table_name = 'JEDI_EVENTS') loop
+
+    EXECUTE 'SELECT COUNT(*) FROM doma_panda.JEDI_Events PARTITION ('||p.PARTITION_NAME||')' into STRICT rows_cnt;
+
+    EXECUTE 'SELECT COUNT(*)
+                      FROM doma_panda.JEDI_Tasks t
+                      JOIN doma_panda.JEDI_Events PARTITION ('||p.PARTITION_NAME||') e
+                      ON (t.JEDITASKID = e.JEDITASKID)
+                      WHERE t.STATUS IN (''done'', ''finished'', ''aborted'', ''failed'', ''broken'')
+                      AND t.MODIFICATIONTIME < sysdate - 30' into STRICT taskid_cnt;
+
+    if (rows_cnt = taskid_cnt and rows_cnt <> 0) then
+      --dbms_output.put_line('ALTER TABLE doma_panda.JEDI_Events DROP PARTITION '||p.PARTITION_NAME||' update global indexes;');
+      EXECUTE 'ALTER TABLE doma_panda.JEDI_Events DROP PARTITION '||p.PARTITION_NAME;
+      --dbms_output.put_line(part_cnt||' '||p.PARTITION_NAME||' >>> '||rows_cnt);
+      --row_sum := row_sum + taskid_cnt;
+      --part_cnt := part_cnt + 1;
+    end if;
+
+  end loop;
+  --dbms_output.put_line(row_sum);
+END;
+$body$
+LANGUAGE PLPGSQL
+SECURITY DEFINER
+;
+ALTER PROCEDURE delete_jedi_events_proc () OWNER TO panda;
+
 -- Drop the old procedure
 DROP PROCEDURE IF EXISTS doma_panda.update_worker_node_map();
 

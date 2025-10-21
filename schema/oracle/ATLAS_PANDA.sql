@@ -34,9 +34,7 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('SERVER', 0, 0, 29);
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('JEDI', 0, 0, 29);
-
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 0, 30);
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
 --------------------------------------------------------
@@ -936,7 +934,7 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
 	"WORKQUEUE_ID" NUMBER(5,0), 
 	"PROGRESS" NUMBER(3,0), 
 	"FAILURERATE" NUMBER(3,0), 
-	"ERRORDIALOG" VARCHAR2(255 BYTE), 
+	"ERRORDIALOG" VARCHAR2(510 BYTE),
 	"COUNTRYGROUP" VARCHAR2(20 BYTE), 
 	"PARENT_TID" NUMBER(12,0), 
 	"EVENTSERVICE" NUMBER(1,0), 
@@ -5056,7 +5054,7 @@ BEGIN
                       JOIN ATLAS_PANDA.JEDI_Events PARTITION ('||p.PARTITION_NAME||') e 
                       ON (t.JEDITASKID = e.JEDITASKID)
                       WHERE t.STATUS IN (''done'', ''finished'', ''aborted'', ''failed'', ''broken'') 
-                      AND t.MODIFICATIONTIME < sysdate - 90' into taskid_cnt;
+                      AND t.MODIFICATIONTIME < sysdate - 30' into taskid_cnt;
       
     if (rows_cnt = taskid_cnt and rows_cnt <> 0) then
       --dbms_output.put_line('ALTER TABLE ATLAS_PANDA.JEDI_Events DROP PARTITION '||p.PARTITION_NAME||' update global indexes;');
