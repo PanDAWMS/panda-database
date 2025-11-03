@@ -60,7 +60,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE delete_jedi_events_proc () OWNER TO panda;
+ALTER PROCEDURE doma_panda.delete_jedi_events_proc () OWNER TO panda;
 
 -- Drop the old procedure
 DROP PROCEDURE IF EXISTS doma_panda.update_worker_node_map();
