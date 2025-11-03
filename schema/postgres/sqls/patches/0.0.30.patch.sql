@@ -1,6 +1,26 @@
 -- patch to be used to upgrade from version 0.0.29
-ALTER TABLE doma_panda.jeditasks
-  ALTER COLUMN errordialog VARCHAR(510);
+BEGIN;
+
+DROP VIEW doma_pandabigmon.jedi_tasks_ordered;
+
+ALTER TABLE doma_panda.jedi_tasks
+  ALTER COLUMN errordialog TYPE VARCHAR(510);
+
+CREATE VIEW doma_pandabigmon.jedi_tasks_ordered AS
+SELECT
+    jedi_tasks.jeditaskid, jedi_tasks.taskname, jedi_tasks.status, jedi_tasks.username, jedi_tasks.creationdate, jedi_tasks.modificationtime, jedi_tasks.reqid, jedi_tasks.oldstatus, jedi_tasks.cloud, jedi_tasks.site, jedi_tasks.starttime,
+    jedi_tasks.endtime, jedi_tasks.frozentime, jedi_tasks.prodsourcelabel, jedi_tasks.workinggroup, jedi_tasks.vo, jedi_tasks.corecount, jedi_tasks.tasktype, jedi_tasks.processingtype, jedi_tasks.taskpriority, jedi_tasks.currentpriority,
+    jedi_tasks.architecture, jedi_tasks.transuses, jedi_tasks.transhome, jedi_tasks.transpath, jedi_tasks.lockedby, jedi_tasks.lockedtime, jedi_tasks.termcondition, jedi_tasks.splitrule, jedi_tasks.walltime, jedi_tasks.walltimeunit,
+    jedi_tasks.outdiskcount, jedi_tasks.outdiskunit, jedi_tasks.workdiskcount, jedi_tasks.workdiskunit, jedi_tasks.ramcount, jedi_tasks.ramunit, jedi_tasks.iointensity, jedi_tasks.iointensityunit, jedi_tasks.workqueue_id,
+    jedi_tasks.progress, jedi_tasks.failurerate, jedi_tasks.errordialog, jedi_tasks.countrygroup, jedi_tasks.parent_tid, jedi_tasks.eventservice, jedi_tasks.ticketid, jedi_tasks.ticketsystemtype, jedi_tasks.statechangetime,
+    jedi_tasks.superstatus, jedi_tasks.campaign, jedi_tasks.mergeramcount, jedi_tasks.mergeramunit, jedi_tasks.mergewalltime, jedi_tasks.mergewalltimeunit, jedi_tasks.throttledtime, jedi_tasks.numthrottled, jedi_tasks.mergecorecount,
+    jedi_tasks.goal, jedi_tasks.assessmenttime, jedi_tasks.cputime, jedi_tasks.cputimeunit, jedi_tasks.cpuefficiency, jedi_tasks.basewalltime, jedi_tasks.amiflag_old, jedi_tasks.amiflag, jedi_tasks.nucleus, jedi_tasks.baseramcount,
+    jedi_tasks.ttcrequested, jedi_tasks.ttcpredicted, jedi_tasks.ttcpredictiondate, jedi_tasks.rescuetime, jedi_tasks.requesttype, jedi_tasks.gshare, jedi_tasks.resource_type, jedi_tasks.usejumbo, jedi_tasks.diskio,
+    jedi_tasks.diskiounit, jedi_tasks.container_name, jedi_tasks.attemptnr
+FROM doma_panda.jedi_tasks
+ORDER BY jedi_tasks.jeditaskid DESC;
+
+COMMIT;
 
 CREATE OR REPLACE PROCEDURE doma_panda.delete_jedi_events_proc () AS $body$
 DECLARE
