@@ -34,7 +34,7 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 0, 30);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 0, 31);
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
 --------------------------------------------------------
@@ -3022,6 +3022,18 @@ COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."FRAMEWORK_VERSION" IS 'Versi
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."DRIVER_VERSION" IS 'Version of the driver, e.g. 575.51.03.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_GPUS"."LAST_SEEN" IS 'Timestamp of the last time the worker node was active.';
 
+
+--------------------------------------------------------
+--  DDL for Table WORKER_NODE_QUEUE
+--------------------------------------------------------
+
+CREATE TABLE "ATLAS_PANDA"."WORKER_NODE_QUEUE" (
+  site        VARCHAR2(128),
+  host_name   VARCHAR2(128),
+  panda_queue VARCHAR2(128),
+  last_seen   DATE,
+  CONSTRAINT PK_WORKER_NODE_QUEUE PRIMARY KEY (site, host_name, panda_queue)
+);
 
 --------------------------------------------------------
 --  DDL for Table CPU_BENCHMARKS
