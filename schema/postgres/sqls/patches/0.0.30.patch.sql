@@ -1,4 +1,7 @@
 -- patch to be used to upgrade from version 0.0.29
+-- This file contains regular table and procedure updates for panda_db database
+-- For cron job updates, see 0.0.30.cron.patch.sql
+
 BEGIN;
 
 DROP VIEW doma_pandabigmon.jedi_tasks_ordered;
@@ -146,12 +149,6 @@ $$;
 
 ALTER PROCEDURE doma_panda.update_worker_node_metrics() OWNER TO panda;
 
--- Drop the old cron schedule
-SELECT cron.unschedule(
-    (SELECT jobid FROM cron.job WHERE command = 'CALL doma_panda.update_worker_node_map()')
-);
-
-
 -- Add columns
 ALTER TABLE doma_panda.worker_node
   ADD COLUMN cpu_model_normalized VARCHAR(128);
@@ -172,4 +169,4 @@ TRUNCATE TABLE doma_panda.pandadb_version;
 
 INSERT INTO doma_panda.pandadb_version (component, major, minor, patch)
 VALUES ('PanDA', 0, 0, 30);
-commit;
+COMMIT;
