@@ -14,6 +14,6 @@ SELECT cron.schedule ('0 * * * *', 'REFRESH MATERIALIZED VIEW CONCURRENTLY doma_
 SELECT cron.schedule ('0 * * * *', 'REFRESH MATERIALIZED VIEW CONCURRENTLY doma_panda.mv_worker_node_gpu_summary;');
 
 UPDATE cron.job SET database = 'panda_db',nodename = '' WHERE command LIKE '%update_worker_node_metrics%';
-UPDATE cron.job SET database = 'panda_db', nodename = '' WHERE command LIKE '%doma_panda.mv_worker_node_summary%';
-UPDATE cron.job SET database = 'panda_db', nodename = '' WHERE command LIKE '%doma_panda.mv_worker_node_gpu_summary%';
+UPDATE cron.job SET database = 'panda_db', nodename = '' WHERE command LIKE '%mv_worker_node_summary%';
+UPDATE cron.job SET database = 'panda_db', nodename = '' WHERE command LIKE '%mv_worker_node_gpu_summary%';
 
