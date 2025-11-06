@@ -10,5 +10,11 @@ SELECT cron.schedule ('@daily', $$DELETE FROM cron.job_run_details WHERE end_tim
 SELECT cron.schedule ('@daily', 'call partman.run_maintenance_proc()');
 UPDATE cron.job SET database='panda_db',nodename='' WHERE command like '%partman.run_maintenance_proc%';
 SELECT cron.schedule ('0 8 * * *', 'CALL doma_panda.update_worker_node_metrics()');
+SELECT cron.schedule ('0 8 * * *', 'CALL doma_panda.update_worker_node_metrics()');
+SELECT cron.schedule ('0 * * * *', 'REFRESH MATERIALIZED VIEW CONCURRENTLY doma_panda.mv_worker_node_summary;');
+SELECT cron.schedule ('0 * * * *', 'REFRESH MATERIALIZED VIEW CONCURRENTLY doma_panda.mv_worker_node_gpu_summary;');
+
 UPDATE cron.job SET database = 'panda_db',nodename = '' WHERE command LIKE '%update_worker_node_map%' OR command LIKE '%update_worker_node_metrics%';
+UPDATE cron.job SET database = 'panda_db', nodename = '' WHERE command LIKE '%doma_panda.mv_worker_node_summary%';
+UPDATE cron.job SET database = 'panda_db', nodename = '' WHERE command LIKE '%doma_panda.mv_worker_node_gpu_summary%';
 
