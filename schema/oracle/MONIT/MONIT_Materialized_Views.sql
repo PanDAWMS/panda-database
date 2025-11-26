@@ -1142,6 +1142,16 @@ BEGIN
 END;
 /
 
+# Move it to ADCR NODE4
+BEGIN
+  DBMS_SCHEDULER.SET_ATTRIBUTE(
+    name      => 'ATLAS_PANDA.MONIT_MV_REFRESH_10MIN',
+    attribute => 'JOB_CLASS',
+    value     => 'PANDAMON_JOB_CLASS'
+  );
+END;
+/
+
 -- Grant read access to atlas_panda_reader user
 GRANT SELECT ON atlas_panda.mv_monit_jobs_submitted TO atlas_panda_reader;
 GRANT SELECT ON atlas_panda.mv_monit_jobs_current   TO atlas_panda_reader;
