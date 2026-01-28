@@ -978,7 +978,8 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
     "REALMODIFICATIONTIME" DATE,
     "FRAMEWORK" VARCHAR2(50),
     "ACTIVATEDTIME" DATE,
-    "QUEUEDTIME" DATE
+    "QUEUEDTIME" DATE,
+    "ACTIONTIME" DATE
    ) 
   PARTITION BY RANGE ("JEDITASKID") INTERVAL (500000) 
  (PARTITION "INITIAL_PARTITION"  VALUES LESS THAN (1)) ;
@@ -1065,6 +1066,7 @@ CREATE TABLE "ATLAS_PANDA"."GLOBAL_SHARES_AUDIT"
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."FRAMEWORK" IS 'Submission framework that was used to generate the task';
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."ACTIVATEDTIME" IS 'Time of activation processing workload';
    COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."QUEUEDTIME" IS 'Start time of queuing period ready to generate jobs';
+   COMMENT ON COLUMN "ATLAS_PANDA"."JEDI_TASKS"."ACTIONTIME" IS 'Timestamp when a periodic action is executed on the task';
 
 --------------------------------------------------------
 --  DDL for Table JEDI_WORK_QUEUE

@@ -919,7 +919,8 @@ CREATE TABLE jedi_tasks (
 	realmodificationtime timestamp,
     framework varchar(50),
     activatedtime timestamp,
-    queuedtime timestamp
+    queuedtime timestamp,
+    actiontime timestamp
 ) PARTITION BY RANGE (jeditaskid) ;
 COMMENT ON COLUMN jedi_tasks.amiflag IS E'It will contain a mask, one bit per AMI task (AMI has two tasks) with default value at insertion for "amiflag" to 3 (0b00000011). A trigger when the field âcampaignâ is modified:	if "amiflag" is NULL then "amiflag" = 2 else "amiflag" = BITOR(AMIFLAG, 2)';
 COMMENT ON COLUMN jedi_tasks.architecture IS E'The architecture on which the task runs. Eg, $CMTCONFIG';
@@ -1002,6 +1003,7 @@ COMMENT ON COLUMN jedi_tasks.workqueue_id IS E'The work queue identifier to whic
 COMMENT ON COLUMN jedi_tasks.framework IS E'Submission framework that was used to generate the task';
 COMMENT ON COLUMN jedi_tasks.activatedtime IS E'Time of activation processing workload';
 COMMENT ON COLUMN jedi_tasks.queuedtime IS E'Start time of queuing period ready to generate jobs';
+COMMENT ON COLUMN jedi_tasks.actiontime IS E'Timestamp when a periodic action is executed on the task';
 ALTER  TABLE jedi_tasks OWNER TO panda;
 CREATE INDEX jedi_tasks_amiflag_idx ON jedi_tasks (amiflag);
 CREATE INDEX jedi_tasks_creation_idx ON jedi_tasks (creationdate);
