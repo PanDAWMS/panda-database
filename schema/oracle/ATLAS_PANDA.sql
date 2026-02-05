@@ -34,7 +34,7 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 0, 32);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 1, 0);
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
 --------------------------------------------------------
@@ -3121,6 +3121,124 @@ COMMENT ON COLUMN "ATLAS_PANDA"."SW_TAGS"."PANDA_QUEUE" IS 'PanDA queue name';
 COMMENT ON COLUMN "ATLAS_PANDA"."SW_TAGS"."DATA" IS 'PanDA queue name';
 COMMENT ON COLUMN "ATLAS_PANDA"."SW_TAGS"."LAST_UPDATE" IS 'Last time the PanDA queue was seen/updated';
 COMMENT ON TABLE "ATLAS_PANDA"."SW_TAGS"  IS 'Table to store the SW Tag configuration for each panda queue in flat format';
+
+--------------------------------------------------------
+-- DDL for Native Workflow
+--------------------------------------------------------
+CREATE SEQUENCE  "ATLAS_PANDA"."WORKFLOW_ID_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER NOCYCLE;
+CREATE SEQUENCE  "ATLAS_PANDA"."WORKFLOW_STEP_ID_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER NOCYCLE;
+CREATE SEQUENCE  "ATLAS_PANDA"."WORKFLOW_DATA_ID_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER NOCYCLE;
+
+
+CREATE TABLE "ATLAS_PANDA"."WORKFLOWS" (
+    "WORKFLOW_ID" NUMBER NOT NULL,
+    "NAME" VARCHAR2(256 BYTE),
+    "PARENT_ID" NUMBER,
+    "LOOP_COUNT" NUMBER,
+    "STATUS" VARCHAR2(32 BYTE),
+    "PRODSOURCELABEL" VARCHAR2(32 BYTE),
+    "USERNAME" VARCHAR2(128 BYTE),
+    "CREATION_TIME" DATE,
+    "START_TIME" DATE,
+    "END_TIME" DATE,
+    "MODIFICATION_TIME" DATE,
+    "CHECK_TIME" DATE,
+    "LOCKED_BY" VARCHAR2(64 BYTE),
+    "LOCK_TIME" DATE,
+    "RAW_REQUEST_JSON" CLOB,
+    "DEFINITION_JSON" CLOB,
+    "PARAMETERS" CLOB,
+    CONSTRAINT ensure_json_WORKFLOWS_RAW_REQUEST_JSON CHECK ("RAW_REQUEST_JSON" IS JSON) ENABLE,
+    CONSTRAINT ensure_json_WORKFLOWS_DEFINITION_JSON CHECK ("DEFINITION_JSON" IS JSON) ENABLE,
+    CONSTRAINT ensure_json_WORKFLOWS_PARAMETERS CHECK ("PARAMETERS" IS JSON) ENABLE,
+    CONSTRAINT "WORKFLOW_ID_PK" PRIMARY KEY ("WORKFLOW_ID") ENABLE
+);
+
+COMMENT ON TABLE "ATLAS_PANDA"."WORKFLOWS" IS 'Table for PanDA workflow definitions and status tracking';-- Table Comments
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."WORKFLOW_ID" IS 'Unique workflow identifier, generated from WORKFLOW_ID_SEQ sequence';-- Column Comments
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."NAME" IS 'Name of the workflow';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."PARENT_ID" IS 'ID of parent workflow for nested/hierarchical workflows';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."LOOP_COUNT" IS 'Counter for loop iterations in loop-type workflows';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."STATUS" IS 'Workflow status: registered, parsed, checking, checked, starting, running, done, failed, cancelled';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."PRODSOURCELABEL" IS 'Production source label (e.g., managed, user)';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."USERNAME" IS 'User who submitted the workflow';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."CREATION_TIME" IS 'Timestamp when workflow was created';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."START_TIME" IS 'Timestamp when workflow started';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."END_TIME" IS 'Timestamp when workflow ended';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."MODIFICATION_TIME" IS 'Timestamp of last modification';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."CHECK_TIME" IS 'Timestamp of last workflow status check';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."LOCKED_BY" IS 'Agent/process currently holding lock on this workflow';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."LOCK_TIME" IS 'Timestamp when lock was acquired';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."RAW_REQUEST_JSON" IS 'Original workflow request JSON from user submission';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."DEFINITION_JSON" IS 'Parsed workflow definition JSON with steps, data, and conditions';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOWS"."PARAMETERS" IS 'Additional workflow-level parameters in JSON format';
+
+
+CREATE TABLE "ATLAS_PANDA"."WORKFLOW_STEPS" (
+    "STEP_ID" NUMBER NOT NULL,
+    "NAME" VARCHAR2(256 BYTE),
+    "WORKFLOW_ID" NUMBER NOT NULL,
+    "MEMBER_ID" NUMBER NOT NULL,
+    "TYPE" VARCHAR2(32 BYTE),
+    "STATUS" VARCHAR2(32 BYTE),
+    "FLAVOR" VARCHAR2(32 BYTE),
+    "TARGET_ID" VARCHAR2(128 BYTE),
+    "CREATION_TIME" DATE,
+    "START_TIME" DATE,
+    "END_TIME" DATE,
+    "MODIFICATION_TIME" DATE,
+    "CHECK_TIME" DATE,
+    "LOCKED_BY" VARCHAR2(64 BYTE),
+    "LOCK_TIME" DATE,
+    "DEFINITION_JSON" CLOB,
+    "PARAMETERS" CLOB,
+    CONSTRAINT ensure_json_WORKFLOW_STEPS_DEFINITION_JSON CHECK ("DEFINITION_JSON" IS JSON) ENABLE,
+    CONSTRAINT ensure_json_WORKFLOW_STEPS_PARAMETERS CHECK ("PARAMETERS" IS JSON) ENABLE,
+    CONSTRAINT "WORKFLOW_STEP_PK" PRIMARY KEY ("STEP_ID") ENABLE
+);
+
+COMMENT ON TABLE "ATLAS_PANDA"."WORKFLOW_STEPS" IS 'Table for workflow steps representing individual tasks or processing units within workflows';-- Table Comments
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."STEP_ID" IS 'Unique step identifier, generated from WORKFLOW_STEP_ID_SEQ sequence';-- Column Comments
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."NAME" IS 'Name of the workflow step';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."WORKFLOW_ID" IS 'Foreign key reference to parent workflow';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."MEMBER_ID" IS 'Member or sub-step identifier for hierarchical steps';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."TYPE" IS 'Type of step: ordinary, conditional, loop, scatter, or other type';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."STATUS" IS 'Step status: registered, checking, checked_true, checked_false, pending, ready, starting, running, done, failed, cancelled, or closed';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."FLAVOR" IS 'Flavor or vaiant type of the step handler';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."TARGET_ID" IS 'Target task ID or reference to associated processing unit';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."CREATION_TIME" IS 'Timestamp when step was created';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."START_TIME" IS 'Timestamp when step started';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."END_TIME" IS 'Timestamp when step ended';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."MODIFICATION_TIME" IS 'Timestamp of last modification';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."CHECK_TIME" IS 'Timestamp of last status check';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."LOCKED_BY" IS 'Agent/process currently holding lock on this step';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."LOCK_TIME" IS 'Timestamp when lock was acquired';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."DEFINITION_JSON" IS 'Step definition JSON containing inputs, outputs, conditions, parents, and task parameters';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKFLOW_STEPS"."PARAMETERS" IS 'Additional step-level parameters in JSON format';
+
+
+CREATE TABLE "ATLAS_PANDA"."WORKFLOW_DATA" (
+    "DATA_ID" NUMBER NOT NULL,
+    "NAME" VARCHAR2(256 BYTE),
+    "WORKFLOW_ID" NUMBER NOT NULL,
+    "SOURCE_STEP_ID" NUMBER,
+    "TYPE" VARCHAR2(32 BYTE),
+    "STATUS" VARCHAR2(32 BYTE),
+    "FLAVOR" VARCHAR2(32 BYTE),
+    "TARGET_ID" VARCHAR2(256 BYTE),
+    "CREATION_TIME" DATE,
+    "START_TIME" DATE,
+    "END_TIME" DATE,
+    "MODIFICATION_TIME" DATE,
+    "CHECK_TIME" DATE,
+    "LOCKED_BY" VARCHAR2(64 BYTE),
+    "LOCK_TIME" DATE,
+    "METADATA" CLOB,
+    "PARAMETERS" CLOB,
+    CONSTRAINT ensure_json_WORKFLOW_DATA_METADATA CHECK ("METADATA" IS JSON) ENABLE,
+    CONSTRAINT ensure_json_WORKFLOW_DATA_PARAMETERS CHECK ("PARAMETERS" IS JSON) ENABLE,
+    CONSTRAINT "WORKFLOW_DATA_PK" PRIMARY KEY ("DATA_ID") ENABLE
+);
 
 --------------------------------------------------------
 --  DDL for Index JEDI_DATASETCONTENT_LFN_IDX
