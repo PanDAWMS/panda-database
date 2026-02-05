@@ -34,7 +34,7 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 0, 31);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 0, 32);
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
 --------------------------------------------------------
