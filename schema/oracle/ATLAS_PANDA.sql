@@ -34,7 +34,7 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 1, 0);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 1, 1);
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
 --------------------------------------------------------
@@ -2300,7 +2300,8 @@ COMMENT ON TABLE "ATLAS_PANDA"."JOB_STATS_HP"  IS 'highest priority job statisti
 	"NUM_OF_JOBS" NUMBER,
     "NUM_OF_CORES" NUMBER,
 	"VO" VARCHAR2(16 BYTE), 
-	"WORKQUEUE_ID" NUMBER(5,0)
+	"WORKQUEUE_ID" NUMBER(5,0),
+    "RESOURCE_TYPE" VARCHAR2(56 BYTE)
    ) ;
 
    COMMENT ON COLUMN "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"."CUR_DATE" IS 'The timestamp of the Materialized view refresh ';
@@ -2315,6 +2316,9 @@ COMMENT ON TABLE "ATLAS_PANDA"."JOB_STATS_HP"  IS 'highest priority job statisti
    COMMENT ON COLUMN "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"."CURRENTPRIORITY" IS 'actual priority value which is usually the same as assignedPriority, can be modified by Panda server';
    COMMENT ON COLUMN "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"."NUM_OF_JOBS" IS 'Number of jobs computed by grouping all set of attributes(columns) listed in that column,  ';
    COMMENT ON COLUMN "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"."NUM_OF_CORES" IS 'Number of cores computed by grouping all set of attributes(columns) listed in that column,  ';
+   COMMENT ON COLUMN "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"."VO" IS 'Virtual organization ';
+   COMMENT ON COLUMN "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"."WORKQUEUE_ID" IS 'Work queue identifier';
+   COMMENT ON COLUMN "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"."RESOURCE_TYPE" IS 'Resource type (SCORE, MCORE...)';
    COMMENT ON TABLE "ATLAS_PANDA"."MV_JOBSACTIVE4_STATS"  IS 'Table (was from Materialized view before, but was not reliable) which collects aggregated data on set of attributes(columns). The data is read from the JOBSACTIVE4 table by an Oracle scheduler job. The refresh interval is 2 min';
 
 
@@ -5734,6 +5738,7 @@ set define off;
 AS
 BEGIN
 
+-- 2026 02 23, ver 1.4 , added RESOURCE_TYPE column
 -- ver 1.3 , last modified on 2nd September 2024
 -- added NUM_OF_CORES columns
 -- ver 1.2 , last modified on 2th July 2013
@@ -5760,7 +5765,8 @@ INSERT INTO mv_jobsactive4_stats
   VO,
   WORKQUEUE_ID,
   NUM_OF_JOBS,
-  NUM_OF_CORES
+  NUM_OF_CORES,
+  RESOURCE_TYPE
   )
   SELECT
     sysdate,
@@ -5776,7 +5782,8 @@ INSERT INTO mv_jobsactive4_stats
     VO,
     WORKQUEUE_ID,
     COUNT(*)  AS num_of_jobs,
-    SUM(COALESCE(actualcorecount, corecount)) AS num_of_cores
+    SUM(COALESCE(actualcorecount, corecount)) AS num_of_cores,
+    RESOURCE_TYPE
   FROM jobsActive4
   GROUP BY
     sysdate,
@@ -5790,7 +5797,8 @@ INSERT INTO mv_jobsactive4_stats
     prodSourceLabel,
     TRUNC(currentPriority, -1),
     VO,
-    WORKQUEUE_ID;
+    WORKQUEUE_ID,
+    RESOURCE_TYPE;
 commit;
 
 DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
