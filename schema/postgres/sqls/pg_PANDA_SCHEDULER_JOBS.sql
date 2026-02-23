@@ -93,7 +93,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE add_dailypart (period_days bigint, n_table text, tablespace_name text) OWNER TO panda;
+ALTER PROCEDURE doma_panda.add_dailypart (period_days bigint, n_table text, tablespace_name text) OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.add_dailypart (period_days bigint, n_table text, tablespace_name text) FROM PUBLIC;
 
 
@@ -595,7 +595,7 @@ END;
 $body$
 LANGUAGE PLPGSQL
 ;
-ALTER PROCEDURE bulkcopy_panda_partitions (dest_schema text) OWNER TO panda;
+ALTER PROCEDURE doma_panda.bulkcopy_panda_partitions (dest_schema text) OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.bulkcopy_panda_partitions (dest_schema text) FROM PUBLIC;
 
 
@@ -661,7 +661,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE datasets_90days_sl_window (DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE doma_panda.datasets_90days_sl_window (DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.datasets_90days_sl_window (DAYS_OFFSET bigint default 93) FROM PUBLIC;
 
 
@@ -706,7 +706,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE delete_jedi_events_proc () OWNER TO panda;
+ALTER PROCEDURE doma_panda.delete_jedi_events_proc () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.delete_jedi_events_proc () FROM PUBLIC;
 
 
@@ -749,7 +749,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE do_grants (obj_type text, obj_name text,owner_name text) OWNER TO panda;
+ALTER PROCEDURE doma_panda.do_grants (obj_type text, obj_name text,owner_name text) OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.do_grants (obj_type text, obj_name text,owner_name text) FROM PUBLIC;
 
 
@@ -864,7 +864,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE harvester_workers_sl_window (DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE doma_panda.harvester_workers_sl_window (DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.harvester_workers_sl_window (DAYS_OFFSET bigint default 60) FROM PUBLIC;
 
 
@@ -874,9 +874,9 @@ ALTER PROCEDURE harvester_workers_sl_window (DAYS_OFFSET bigint) owner TO panda;
 CREATE OR REPLACE PROCEDURE doma_panda.jedi_refr_mintaskids_bystatus () AS $body$
 BEGIN
 
-INSERT INTO JEDI_AUX_STATUS_MINTASKID
+INSERT INTO doma_panda.jedi_aux_status_mintaskid
 (status, min_jeditaskid)
-SELECT status, MIN(jeditaskid) min_taskid from JEDI_TASKS WHERE status NOT IN ('broken', 'aborted', 'finished', 'failed') GROUP By status
+SELECT status, MIN(jeditaskid) min_taskid from doma_panda.jedi_tasks WHERE status NOT IN ('broken', 'aborted', 'finished', 'failed') GROUP By status
 ON CONFLICT (status)
 DO
   UPDATE SET min_jeditaskid=EXCLUDED.min_jeditaskid;
@@ -885,7 +885,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE jedi_refr_mintaskids_bystatus () OWNER TO panda;
+ALTER PROCEDURE doma_panda.jedi_refr_mintaskids_bystatus () OWNER TO panda;
 
 
 CREATE OR REPLACE PROCEDURE doma_panda.jobs_statuslog_sl_window (DAYS_OFFSET bigint default 93) AS $body$
@@ -948,7 +948,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE jobs_statuslog_sl_window (DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE doma_panda.jobs_statuslog_sl_window (DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.jobs_statuslog_sl_window (DAYS_OFFSET bigint default 93) FROM PUBLIC;
 
 
@@ -1020,7 +1020,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE pandalog_sl_window (mytab_name text, DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE doma_panda.pandalog_sl_window (mytab_name text, DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.pandalog_sl_window (mytab_name text, DAYS_OFFSET bigint default 3) FROM PUBLIC;
 
 
@@ -1096,7 +1096,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE panda_table_sl_window (mytab_name text, mytab_column text, DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE doma_panda.panda_table_sl_window (mytab_name text, mytab_column text, DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.panda_table_sl_window (mytab_name text, mytab_column text, DAYS_OFFSET bigint default 3) FROM PUBLIC;
 
 
@@ -1138,7 +1138,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE rebuild_table_indices (m_owner text, m_table text, m_tbs_name text) OWNER TO panda;
+ALTER PROCEDURE doma_panda.rebuild_table_indices (m_owner text, m_table text, m_tbs_name text) OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.rebuild_table_indices (m_owner text, m_table text, m_tbs_name text) FROM PUBLIC;
 
 
@@ -1211,7 +1211,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE tasks_statuslog_sl_window (DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE doma_panda.tasks_statuslog_sl_window (DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.tasks_statuslog_sl_window (DAYS_OFFSET bigint default 93) FROM PUBLIC;
 
 
@@ -1230,9 +1230,9 @@ BEGIN
 --DBMS_APPLICATION_INFO.SET_CLIENT_INFO( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
 
 
-DELETE from mv_jobsactive4_stats;
+DELETE from doma_panda.mv_jobsactive4_stats;
 
-INSERT INTO mv_jobsactive4_stats(CUR_DATE,
+INSERT INTO doma_panda.mv_jobsactive4_stats(CUR_DATE,
   CLOUD,
   COMPUTINGSITE,
   COUNTRYGROUP,
@@ -1286,7 +1286,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE update_jobsactive_stats () OWNER TO panda;
+ALTER PROCEDURE doma_panda.update_jobsactive_stats () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_jobsactive_stats () FROM PUBLIC;
 
 
@@ -1330,7 +1330,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE update_jobsact_stats_by_gshare () OWNER TO panda;
+ALTER PROCEDURE doma_panda.update_jobsact_stats_by_gshare () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_jobsact_stats_by_gshare () FROM PUBLIC;
 
 
@@ -1375,7 +1375,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE update_jobsdef_stats_by_gshare () OWNER TO panda;
+ALTER PROCEDURE doma_panda.update_jobsdef_stats_by_gshare () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_jobsdef_stats_by_gshare () FROM PUBLIC;
 
 
@@ -1452,7 +1452,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE update_job_stats_hp () OWNER TO panda;
+ALTER PROCEDURE doma_panda.update_job_stats_hp () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_job_stats_hp () FROM PUBLIC;
 
 
@@ -1504,7 +1504,7 @@ END;
 $body$
 LANGUAGE PLPGSQL
 ;
-ALTER PROCEDURE update_num_input_data_files () OWNER TO panda;
+ALTER PROCEDURE doma_panda.update_num_input_data_files () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_num_input_data_files () FROM PUBLIC;
 
 
@@ -1520,9 +1520,9 @@ BEGIN
 --DBMS_APPLICATION_INFO.SET_CLIENT_INFO( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
 
 
-DELETE from MV_RUNNING_JUMBO_TASK_COUNT;
+DELETE from doma_panda.mv_running_jumbo_task_count;
 
-INSERT INTO MV_RUNNING_JUMBO_TASK_COUNT( cur_date,
+INSERT INTO doma_panda.mv_running_jumbo_task_count( cur_date,
     vo,
 	cloud,
     prodsourcelabel,
@@ -1542,7 +1542,7 @@ INSERT INTO MV_RUNNING_JUMBO_TASK_COUNT( cur_date,
     gshare,
     workqueue_id,
     COUNT(*) AS task_count
-  FROM JEDI_TASKS
+  FROM doma_panda.jedi_tasks
   WHERE status IN ('running', 'pending', 'ready')
   AND (usejumbo AND usejumbo::text <> '')
   GROUP BY
@@ -1563,7 +1563,7 @@ end;
 $body$
 LANGUAGE PLPGSQL
 ;
-ALTER PROCEDURE update_run_jumbo_count () OWNER TO panda;
+ALTER PROCEDURE doma_panda.update_run_jumbo_count () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_run_jumbo_count () FROM PUBLIC;
 
 
@@ -1678,7 +1678,7 @@ $body$
 LANGUAGE PLPGSQL
 SECURITY DEFINER
 ;
-ALTER PROCEDURE update_total_walltime () OWNER TO panda;
+ALTER PROCEDURE doma_panda.update_total_walltime () OWNER TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.update_total_walltime () FROM PUBLIC;
 
 CREATE OR REPLACE PROCEDURE doma_panda.verif_drop_copiedpandapart (arch_schema text, DAYS_OFFSET bigint default 2) AS $body$
@@ -1922,7 +1922,7 @@ END;
 $body$
 LANGUAGE PLPGSQL
 ;
-ALTER PROCEDURE verif_drop_copiedpandapart (arch_schema text, DAYS_OFFSET bigint) owner TO panda;
+ALTER PROCEDURE doma_panda.verif_drop_copiedpandapart (arch_schema text, DAYS_OFFSET bigint) owner TO panda;
 -- REVOKE ALL ON PROCEDURE doma_panda.verif_drop_copiedpandapart (arch_schema text, DAYS_OFFSET bigint default 2) FROM PUBLIC;
 
 
