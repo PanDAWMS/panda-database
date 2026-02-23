@@ -3,9 +3,9 @@
 ALTER TABLE doma_panda.mv_jobsactive4_stats
   ADD COLUMN resource_type varchar(56);
 
-COMMENT ON COLUMN mv_jobsactive4_stats.vo IS E'Virtual organization ';
-COMMENT ON COLUMN mv_jobsactive4_stats.workqueue_id IS E'Work queue identifier';
-COMMENT ON COLUMN mv_jobsactive4_stats.resource_type IS E'Resource type (SCORE, MCORE...)';
+COMMENT ON COLUMN doma_panda.mv_jobsactive4_stats.vo IS E'Virtual organization ';
+COMMENT ON COLUMN doma_panda.mv_jobsactive4_stats.workqueue_id IS E'Work queue identifier';
+COMMENT ON COLUMN doma_panda.mv_jobsactive4_stats.resource_type IS E'Resource type (SCORE, MCORE...)';
 
 CREATE OR REPLACE PROCEDURE doma_panda.update_jobsactive_stats () AS $body$
 BEGIN
