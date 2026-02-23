@@ -1221,6 +1221,7 @@ ALTER PROCEDURE doma_panda.tasks_statuslog_sl_window (DAYS_OFFSET bigint) owner 
 CREATE OR REPLACE PROCEDURE doma_panda.update_jobsactive_stats () AS $body$
 BEGIN
 
+-- 2026 02 23, ver 1.4 , added RESOURCE_TYPE column
 -- ver 1.3 , last modified on 2nd September 2024
 -- added NUM_OF_CORES columns
 -- ver 1.2 , last modified on 2th July 2013
@@ -1245,7 +1246,8 @@ INSERT INTO doma_panda.mv_jobsactive4_stats(CUR_DATE,
   VO,
   WORKQUEUE_ID,
   NUM_OF_JOBS,
-  NUM_OF_CORES
+  NUM_OF_CORES,
+  RESOURCE_TYPE
   )
   SELECT
     clock_timestamp(),
@@ -1275,7 +1277,8 @@ INSERT INTO doma_panda.mv_jobsactive4_stats(CUR_DATE,
     prodSourceLabel,
     TRUNC(currentPriority, -1),
     VO,
-    WORKQUEUE_ID;
+    WORKQUEUE_ID,
+    RESOURCE_TYPE;
 --COMMIT;
 
 --DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
