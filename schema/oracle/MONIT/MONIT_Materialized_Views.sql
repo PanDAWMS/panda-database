@@ -7,7 +7,10 @@ CREATE MATERIALIZED VIEW atlas_panda.mv_monit_jobs_submitted
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-SELECT jm.*, prodsys.simulation_type AS "simulation_type"
+SELECT
+  jm.*,
+  prodsys.simulation_type AS "simulation_type",
+  jeditasks.framework     AS "framework"
 FROM (
     SELECT
         pandaid AS "pandaid",
@@ -366,6 +369,8 @@ FROM (
         AND modificationtime >  CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE)
       )
 ) jm
+LEFT JOIN atlas_panda.jedi_tasks jeditasks
+  ON jeditasks.jeditaskid = jm.jeditaskid
 LEFT JOIN atlas_deft.t_production_task prodsys
   ON prodsys.taskid = jm."taskid"
 WHERE "atlasjobstatus" NOT IN ('pending','defined','waiting');
@@ -375,7 +380,10 @@ CREATE MATERIALIZED VIEW atlas_panda.mv_monit_jobs_current
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-SELECT jm.*, prodsys.simulation_type AS "simulation_type"
+SELECT
+  jm.*,
+  prodsys.simulation_type AS "simulation_type",
+  jeditasks.framework     AS "framework"
 FROM (
     /* -------- jobsactive4 -------- */
     SELECT
@@ -844,6 +852,8 @@ FROM (
       AND jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
 ) jm
+LEFT JOIN atlas_panda.jedi_tasks jeditasks
+  ON jeditasks.jeditaskid = jm.jeditaskid
 LEFT JOIN atlas_deft.t_production_task prodsys
   ON prodsys.taskid = jm."taskid";
 /
@@ -852,7 +862,10 @@ CREATE MATERIALIZED VIEW atlas_panda.mv_monit_jobs_completed
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-SELECT jm.*, prodsys.simulation_type AS "simulation_type"
+SELECT
+  jm.*,
+  prodsys.simulation_type AS "simulation_type",
+  jeditasks.framework     AS "framework"
 FROM (
     /* -------- jobsactive4 -------- */
     SELECT
@@ -1090,6 +1103,8 @@ FROM (
       AND jobstatus NOT IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
 ) jm
+LEFT JOIN atlas_panda.jedi_tasks jeditasks
+  ON jeditasks.jeditaskid = jm.jeditaskid
 LEFT JOIN atlas_deft.t_production_task prodsys
   ON prodsys.taskid = jm."taskid";
 /
@@ -1097,7 +1112,6 @@ LEFT JOIN atlas_deft.t_production_task prodsys
 GRANT SELECT ON atlas_panda.mv_monit_jobs_submitted TO atlas_panda_reader;
 GRANT SELECT ON atlas_panda.mv_monit_jobs_current   TO atlas_panda_reader;
 GRANT SELECT ON atlas_panda.mv_monit_jobs_completed TO atlas_panda_reader;
-
 
 
 -- Scheduler job to refresh the MONIT materialized views every 10 minutes
