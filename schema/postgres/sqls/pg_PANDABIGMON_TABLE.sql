@@ -109,6 +109,17 @@ CREATE INDEX auth_user__permission_1fbb5f2c ON auth_user_user_permissions (permi
 CREATE INDEX auth_user__user_id_a95ead1b ON auth_user_user_permissions (user_id);
 ALTER TABLE auth_user_user_permissions ADD PRIMARY KEY (id);
 
+CREATE TABLE auth_permission (
+    id integer NOT NULL,
+    name varchar(255),
+    content_type_id integer NOT NULL,
+    codename varchar(100)
+);
+ALTER TABLE auth_permission OWNER TO panda;
+CREATE UNIQUE INDEX sys_c002462743 ON auth_permission (id ASC);
+CREATE INDEX auth_perm_content_ty_2f476e4b ON auth_permission (content_type_id ASC);
+CREATE UNIQUE INDEX auth_perm_content_t_01ab375a_u ON auth_permission (content_type_id ASC, codename ASC);
+
 CREATE TABLE djangocache (
 	cache_key varchar(1000) NOT NULL,
 	expires timestamp NOT NULL,
@@ -117,6 +128,16 @@ CREATE TABLE djangocache (
 ALTER TABLE djangocache OWNER TO panda;
 CREATE INDEX djangocache_indx_expires ON djangocache (expires);
 ALTER TABLE djangocache ADD PRIMARY KEY (cache_key);
+
+CREATE TABLE django_content_type (
+    id integer NOT NULL,
+    app_label varchar(100),
+    model varchar(100)
+);
+ALTER TABLE django_content_type OWNER TO panda;
+CREATE UNIQUE INDEX django_content_type_idx ON django_content_type (id ASC);
+CREATE UNIQUE INDEX django_content_type_idx_comb_label_model ON django_content_type (app_label ASC, model ASC);
+
 
 CREATE TABLE django_migrations (
 	id bigint NOT NULL,
