@@ -48,7 +48,7 @@ CREATE INDEX all_requests_daily_idx ON all_requests_daily (id);
 
 CREATE TABLE authtoken_token (
 	key varchar(40),
-	user_id varchar(20),
+	user_id bigint NOT NULL,
 	created timestamp DEFAULT CURRENT_TIMESTAMP
 ) ;
 ALTER TABLE authtoken_token OWNER TO panda;
