@@ -52,7 +52,8 @@ INSERT INTO doma_panda.mv_jobsactive4_stats(CUR_DATE,
     VO,
     WORKQUEUE_ID,
     COUNT(*)  AS num_of_jobs,
-    SUM(COALESCE(actualcorecount, corecount)) AS num_of_cores
+    SUM(COALESCE(actualcorecount, corecount)) AS num_of_cores,
+    RESOURCE_TYPE
   FROM jobsActive4
   GROUP BY
     clock_timestamp(),
