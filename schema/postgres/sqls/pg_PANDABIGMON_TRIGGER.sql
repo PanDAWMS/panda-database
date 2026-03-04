@@ -50,22 +50,6 @@ BEGIN
         INTO STRICT NEW.id;
 RETURN NEW;
 END;
-
-
-
-/*
-CREATE TABLE AUTH_GROUP_PERMISSIONS 
-(
-  ID NUMBER(11, 0) NOT NULL 
-, GROUP_ID NUMBER(11, 0) NOT NULL 
-, PERMISSION_ID NUMBER(11, 0) NOT NULL 
-, CONSTRAINT SYS_C002462750 PRIMARY KEY 
-  (
-    ID 
-  )
-  ENABLE 
-); 
-*/
 $BODY$
  LANGUAGE 'plpgsql';
 
@@ -106,6 +90,42 @@ ALTER FUNCTION trigger_fct_auth_user_user_id_p_trg() OWNER TO panda;
 CREATE TRIGGER auth_user_user_id_p_trg
 	BEFORE INSERT ON auth_user_user_permissions FOR EACH ROW
 	EXECUTE PROCEDURE trigger_fct_auth_user_user_id_p_trg();
+
+
+DROP TRIGGER IF EXISTS auth_permission_tr ON auth_permission CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_auth_permission_tr() RETURNS trigger AS $BODY$
+BEGIN
+    SELECT nextval('auth_permission_id_seq')
+    INTO STRICT NEW.id;
+RETURN NEW;
+END;
+$BODY$
+ LANGUAGE 'plpgsql';
+
+ALTER FUNCTION trigger_fct_auth_permission_tr() OWNER TO panda;
+
+CREATE TRIGGER auth_permission_tr
+	BEFORE INSERT ON auth_permission FOR EACH ROW
+	EXECUTE PROCEDURE trigger_fct_auth_permission_tr();
+
+
+DROP TRIGGER IF EXISTS django_content_type_tr ON django_content_type CASCADE;
+
+CREATE OR REPLACE FUNCTION trigger_fct_django_content_type_tr() RETURNS trigger AS $BODY$
+BEGIN
+        SELECT nextval('django_content_type_id_seq')
+        INTO STRICT NEW.id;
+RETURN NEW;
+END;
+$BODY$
+ LANGUAGE 'plpgsql';
+
+ALTER FUNCTION trigger_fct_django_content_type_tr() OWNER TO panda;
+
+CREATE TRIGGER django_content_type_tr
+	BEFORE INSERT ON django_content_type FOR EACH ROW
+	EXECUTE PROCEDURE trigger_fct_django_content_type_tr();
+
 
 DROP TRIGGER IF EXISTS django_migrations_tr ON django_migrations CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_django_migrations_tr() RETURNS trigger AS $BODY$
