@@ -247,9 +247,9 @@ v_incval NUMBER(12) := 0;
 BEGIN
   IF INSERTING AND :new.id IS NULL THEN
     SELECT  users_id_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
-    -- If this is the first time this table have been inserted into (sequence == 1)
+    -- If this is the first time this table has been inserted into (sequence == 1)
     IF v_newVal = 1 THEN
-      --get the max indentity value from the table
+      --get the max identity value from the table
       SELECT max(id) INTO v_newVal FROM users;
       v_newVal := v_newVal + 1;
       --set the sequence to that value
