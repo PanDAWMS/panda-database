@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS doma_panda.worker_node_queue (
   last_seen   timestamp,
   CONSTRAINT pk_worker_node_queue PRIMARY KEY (site, host_name, panda_queue)
 );
+ALTER TABLE doma_panda.worker_node_queue OWNER TO panda;
 
 -- ===========================================
 -- MV: MV_WORKER_NODE_SUMMARY  (partition = pq)
@@ -30,6 +31,8 @@ WHERE wnq.last_seen > (CURRENT_TIMESTAMP - INTERVAL '1 month')
   AND wn.host_name = wnq.host_name
 GROUP BY wn.site, wnq.panda_queue, wn.cpu_architecture_level
 WITH NO DATA;
+
+ALTER MATERIALIZED VIEW doma_panda.mv_worker_node_summary OWNER TO panda;
 
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mv_wn_summary
   ON doma_panda.mv_worker_node_summary (site, panda_queue, cpu_architecture_level);
@@ -63,6 +66,8 @@ GROUP BY
   wng.framework_version,
   wng.count
 WITH NO DATA;
+
+ALTER MATERIALIZED VIEW doma_panda.mv_worker_node_gpu_summary OWNER TO panda;
 
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mv_wn_gpu_summary
   ON doma_panda.mv_worker_node_gpu_summary
