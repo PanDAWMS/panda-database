@@ -53,7 +53,7 @@ SELECT
   COUNT(*)  AS host_count
 FROM doma_panda.worker_node_gpus  AS wng,
      doma_panda.worker_node_queue AS wnq
-WHERE wnq.last_seen > (CURRENT_TIMESTAMP - INTERVAL '1 month')
+WHERE wng.last_seen > (CURRENT_TIMESTAMP - INTERVAL '1 month')
   AND wng.site      = wnq.site
   AND wng.host_name = wnq.host_name
 GROUP BY

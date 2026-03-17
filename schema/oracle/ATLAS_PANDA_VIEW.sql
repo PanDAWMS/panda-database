@@ -39,7 +39,7 @@ SELECT
   COUNT(*) AS host_count
 FROM ATLAS_PANDA.worker_node_gpus wng,
      ATLAS_PANDA.worker_node_queue wnq
-WHERE wnq.last_seen > SYSDATE - INTERVAL '1' MONTH
+WHERE wng.last_seen > SYSDATE - INTERVAL '1' MONTH
   AND wng.site = wnq.site
   AND wng.host_name = wnq.host_name
 GROUP BY
