@@ -7,9 +7,9 @@ BEGIN
 
 -- ver 1.3 , last modified on 2nd September 2024
 -- added NUM_OF_CORES columns
--- ver 1.2 , last modified on 2th July 2013
+-- ver 1.2 , last modified on 2nd July 2013
 -- added VO and WORKQUEUE_ID columns
--- to easy identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
+-- to easily identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
 --DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Aggregates data for the active jobs!');
 --DBMS_APPLICATION_INFO.SET_CLIENT_INFO( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
 
