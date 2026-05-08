@@ -33,8 +33,10 @@ SELECT
   wng.vendor,
   wng.model,
   wng.vram,
+  wng.architecture,
   wng.framework,
   wng.framework_version,
+  wng.driver_version,
   wng.count AS gpus_per_host,
   COUNT(*) AS host_count
 FROM ATLAS_PANDA.worker_node_gpus wng,
@@ -48,8 +50,10 @@ GROUP BY
   wng.vendor,
   wng.model,
   wng.vram,
+  wng.architecture,
   wng.framework,
   wng.framework_version,
+  wng.driver_version,
   wng.count;
 
 GRANT SELECT ON ATLAS_PANDA.MV_WORKER_NODE_SUMMARY     TO ATLAS_PANDA_READER;

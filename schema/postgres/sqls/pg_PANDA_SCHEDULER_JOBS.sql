@@ -2473,3 +2473,43 @@ END;
 $$;
 
 ALTER PROCEDURE doma_panda.update_worker_node_metrics() OWNER TO panda;
+
+
+-- GPU inventory summary: per-queue aggregation of GPU hardware info reported by pilots
+-- Refreshed hourly via pg_cron (see post_step_cron.sql)
+CREATE MATERIALIZED VIEW IF NOT EXISTS doma_panda.mv_worker_node_gpu_summary AS
+SELECT
+  wng.site,
+  wnq.panda_queue,
+  wng.vendor,
+  wng.model,
+  wng.vram,
+  wng.architecture,
+  wng.framework,
+  wng.framework_version,
+  wng.driver_version,
+  wng.count AS gpus_per_host,
+  COUNT(*)  AS host_count
+FROM doma_panda.worker_node_gpus  AS wng,
+     doma_panda.worker_node_queue AS wnq
+WHERE wng.last_seen > (CURRENT_TIMESTAMP - INTERVAL '1 month')
+  AND wng.site      = wnq.site
+  AND wng.host_name = wnq.host_name
+GROUP BY
+  wng.site,
+  wnq.panda_queue,
+  wng.vendor,
+  wng.model,
+  wng.vram,
+  wng.architecture,
+  wng.framework,
+  wng.framework_version,
+  wng.driver_version,
+  wng.count
+WITH NO DATA;
+
+ALTER MATERIALIZED VIEW doma_panda.mv_worker_node_gpu_summary OWNER TO panda;
+
+CREATE UNIQUE INDEX ux_mv_wn_gpu_summary
+  ON doma_panda.mv_worker_node_gpu_summary
+  (site, panda_queue, vendor, model, vram, architecture, framework, framework_version, driver_version, gpus_per_host);
