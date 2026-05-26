@@ -1,6 +1,6 @@
 --------------------------------------------------------
 --  File created - Wednesday-October-19-2022   
---  Schema version: 0.0.17
+--  Schema version: 0.1.5
 --  IMPORTANT: Please always update version below 
 --  to match the current DB schema
 --------------------------------------------------------
@@ -34,7 +34,7 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 1, 4);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 1, 5);
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
 --------------------------------------------------------
@@ -3243,6 +3243,79 @@ CREATE TABLE "ATLAS_PANDA"."WORKFLOW_DATA" (
     CONSTRAINT ensure_json_WORKFLOW_DATA_PARAMETERS CHECK ("PARAMETERS" IS JSON) ENABLE,
     CONSTRAINT "WORKFLOW_DATA_PK" PRIMARY KEY ("DATA_ID") ENABLE
 );
+
+--------------------------------------------------------
+-- DDL for Async Processing Tables
+--------------------------------------------------------
+
+CREATE TABLE "ATLAS_PANDA"."MACHINE_HEARTBEAT" (
+    "MACHINE_NAME" VARCHAR2(128 BYTE) NOT NULL,
+    "SERVICE_NAME" VARCHAR2(64 BYTE)  NOT NULL,
+    "LAST_SEEN"    TIMESTAMP,
+    CONSTRAINT "MACHINE_HEARTBEAT_PK" PRIMARY KEY ("MACHINE_NAME") ENABLE
+);
+
+COMMENT ON TABLE  "ATLAS_PANDA"."MACHINE_HEARTBEAT"              IS 'Liveness registry updated by async_request_daemon on each cycle; used to snapshot expected machines at request submission time';
+COMMENT ON COLUMN "ATLAS_PANDA"."MACHINE_HEARTBEAT"."MACHINE_NAME" IS 'Hostname of the machine (e.g. aipanda090)';
+COMMENT ON COLUMN "ATLAS_PANDA"."MACHINE_HEARTBEAT"."SERVICE_NAME" IS 'Logical service this machine belongs to (e.g. server, jedi)';
+COMMENT ON COLUMN "ATLAS_PANDA"."MACHINE_HEARTBEAT"."LAST_SEEN"    IS 'Timestamp of the last daemon heartbeat';
+
+
+CREATE TABLE "ATLAS_PANDA"."ASYNC_REQUESTS" (
+    "REQUEST_ID"        VARCHAR2(64 BYTE)  NOT NULL,
+    "REQUEST_TYPE"      VARCHAR2(64 BYTE)  NOT NULL,
+    "SERVICE_NAME"      VARCHAR2(64 BYTE),
+    "MACHINE_NAME"      VARCHAR2(128 BYTE),
+    "PARAMETERS"        CLOB,
+    "EXPECTED_MACHINES" CLOB,
+    "CREATED_AT"        TIMESTAMP,
+    CONSTRAINT ensure_json_ASYNC_REQUESTS_PARAMETERS CHECK ("PARAMETERS" IS JSON) ENABLE,
+    CONSTRAINT ensure_json_ASYNC_REQUESTS_EXPECTED_MACHINES CHECK ("EXPECTED_MACHINES" IS JSON) ENABLE,
+    CONSTRAINT "ASYNC_REQUESTS_PK" PRIMARY KEY ("REQUEST_ID") ENABLE
+);
+
+CREATE INDEX "ATLAS_PANDA"."ASYNC_REQ_TARGET_IDX" ON "ATLAS_PANDA"."ASYNC_REQUESTS" ("SERVICE_NAME", "MACHINE_NAME");
+
+COMMENT ON TABLE  "ATLAS_PANDA"."ASYNC_REQUESTS"                   IS 'One row per submitted async request; records what to do and which machines are expected to process it';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_REQUESTS"."REQUEST_ID"        IS 'UUID identifying this request; returned to the caller at submission time for polling';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_REQUESTS"."REQUEST_TYPE"      IS 'Type of work to perform (e.g. grep); drives handler dispatch in async_request_daemon';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_REQUESTS"."SERVICE_NAME"      IS 'If set, every alive machine in this service processes the request; mutually exclusive with machine_name';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_REQUESTS"."MACHINE_NAME"      IS 'If set, only this specific machine processes the request; mutually exclusive with service_name';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_REQUESTS"."PARAMETERS"        IS 'JSON object with request-type-specific inputs, e.g. {"pattern":"ERROR","log_filename":"panda.log"}';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_REQUESTS"."EXPECTED_MACHINES" IS 'JSON array of hostnames snapshotted from machine_heartbeat at submission time; used by get_result to determine overall completion';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_REQUESTS"."CREATED_AT"        IS 'Submission timestamp; used as the basis for TTL-based cleanup';
+
+
+CREATE TABLE "ATLAS_PANDA"."ASYNC_RESULTS" (
+    "REQUEST_ID"   VARCHAR2(64 BYTE)   NOT NULL,
+    "MACHINE_NAME" VARCHAR2(128 BYTE)  NOT NULL,
+    "STATUS"       VARCHAR2(16 BYTE)   DEFAULT 'running',
+    "RESULT"       CLOB,
+    "STDERR"       CLOB,
+    "RETURN_CODE"  NUMBER(4,0),
+    "TRUNCATED"    NUMBER(1,0)         DEFAULT 0,
+    "ERROR_MSG"    VARCHAR2(2048 BYTE),
+    "ATTEMPTS"     NUMBER(3,0)         DEFAULT 0,
+    "STARTED_AT"   TIMESTAMP,
+    "FINISHED_AT"  TIMESTAMP,
+    CONSTRAINT "ASYNC_RESULTS_PK" PRIMARY KEY ("REQUEST_ID", "MACHINE_NAME") ENABLE,
+    CONSTRAINT "ASYNC_RESULTS_REQ_FK" FOREIGN KEY ("REQUEST_ID") REFERENCES "ATLAS_PANDA"."ASYNC_REQUESTS"("REQUEST_ID") ENABLE
+);
+
+CREATE INDEX "ATLAS_PANDA"."ASYNC_RESULTS_REQ_IDX" ON "ATLAS_PANDA"."ASYNC_RESULTS" ("REQUEST_ID");
+
+COMMENT ON TABLE  "ATLAS_PANDA"."ASYNC_RESULTS"              IS 'One row per (request x machine); inserted when a machine first claims a request; persists across retries';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_RESULTS"."REQUEST_ID"   IS 'FK to async_requests.request_id';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_RESULTS"."MACHINE_NAME" IS 'Hostname of the machine processing this result';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_RESULTS"."STATUS"       IS 'Processing status: pending (awaiting retry), running (in progress), done (success), failed (error/timeout/max-retries)';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_RESULTS"."RESULT"       IS 'Output of the async operation (e.g. grep stdout); NULL until status = done';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_RESULTS"."STDERR"       IS 'Stderr of the async operation';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_RESULTS"."RETURN_CODE"  IS 'Return code of the async operation';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_RESULTS"."TRUNCATED"    IS '1 if result was cut off at 1 MB due to size; 0 otherwise';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_RESULTS"."ERROR_MSG"    IS 'Error description when status = failed (e.g. timeout, max retries exceeded)';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_RESULTS"."ATTEMPTS"     IS 'Number of processing attempts made by this machine; incremented on each claim; capped at max_retries (default 3)';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_RESULTS"."STARTED_AT"   IS 'Timestamp when this machine most recently began processing';
+COMMENT ON COLUMN "ATLAS_PANDA"."ASYNC_RESULTS"."FINISHED_AT"  IS 'Timestamp when this machine completed processing; NULL while status = running or pending';
 
 --------------------------------------------------------
 --  DDL for Index JEDI_DATASETCONTENT_LFN_IDX
