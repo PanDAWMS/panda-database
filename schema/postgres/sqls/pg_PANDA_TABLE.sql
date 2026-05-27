@@ -637,7 +637,8 @@ CREATE TABLE jedi_dataset_contents (
 	ramcount bigint DEFAULT 0,
 	is_waiting char(1),
 	jobsetid bigint,
-	proc_status varchar(64)
+	proc_status varchar(64),
+	constituent_id bigint
 ) PARTITION BY RANGE (jeditaskid) ;
 COMMENT ON COLUMN jedi_dataset_contents.attemptnr IS E'How many times the file has been tried so far';
 COMMENT ON COLUMN jedi_dataset_contents.boundaryid IS E'Splitting Input to respect this identifier if not NULL. e.g., used to specify lumi block boundaries';
@@ -663,6 +664,7 @@ COMMENT ON COLUMN jedi_dataset_contents.nevents IS E'The number of events in the
 COMMENT ON COLUMN jedi_dataset_contents.outpandaid IS E'PandaID of the job which produced the file.';
 COMMENT ON COLUMN jedi_dataset_contents.pandaid IS E'PandaID of the job which uses the file';
 COMMENT ON COLUMN jedi_dataset_contents.proc_status IS E'Processing status of the file';
+COMMENT ON COLUMN jedi_dataset_contents.constituent_id IS E'Constituent dataset ID to which the file belongs within the dataset container';
 COMMENT ON COLUMN jedi_dataset_contents.ramcount IS E'Increase the RAM requirements at job level (before it was at task level)';
 COMMENT ON COLUMN jedi_dataset_contents.scope IS E'The scope of the file';
 COMMENT ON COLUMN jedi_dataset_contents.startevent IS E'The starting event number used in the file';
