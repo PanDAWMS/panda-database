@@ -71,6 +71,12 @@ COMMENT ON COLUMN doma_panda.async_results.started_at   IS 'Timestamp when this 
 COMMENT ON COLUMN doma_panda.async_results.finished_at  IS 'Timestamp when this machine completed processing; NULL while status = running or pending';
 ALTER TABLE doma_panda.async_results OWNER TO panda;
 
+-- ===============================================
+-- New column to skip files in DT RSEs (PANDA-1755)
+-- ===============================================
+ALTER TABLE doma_panda.jedi_dataset_contents ADD COLUMN IF NOT EXISTS constituent_id bigint;
+COMMENT ON COLUMN doma_panda.jedi_dataset_contents.constituent_id IS 'Constituent dataset ID to which the file belongs within the dataset container';
+
 -- =========================
 -- Version bump
 -- =========================
