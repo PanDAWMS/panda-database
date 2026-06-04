@@ -1,6 +1,6 @@
 --------------------------------------------------------
 --  File created - Wednesday-October-19-2022   
---  Schema version: 0.1.5
+--  Schema version: 0.1.6
 --  IMPORTANT: Please always update version below 
 --  to match the current DB schema
 --------------------------------------------------------
@@ -34,7 +34,7 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 1, 5);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 1, 6);
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
 --------------------------------------------------------
@@ -4146,7 +4146,13 @@ CREATE INDEX "ATLAS_PANDA"."JOBSDEF_SHARE_STATS_SS_IDX" ON "ATLAS_PANDA"."JOBSDE
 --  DDL for Index JEDI_TASKS_AMIFLAG_IDX
 --------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDA"."JEDI_TASKS_AMIFLAG_IDX" ON "ATLAS_PANDA"."JEDI_TASKS" ("AMIFLAG") 
+  CREATE INDEX "ATLAS_PANDA"."JEDI_TASKS_AMIFLAG_IDX" ON "ATLAS_PANDA"."JEDI_TASKS" ("AMIFLAG")
+  ;
+--------------------------------------------------------
+--  DDL for Index JEDI_TASKS_REQID_IDX
+--------------------------------------------------------
+
+  CREATE INDEX "ATLAS_PANDA"."JEDI_TASKS_REQID_IDX" ON "ATLAS_PANDA"."JEDI_TASKS" ("REQID", "USERNAME")
   ;
 --------------------------------------------------------
 --  DDL for Index JOBSARCHIVED4_JOBSETID_IDX
