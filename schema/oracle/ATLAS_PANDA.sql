@@ -4146,7 +4146,13 @@ CREATE INDEX "ATLAS_PANDA"."JOBSDEF_SHARE_STATS_SS_IDX" ON "ATLAS_PANDA"."JOBSDE
 --  DDL for Index JEDI_TASKS_AMIFLAG_IDX
 --------------------------------------------------------
 
-  CREATE INDEX "ATLAS_PANDA"."JEDI_TASKS_AMIFLAG_IDX" ON "ATLAS_PANDA"."JEDI_TASKS" ("AMIFLAG") 
+  CREATE INDEX "ATLAS_PANDA"."JEDI_TASKS_AMIFLAG_IDX" ON "ATLAS_PANDA"."JEDI_TASKS" ("AMIFLAG")
+  ;
+--------------------------------------------------------
+--  DDL for Index JEDI_TASKS_REQID_IDX
+--------------------------------------------------------
+
+  CREATE INDEX "ATLAS_PANDA"."JEDI_TASKS_REQID_IDX" ON "ATLAS_PANDA"."JEDI_TASKS" ("REQID", "USERNAME")
   ;
 --------------------------------------------------------
 --  DDL for Index JOBSARCHIVED4_JOBSETID_IDX

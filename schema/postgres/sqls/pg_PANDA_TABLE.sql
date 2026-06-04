@@ -1008,6 +1008,7 @@ COMMENT ON COLUMN jedi_tasks.queuedtime IS E'Start time of queuing period ready 
 COMMENT ON COLUMN jedi_tasks.actiontime IS E'Timestamp when a periodic action is executed on the task';
 ALTER  TABLE jedi_tasks OWNER TO panda;
 CREATE INDEX jedi_tasks_amiflag_idx ON jedi_tasks (amiflag);
+CREATE INDEX jedi_tasks_reqid_idx ON jedi_tasks (reqid, username);
 CREATE INDEX jedi_tasks_creation_idx ON jedi_tasks (creationdate);
 CREATE INDEX jedi_tasks_lockedby_idx ON jedi_tasks (lockedby);
 CREATE INDEX jedi_tasks_modiftime_idx ON jedi_tasks (modificationtime);
