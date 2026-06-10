@@ -1,20 +1,14 @@
 -- Cron job updates for patch 0.0.30
--- This file contains cron-specific updates and must be run against the database where pg_cron is installed
---
--- IMPORTANT: pg_cron location varies by installation:
--- Some installations have it in 'postgres' database, others may be in the 'panda_db' database
---
--- To check where pg_cron is installed:
---   SELECT extname FROM pg_extension WHERE extname = 'pg_cron';
---
--- Run this file against the correct database:
---   psql -U postgres -d postgres -f 0.0.30.cron.patch.sql    (if pg_cron is in postgres)
---   psql -U postgres -d panda_db -f 0.0.30.cron.patch.sql    (if pg_cron is in panda_db)
---
--- Regular database updates are in 0.0.30.patch.sql
+-- This file contains cron-specific updates and must be run against the database where pg_cron is installed.
+-- IMPORTANT: pg_cron may be installed in 'postgres' or in 'panda_db'.
+-- To check: SELECT extname FROM pg_extension WHERE extname = 'pg_cron';
 
--- Drop the old cron schedule for the obsolete update_worker_node_map procedure
--- This procedure has been replaced by update_worker_node_metrics
-SELECT cron.unschedule(
-    (SELECT jobid FROM cron.job WHERE command = 'CALL doma_panda.update_worker_node_map()')
-);
+-- NOTE: The original purpose of this file was to unschedule the obsolete
+-- update_worker_node_map procedure. This is now handled automatically by
+-- post_step_cron.sql, which deletes all PanDA-managed cron jobs (including
+-- any obsolete ones) before recreating the current set from scratch.
+-- Run post_step_cron.sql to apply all cron jobs idempotently (ATLASPANDA-1632):
+--
+--   psql -U postgres -d postgres -f ../post_step_cron.sql   -- if pg_cron in 'postgres'
+--   psql -U postgres -d panda_db -f ../post_step_cron.sql   -- if pg_cron in 'panda_db'
+\i ../post_step_cron.sql
