@@ -5222,7 +5222,7 @@ FOR j IN 1 .. coll_parts.COUNT LOOP
 	EXECUTE IMMEDIATE stmt INTO messg;
 
 	IF (messg = 'OK') THEN
-		stmt := 'ALTER TABLE DATASETS DROP PARTITION ' || coll_parts(j) ;
+		stmt := 'ALTER TABLE DATASETS DROP PARTITION ' || coll_parts(j) || ' UPDATE GLOBAL INDEXES';
 
 		-- loop until gets exclusive lock on the table
 		LOOP
@@ -5268,8 +5268,7 @@ BEGIN
                       AND t.MODIFICATIONTIME < sysdate - 30' into taskid_cnt;
       
     if (rows_cnt = taskid_cnt and rows_cnt <> 0) then
-      --dbms_output.put_line('ALTER TABLE ATLAS_PANDA.JEDI_Events DROP PARTITION '||p.PARTITION_NAME||' update global indexes;');
-      execute immediate 'ALTER TABLE ATLAS_PANDA.JEDI_Events DROP PARTITION '||p.PARTITION_NAME;
+      execute immediate 'ALTER TABLE ATLAS_PANDA.JEDI_Events DROP PARTITION '||p.PARTITION_NAME||' UPDATE GLOBAL INDEXES';
       --dbms_output.put_line(part_cnt||' '||p.PARTITION_NAME||' >>> '||rows_cnt);
       --row_sum := row_sum + taskid_cnt;
       --part_cnt := part_cnt + 1;
@@ -5510,7 +5509,7 @@ FOR j IN 1 .. coll_parts.COUNT LOOP
 	EXECUTE IMMEDIATE stmt INTO messg;
 
 	IF (messg = 'OK') THEN
-		stmt := 'ALTER TABLE JOBS_STATUSLOG DROP PARTITION ' || coll_parts(j) ;
+		stmt := 'ALTER TABLE JOBS_STATUSLOG DROP PARTITION ' || coll_parts(j) || ' UPDATE GLOBAL INDEXES';
 
 		-- loop until gets exclusive lock on the table
 		LOOP
@@ -5586,7 +5585,7 @@ FOR j IN 1 .. coll_parts.COUNT LOOP
 	EXECUTE IMMEDIATE stmt INTO messg;
 
 	IF (messg = 'OK') THEN
-		stmt := 'ALTER TABLE '|| UPPER(mytab_name)||' DROP PARTITION ' || coll_parts(j) ;
+		stmt := 'ALTER TABLE '|| UPPER(mytab_name)||' DROP PARTITION ' || coll_parts(j) || ' UPDATE GLOBAL INDEXES';
 
 		-- loop until gets exclusive lock on the table
 		LOOP
@@ -5786,7 +5785,7 @@ FOR j IN 1 .. coll_parts.COUNT LOOP
 	EXECUTE IMMEDIATE stmt INTO messg;
 
 	IF (messg = 'OK') THEN
-		stmt := 'ALTER TABLE TASKS_STATUSLOG DROP PARTITION ' || coll_parts(j) ;
+		stmt := 'ALTER TABLE TASKS_STATUSLOG DROP PARTITION ' || coll_parts(j) || ' UPDATE GLOBAL INDEXES';
 
 		-- loop until gets exclusive lock on the table
 		LOOP
