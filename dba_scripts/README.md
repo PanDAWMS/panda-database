@@ -45,6 +45,11 @@ The queries were collected from various sources throughout the years based on co
    - Retrieves tablespace details, quotas, and usage statistics.
    - Helps manage storage and database capacity.
 
+### **11. `indexes.sql`**
+   - Detects UNUSABLE global (non-partitioned) indexes and UNUSABLE index partitions in ATLAS_PANDA.
+   - Lists all global non-partitioned indexes on partitioned tables — those at risk of becoming UNUSABLE after a `DROP PARTITION` without `UPDATE GLOBAL INDEXES`.
+   - Includes a commented-out `REBUILD` template with notes on ORA-14086 and ORA-08104 errors.
+
 ## 📌 Usage
 
 Copy the individual query to your SQL Developer and execute. Most of the queries require dictionary access, so ensure you have the necessary privileges.
