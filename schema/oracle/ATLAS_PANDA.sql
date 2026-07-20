@@ -200,11 +200,13 @@ CREATE TABLE "ATLAS_PANDA"."JEDI_DATASET_LOCALITY"
 	"BLACKLISTED" CHAR(1 BYTE),
 	"BLACKLISTED_READ" CHAR(1 BYTE),
 	"BLACKLISTED_WRITE" CHAR(1 BYTE),
-	"SPACE_EXPIRED" NUMBER(11,0), 
+	"SPACE_EXPIRED" NUMBER(11,0),
 	"SPACE_TIMESTAMP" TIMESTAMP (0),
      "DETAILED_STATUS"   CLOB
        CONSTRAINT detailed_status_is_json
-       CHECK ("DETAILED_STATUS" IS JSON) ENABLE
+       CHECK ("DETAILED_STATUS" IS JSON) ENABLE,
+	"SPACE_MIN_FREE" NUMBER(11,0),
+	"SPACE_UNAVAILABLE" NUMBER(11,0)
    ) ;
 
    COMMENT ON COLUMN "ATLAS_PANDA"."DDM_ENDPOINT"."DDM_ENDPOINT_NAME" IS 'DDM endpoint name';
@@ -221,6 +223,8 @@ CREATE TABLE "ATLAS_PANDA"."JEDI_DATASET_LOCALITY"
    COMMENT ON COLUMN "ATLAS_PANDA"."DDM_ENDPOINT"."SPACE_EXPIRED" IS 'Expired, used space in GB';
    COMMENT ON COLUMN "ATLAS_PANDA"."DDM_ENDPOINT"."SPACE_TIMESTAMP" IS 'Timestamp reported by Rucio for the SRM space values';
    COMMENT ON COLUMN "ATLAS_PANDA"."DDM_ENDPOINT"."DETAILED_STATUS" IS 'Endpoint-specific detailed status (JSON)';
+   COMMENT ON COLUMN "ATLAS_PANDA"."DDM_ENDPOINT"."SPACE_MIN_FREE" IS 'Min_free target space of a DDM endpoint as reported by Rucio. Below this value Rucio deletes secondary data. Value in GB';
+   COMMENT ON COLUMN "ATLAS_PANDA"."DDM_ENDPOINT"."SPACE_UNAVAILABLE" IS 'Unavailable space of a DDM endpoint as reported by Rucio. This is the amount of data yet to be transferred. Value in GB';
    COMMENT ON TABLE "ATLAS_PANDA"."DDM_ENDPOINT"  IS 'DDM/Rucio storage endpoint.Table needed for the "Configurator" agent. The table consolidate information from other sources (AGIS and Rucio ) and caches it so that Panda can easily retrieve it and use it for brokerage.';
 
 
