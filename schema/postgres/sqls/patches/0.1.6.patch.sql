@@ -12,6 +12,16 @@ SET search_path = doma_panda,public;
 -- to resolve the equality predicates directly and skip the full scan entirely.
 CREATE INDEX IF NOT EXISTS jedi_tasks_reqid_idx ON doma_panda.jedi_tasks (reqid, username);
 
+-- ===============================================
+-- New space columns on ddm_endpoint (ATLASPANDA-1806, ATLASPANDA-1805)
+-- ===============================================
+
+ALTER TABLE doma_panda.ddm_endpoint ADD COLUMN IF NOT EXISTS space_min_free bigint;
+ALTER TABLE doma_panda.ddm_endpoint ADD COLUMN IF NOT EXISTS space_unavailable bigint;
+
+COMMENT ON COLUMN doma_panda.ddm_endpoint.space_min_free IS 'Min_free target space of a DDM endpoint as reported by Rucio. Below this value Rucio deletes secondary data. Value in GB';
+COMMENT ON COLUMN doma_panda.ddm_endpoint.space_unavailable IS 'Unavailable space of a DDM endpoint as reported by Rucio. This is the amount of data yet to be transferred. Value in GB';
+
 -- =========================
 -- Version bump
 -- =========================

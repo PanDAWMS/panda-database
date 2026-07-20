@@ -145,7 +145,9 @@ CREATE TABLE ddm_endpoint (
 	space_timestamp timestamp,
 	blacklisted_read char(1),
 	blacklisted_write char(1),
-    detailed_status JSONB
+    detailed_status JSONB,
+	space_min_free bigint,
+	space_unavailable bigint
 ) ;
 COMMENT ON TABLE ddm_endpoint IS E'DDM/Rucio storage endpoint.Table needed for the "Configurator" agent. The table consolidate information from other sources (AGIS and Rucio ) and caches it so that Panda can easily retrieve it and use it for brokerage.';
 COMMENT ON COLUMN ddm_endpoint.blacklisted IS E'Defines whether a DDM endpoint is blacklisted or not (Y/N)';
@@ -157,8 +159,10 @@ COMMENT ON COLUMN ddm_endpoint.is_tape IS E'Defines whether the DDM endpoint is 
 COMMENT ON COLUMN ddm_endpoint.site_name IS E'Site name';
 COMMENT ON COLUMN ddm_endpoint.space_expired IS E'Expired, used space in GB';
 COMMENT ON COLUMN ddm_endpoint.space_free IS E'Free space of a DDM endpoint as reported by Rucio. Value in GB';
+COMMENT ON COLUMN ddm_endpoint.space_min_free IS E'Min_free target space of a DDM endpoint as reported by Rucio. Below this value Rucio deletes secondary data. Value in GB';
 COMMENT ON COLUMN ddm_endpoint.space_timestamp IS E'Timestamp reported by Rucio for the SRM space values';
 COMMENT ON COLUMN ddm_endpoint.space_total IS E'Total space of a DDM endpoint as reported by Rucio. Value in GB';
+COMMENT ON COLUMN ddm_endpoint.space_unavailable IS E'Unavailable space of a DDM endpoint as reported by Rucio. This is the amount of data yet to be transferred. Value in GB';
 COMMENT ON COLUMN ddm_endpoint.space_used IS E'Used space of a DDM endpoint as reported by Rucio. Value in GB';
 COMMENT ON COLUMN ddm_endpoint.type IS E'Type of spacetoken, e.g. DATADISK, LOCALGROUPDISK...';
 COMMENT ON COLUMN ddm_endpoint.detailed_status IS 'Endpoint-specific detailed status (JSON)';
