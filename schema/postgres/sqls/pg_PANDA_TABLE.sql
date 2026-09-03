@@ -3007,6 +3007,29 @@ CREATE INDEX wn_metrics_timestamp_idx ON worker_node_metrics ("timestamp");
 
 ALTER TABLE worker_node_metrics OWNER TO panda;
 
+CREATE TABLE worker_node_metrics_by_queue (
+    "site" VARCHAR(128),
+    "panda_queue" VARCHAR(128),
+    "host_name" VARCHAR(128),
+    "timestamp" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    "key" VARCHAR(20),
+    "statistics" JSONB,
+    PRIMARY KEY ("site", "panda_queue", "host_name", "timestamp")
+) PARTITION BY RANGE ("timestamp");
+
+COMMENT ON TABLE worker_node_metrics_by_queue IS 'Metrics related to a worker node';
+COMMENT ON COLUMN worker_node_metrics_by_queue."site" IS 'The name of the site (not PanDA queue) where the worker node is located.';
+COMMENT ON COLUMN worker_node_metrics_by_queue."panda_queue" IS 'The name of the PanDA queue where the worker node is located.';
+COMMENT ON COLUMN worker_node_metrics_by_queue."host_name" IS 'The hostname of the worker node.';
+COMMENT ON COLUMN worker_node_metrics_by_queue."timestamp" IS 'Timestamp the metrics were collected.';
+COMMENT ON COLUMN worker_node_metrics_by_queue."key" IS 'Key of the metrics entry.';
+COMMENT ON COLUMN worker_node_metrics_by_queue."statistics" IS 'Metrics in json format.';
+
+CREATE INDEX wn_metrics_q_idx ON worker_node_metrics_by_queue ("panda_queue", "host_name", "timestamp");
+CREATE INDEX wn_metrics_q_timestamp_idx ON worker_node_metrics_by_queue ("timestamp");
+
+ALTER TABLE worker_node_metrics_by_queue OWNER TO panda;
+
 CREATE TABLE error_descriptions (
     id BIGSERIAL PRIMARY KEY,
     component VARCHAR(32) NOT NULL,

@@ -34,7 +34,7 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 1, 6);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 1, 7);
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
 --------------------------------------------------------
@@ -3094,6 +3094,38 @@ COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS"."HOST_NAME" IS 'The hostna
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS"."TIMESTAMP" IS 'Timestamp the metrics were collected.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS"."KEY" IS 'Key of the metrics entry.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS"."STATISTICS" IS 'Metrics in json format.';
+
+
+--------------------------------------------------------
+--  DDL for Table WORKER_NODE_METRICS_BY_QUEUE
+--------------------------------------------------------
+CREATE TABLE "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"(
+    "SITE" varchar2(128),
+    "PANDA_QUEUE" varchar2(128),
+    "HOST_NAME" varchar2(128),
+    "TIMESTAMP" TIMESTAMP DEFAULT SYSTIMESTAMP AT TIME ZONE 'UTC',
+    "KEY" varchar2(20),
+    "STATISTICS" varchar2(500),
+    CONSTRAINT wn_metrics_q_json CHECK ("STATISTICS" IS JSON) ENABLE
+)
+PARTITION BY RANGE ("TIMESTAMP")
+INTERVAL (NUMTOYMINTERVAL(1, 'MONTH')) (
+    PARTITION "WN_METRICS_Q_BASE" VALUES LESS THAN (TO_DATE('2026-08-01', 'YYYY-MM-DD'))
+);
+
+CREATE INDEX "WN_METRICS_Q_IDX" ON "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"("PANDA_QUEUE", "HOST_NAME", "TIMESTAMP");
+CREATE INDEX "WN_METRICS_Q_TIMESTAMP_IDX" ON "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE" ("TIMESTAMP");
+
+-- Table Comment
+COMMENT ON TABLE "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE" IS 'Metrics related to a worker node';
+
+-- Column Comments
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"."SITE" IS 'The name of the site (not PanDA queue) where the worker node is located.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"."PANDA_QUEUE" IS 'The name of the PanDA queue where the worker node is located.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"."HOST_NAME" IS 'The hostname of the worker node.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"."TIMESTAMP" IS 'Timestamp the metrics were collected.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"."KEY" IS 'Key of the metrics entry.';
+COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"."STATISTICS" IS 'Metrics in json format.';
 
 
 --------------------------------------------------------
@@ -6624,6 +6656,111 @@ GROUP BY
 SELECT atlas_site, worker_node, key, pilot FROM pilot_statistics
 UNION ALL
 SELECT atlas_site, workernode, key, harvester FROM harvester_statistics;
+
+COMMIT;
+
+DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
+DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => null);
+
+end;
+
+/
+
+--------------------------------------------------------
+--  DDL for Procedure UPDATE_WORKER_NODE_METRICS_QUEUE
+--------------------------------------------------------
+set define off;
+
+create or replace PROCEDURE UPDATE_WORKER_NODE_METRICS_QUEUE
+AS
+BEGIN
+
+-- 2025 09 02, ver 1.0
+-- to easily identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
+DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Updates worker node statistics with last days job and worker data by queue');
+DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
+
+
+INSERT INTO "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE" (site, panda_queue, host_name, key, statistics)
+WITH sc_slimmed AS (
+    SELECT
+        panda_queue,
+        scj.data.atlas_site AS atlas_site
+    FROM
+        atlas_panda.schedconfig_json scj
+),
+pilot_statistics AS(
+SELECT
+    sc_slimmed.atlas_site,
+    sc_slimmed.panda_queue,
+    CASE
+        WHEN REGEXP_LIKE(jobsarchived4.modificationhost, '^[^@]+@atlprd[0-9]+-[^-]+-[^.]+\.cern\.ch$')
+        THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@atlprd[0-9]+-[^-]+-([^.]+\.cern\.ch)', 1, 1, NULL, 1)
+        WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
+        THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@(.+)', 1, 1, NULL, 1)
+        ELSE jobsarchived4.modificationhost
+    END as worker_node,
+    'jobs' as KEY,
+    JSON_OBJECT(
+        KEY 'jobs_failed' VALUE COUNT(CASE WHEN jobstatus = 'failed' THEN 1 END),
+        KEY 'jobs_finished' VALUE COUNT(CASE WHEN jobstatus = 'finished' THEN 1 END),
+        KEY 'hc_failed' VALUE COUNT(CASE WHEN jobstatus = 'failed' AND produsername = 'gangarbt' THEN 1 END),
+        KEY 'hc_finished' VALUE COUNT(CASE WHEN jobstatus = 'finished' AND produsername = 'gangarbt' THEN 1 END),
+        KEY 'hssec_failed' VALUE SUM(CASE WHEN jobstatus = 'failed' THEN hs06sec ELSE 0 END),
+        KEY 'hssec_finished' VALUE SUM(CASE WHEN jobstatus = 'finished' THEN hs06sec ELSE 0 END)
+    ) AS pilot
+FROM atlas_panda.jobsarchived4
+JOIN sc_slimmed ON computingsite = sc_slimmed.panda_queue
+WHERE endtime > CAST(SYSTIMESTAMP AT TIME ZONE 'UTC' AS DATE) - INTERVAL '1' DAY
+AND jobstatus IN ('finished', 'failed')
+AND modificationhost not like 'aipanda%'
+AND modificationhost not like 'grid-job-%'
+GROUP BY
+    sc_slimmed.atlas_site,
+    sc_slimmed.panda_queue,
+    CASE
+        WHEN REGEXP_LIKE(jobsarchived4.modificationhost, '^[^@]+@atlprd[0-9]+-[^-]+-[^.]+\.cern\.ch$')
+        THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@atlprd[0-9]+-[^-]+-([^.]+\.cern\.ch)', 1, 1, NULL, 1)
+        WHEN INSTR(jobsarchived4.modificationhost, '@') > 0
+        THEN REGEXP_SUBSTR(jobsarchived4.modificationhost, '@(.+)', 1, 1, NULL, 1)
+        ELSE jobsarchived4.modificationhost
+    END),
+harvester_statistics AS (
+SELECT
+    sc_slimmed.atlas_site,
+    sc_slimmed.panda_queue,
+    TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS timestamp,
+    'workers' AS KEY,
+    JSON_OBJECT(
+        KEY 'worker_failed' VALUE COUNT(CASE WHEN status = 'failed' THEN 1 END),
+        KEY 'worker_finished' VALUE COUNT(CASE WHEN status = 'finished' THEN 1 END),
+        KEY 'worker_cancelled' VALUE COUNT(CASE WHEN status = 'cancelled' THEN 1 END)
+    ) AS harvester,
+    CASE
+        WHEN REGEXP_LIKE(nodeid, '^[^@]+@atlprd[0-9]+-[^-]+-[^.]+\.cern\.ch$')
+        THEN REGEXP_SUBSTR(nodeid, '@atlprd[0-9]+-[^-]+-([^.]+\.cern\.ch)', 1, 1, NULL, 1)
+        WHEN INSTR(nodeid, '@') > 0
+        THEN REGEXP_SUBSTR(nodeid, '@(.+)', 1, 1, NULL, 1)
+        ELSE nodeid
+    END AS worker_node
+FROM atlas_panda.harvester_workers
+JOIN sc_slimmed ON computingsite = sc_slimmed.panda_queue
+WHERE endtime > CAST(SYSTIMESTAMP AT TIME ZONE 'UTC' AS DATE) - INTERVAL '1' DAY
+AND status IN ('finished', 'failed')
+AND nodeid not like 'grid-job-%'
+GROUP BY
+    sc_slimmed.atlas_site,
+    sc_slimmed.panda_queue,
+    CASE
+        WHEN REGEXP_LIKE(nodeid, '^[^@]+@atlprd[0-9]+-[^-]+-[^.]+\.cern\.ch$')
+        THEN REGEXP_SUBSTR(nodeid, '@atlprd[0-9]+-[^-]+-([^.]+\.cern\.ch)', 1, 1, NULL, 1)
+        WHEN INSTR(nodeid, '@') > 0
+        THEN REGEXP_SUBSTR(nodeid, '@(.+)', 1, 1, NULL, 1)
+        ELSE nodeid
+    END)
+SELECT atlas_site, panda_queue, worker_node, key, pilot FROM pilot_statistics
+UNION ALL
+SELECT atlas_site, panda_queue, worker_node, key, harvester FROM harvester_statistics;
 
 COMMIT;
 

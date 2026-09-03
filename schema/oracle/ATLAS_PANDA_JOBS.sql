@@ -303,3 +303,17 @@ dbms_scheduler.create_job(
     );
 END;
 /
+
+BEGIN
+    dbms_scheduler.create_job(
+        job_name => 'UPDATE_WORKER_NODE_METRICS_QUEUE_JOB',
+        job_type => 'PLSQL_BLOCK',
+        job_action => 'BEGIN ATLAS_PANDA.UPDATE_WORKER_NODE_METRICS_QUEUE;	END;',
+        start_date => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=DAILY; BYHOUR=8; BYMINUTE=10; BYSECOND=0;',
+        auto_drop => FALSE,
+        enabled => TRUE,
+        comments => 'Runs every day at 8:10 AM to refresh WORKER_NODE_METRICS data.'
+        );
+END;
+/
