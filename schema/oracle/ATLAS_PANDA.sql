@@ -1,6 +1,6 @@
 --------------------------------------------------------
 --  File created - Wednesday-October-19-2022   
---  Schema version: 0.1.6
+--  Schema version: 0.1.7
 --  IMPORTANT: Please always update version below 
 --  to match the current DB schema
 --------------------------------------------------------
