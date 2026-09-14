@@ -121,9 +121,6 @@ $$;
 
 ALTER PROCEDURE doma_panda.update_worker_node_metrics_queue() OWNER TO panda;
 
-SELECT cron.schedule ('10 8 * * *', 'CALL doma_panda.update_worker_node_metrics_queue()');
-UPDATE cron.job SET database = 'panda_db', nodename = '' WHERE command LIKE '%update_worker_node_metrics_queue%';
-
 -- =========================
 -- Version bump
 -- =========================

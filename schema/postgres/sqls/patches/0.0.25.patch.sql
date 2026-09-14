@@ -230,16 +230,6 @@ $$;
 
 ALTER PROCEDURE doma_panda.update_worker_node_metrics() OWNER TO panda;
 
--- ========== pg_cron JOBS ==========
-
-SELECT cron.schedule ('0 8 * * *', 'CALL doma_panda.update_worker_node_map()');
-SELECT cron.schedule ('0 8 * * *', 'CALL doma_panda.update_worker_node_metrics()');
-
-UPDATE cron.job
-SET database = 'panda_db',
-    nodename = ''
-WHERE command LIKE '%update_worker_node_map%' OR command LIKE '%update_worker_node_metrics%';
-
 -- ========== VERSION UPDATE ==========
 
 UPDATE doma_panda.pandadb_version
