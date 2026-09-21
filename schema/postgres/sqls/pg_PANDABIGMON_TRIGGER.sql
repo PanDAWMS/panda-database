@@ -92,6 +92,23 @@ CREATE TRIGGER auth_user_user_id_p_trg
 	EXECUTE PROCEDURE trigger_fct_auth_user_user_id_p_trg();
 
 
+DROP TRIGGER IF EXISTS auth_user_group_tr ON auth_user_groups CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_auth_user_group_tr() RETURNS trigger AS $BODY$
+BEGIN
+        SELECT nextval('auth_user_group_id_seq')
+        INTO STRICT NEW.id;
+RETURN NEW;
+END;
+$BODY$
+ LANGUAGE 'plpgsql';
+
+ALTER FUNCTION trigger_fct_auth_user_group_tr() OWNER TO panda;
+
+CREATE TRIGGER auth_user_group_tr
+	BEFORE INSERT ON auth_user_groups FOR EACH ROW
+	EXECUTE PROCEDURE trigger_fct_auth_user_group_tr();
+
+
 DROP TRIGGER IF EXISTS auth_permission_tr ON auth_permission CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_auth_permission_tr() RETURNS trigger AS $BODY$
 BEGIN
