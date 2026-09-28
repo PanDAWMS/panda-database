@@ -1672,6 +1672,7 @@ UNION
       GROUP BY
          vo, agg_key, prodsourcelabel, resource_type, agg_type
    ) alias44
+	ON CONFLICT (vo, agg_type, agg_key, prodsourcelabel, resource_type) DO NOTHING
 ;
 
 --DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
