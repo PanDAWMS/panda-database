@@ -1,6 +1,6 @@
 --------------------------------------------------------
 --  File created - Wednesday-October-19-2022   
---  Schema version: 0.1.7
+--  Schema version: 0.1.8
 --  IMPORTANT: Please always update version below 
 --  to match the current DB schema
 --------------------------------------------------------
@@ -34,7 +34,7 @@
 --  IMPORTANT: Please always update to up2date version
 --------------------------------------------------------
   
-  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 1, 7);
+  INSERT INTO "ATLAS_PANDA"."PANDADB_VERSION" VALUES ('PanDA', 0, 1, 8);
  --------------------------------------------------------
 --  DDL for Sequence FILESTABLE4_ROW_ID_SEQ
 --------------------------------------------------------
@@ -3126,6 +3126,29 @@ COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"."HOST_NAME" IS 'T
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"."TIMESTAMP" IS 'Timestamp the metrics were collected.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"."KEY" IS 'Key of the metrics entry.';
 COMMENT ON COLUMN "ATLAS_PANDA"."WORKER_NODE_METRICS_BY_QUEUE"."STATISTICS" IS 'Metrics in json format.';
+
+
+--------------------------------------------------------
+--  DDL for Table PILOT_ATTRIBUTES
+--------------------------------------------------------
+ CREATE TABLE "ATLAS_PANDA"."PILOT_ATTRIBUTES" (
+      "PANDAID" NUMBER(11) NOT NULL,
+      "PILOT_VERSION" VARCHAR2(50),
+      "ATTRIBUTES" CLOB,
+      "MODIFICATION_TIME" DATE NOT NULL,
+      CONSTRAINT "PK_PILOT_ATTRIBUTES" PRIMARY KEY ("PANDAID"),
+      CONSTRAINT "CK_PILOT_ATTRIBUTES_JSON" CHECK ("ATTRIBUTES" IS JSON (STRICT))
+  )
+  PARTITION BY RANGE ("MODIFICATION_TIME")
+  INTERVAL (NUMTOYMINTERVAL(1, 'MONTH')) (
+      PARTITION "P_BASE" VALUES LESS THAN (TO_DATE('2026-10-01', 'YYYY-MM-DD'))
+  );
+
+COMMENT ON TABLE "ATLAS_PANDA"."PILOT_ATTRIBUTES" IS 'Attributes reported by the pilot for a job. Inserted once per job and never updated.';
+COMMENT ON COLUMN "ATLAS_PANDA"."PILOT_ATTRIBUTES"."PANDAID" IS 'PandaID of the job';
+COMMENT ON COLUMN "ATLAS_PANDA"."PILOT_ATTRIBUTES"."PILOT_VERSION" IS 'Version of the pilot running';
+COMMENT ON COLUMN "ATLAS_PANDA"."PILOT_ATTRIBUTES"."ATTRIBUTES" IS 'Serialized JSON dictionary of pilot attributes';
+COMMENT ON COLUMN "ATLAS_PANDA"."PILOT_ATTRIBUTES"."MODIFICATION_TIME" IS 'Timestamp of the last update, in UTC.';
 
 
 --------------------------------------------------------
@@ -6768,6 +6791,73 @@ DBMS_APPLICATION_INFO.SET_MODULE( module_name => null, action_name => null);
 DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => null);
 
 end;
+
+/
+
+--------------------------------------------------------
+--  DDL for Procedure PILOT_ATTRIBUTES_SL_WINDOW
+--------------------------------------------------------
+set define off;
+
+CREATE OR REPLACE PROCEDURE "ATLAS_PANDA"."PILOT_ATTRIBUTES_SL_WINDOW" (MONTHS_OFFSET NUMBER DEFAULT 3) AUTHID DEFINER
+AS
+-- Procedure for sustaining a MONTHS_OFFSET months sliding window in the ATLAS_PANDA.PILOT_ATTRIBUTES table,
+-- which has automatic INTERVAL partitioning NUMTOYMINTERVAL(1,'MONTH') on MODIFICATION_TIME.
+-- The default is to keep data for at least the last 3 months.
+
+resource_busy EXCEPTION;
+PRAGMA exception_init (resource_busy,-54);
+
+stmt VARCHAR2(4000);
+TYPE part_names IS TABLE OF VARCHAR2(30) INDEX BY BINARY_INTEGER;
+coll_parts part_names;
+messg VARCHAR2(10);
+
+BEGIN
+
+-- ver 1.0
+
+-- Note: Oracle does NOT allow dropping of the last remaining non-interval partition (ORA-14758)! That is why is better to have INTERVAL = 'YES' condition in the WHERE clause
+-- get the partitions older than the last MONTHS_OFFSET partitions (months)
+
+SELECT partition_name BULK COLLECT INTO coll_parts
+FROM USER_TAB_PARTITIONS
+WHERE table_name = 'PILOT_ATTRIBUTES'
+AND INTERVAL = 'YES' AND partition_position <= (SELECT MAX(partition_position) - (MONTHS_OFFSET - 1) FROM USER_TAB_PARTITIONS WHERE table_name = 'PILOT_ATTRIBUTES' );
+
+-- do NOT drop partitions that are within MONTHS_OFFSET months from now. In that case exit the procedure
+IF (coll_parts.COUNT <= 0) THEN
+	stmt:= 'USER DEFINED INFO: There are NOT partitions with data older than ' || to_char(MONTHS_OFFSET) || ' months for drop!';
+	-- this RAISE call is commented out as the procedure will be called from within a daily scheduler job and would be not good to be shown error on the shifters page
+	-- RAISE_APPLICATION_ERROR(-20101, stmt );
+	return;
+END IF;
+
+-- Verification and partition drop part --
+
+FOR j IN 1 .. coll_parts.COUNT LOOP
+
+	-- for each candidate partition check whether the MAX(modification_time) is actually older than MONTHS_OFFSET months
+	stmt := 'SELECT (CASE WHEN MAX(modification_time) < ADD_MONTHS(SYSDATE, -' || to_char(MONTHS_OFFSET) || ') THEN ''OK'' ELSE ''NOT OK'' END ) FROM ATLAS_PANDA.PILOT_ATTRIBUTES PARTITION ( ' || coll_parts(j) || ')' ;
+	EXECUTE IMMEDIATE stmt INTO messg;
+
+	IF (messg = 'OK') THEN
+		stmt := 'ALTER TABLE ATLAS_PANDA.PILOT_ATTRIBUTES DROP PARTITION ' || coll_parts(j) || ' UPDATE GLOBAL INDEXES';
+
+		-- loop until gets exclusive lock on the table
+		LOOP
+		   BEGIN
+			EXECUTE IMMEDIATE stmt;
+		     	EXIT;
+		   EXCEPTION
+    			WHEN resource_busy THEN DBMS_LOCK.sleep(1);
+		   END;
+		END LOOP;
+	END IF;
+
+END LOOP;
+
+END PILOT_ATTRIBUTES_SL_WINDOW;
 
 /
 
