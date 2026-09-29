@@ -317,3 +317,21 @@ BEGIN
         );
 END;
 /
+
+--------------------------------------------------------
+--  Scheduled job: run PILOT_ATTRIBUTES_SL_WINDOW daily
+--------------------------------------------------------
+
+BEGIN
+    dbms_scheduler.create_job(
+        job_name        => 'PANDA_PILOT_ATTRIBUTES_SLWINDOW',
+        job_type        => 'PLSQL_BLOCK',
+        job_action      => 'BEGIN ATLAS_PANDA.PILOT_ATTRIBUTES_SL_WINDOW(3); END;',
+        start_date      => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=DAILY;INTERVAL=1',
+        auto_drop       => FALSE,
+        enabled         => TRUE,
+        comments        => 'Sustains 3 months of data sliding window on the PILOT_ATTRIBUTES table! The table is partitioned monthly using the automatic INTERVAL approach'
+    );
+END;
+/

@@ -3030,6 +3030,22 @@ CREATE INDEX wn_metrics_q_timestamp_idx ON worker_node_metrics_by_queue ("timest
 
 ALTER TABLE worker_node_metrics_by_queue OWNER TO panda;
 
+CREATE TABLE pilot_attributes (
+    "pandaid" BIGINT NOT NULL,
+    "pilot_version" VARCHAR(50),
+    "attributes" JSONB,
+    "modification_time" TIMESTAMP NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    PRIMARY KEY ("pandaid", "modification_time")
+) PARTITION BY RANGE ("modification_time");
+
+COMMENT ON TABLE pilot_attributes IS 'Attributes reported by the pilot for a job. Inserted once per job and never updated.';
+COMMENT ON COLUMN pilot_attributes."pandaid" IS 'PandaID of the job';
+COMMENT ON COLUMN pilot_attributes."pilot_version" IS 'Version of the pilot running';
+COMMENT ON COLUMN pilot_attributes."attributes" IS 'Serialized JSON dictionary of pilot attributes';
+COMMENT ON COLUMN pilot_attributes."modification_time" IS 'Timestamp of the last update, in UTC.';
+
+ALTER TABLE pilot_attributes OWNER TO panda;
+
 CREATE TABLE error_descriptions (
     id BIGSERIAL PRIMARY KEY,
     component VARCHAR(32) NOT NULL,
