@@ -31,6 +31,40 @@ CREATE TRIGGER auth_user_group_tr
 	EXECUTE PROCEDURE trigger_fct_auth_user_group_tr();
 
 SET search_path = doma_panda,public;
+
+-- ===============================================
+-- Add table for pilot attributes and job to clean old partitions
+-- ===============================================
+
+CREATE TABLE IF NOT EXISTS doma_panda.pilot_attributes (
+    "pandaid" BIGINT NOT NULL,
+    "pilot_version" VARCHAR(50),
+    "attributes" JSONB,
+    "modification_time" TIMESTAMP NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    PRIMARY KEY ("pandaid", "modification_time")
+) PARTITION BY RANGE ("modification_time");
+
+COMMENT ON TABLE doma_panda.pilot_attributes IS 'Attributes reported by the pilot for a job. Inserted once per job and never updated.';
+COMMENT ON COLUMN doma_panda.pilot_attributes."pandaid" IS 'PandaID of the job';
+COMMENT ON COLUMN doma_panda.pilot_attributes."pilot_version" IS 'Version of the pilot running';
+COMMENT ON COLUMN doma_panda.pilot_attributes."attributes" IS 'Serialized JSON dictionary of pilot attributes';
+COMMENT ON COLUMN doma_panda.pilot_attributes."modification_time" IS 'Timestamp of the last update, in UTC.';
+
+ALTER TABLE doma_panda.pilot_attributes OWNER TO panda;
+
+SELECT partman.create_parent(
+    p_parent_table => 'doma_panda.pilot_attributes',
+    p_control => 'modification_time',
+    p_type => 'range',
+    p_interval => '1 month',
+    p_premake => 3
+);
+UPDATE partman.part_config
+SET infinite_time_partitions = true,
+    retention = '3 months',
+    retention_keep_table = false
+WHERE parent_table = 'doma_panda.pilot_attributes';
+
 -- =========================
 -- Version bump
 -- =========================
