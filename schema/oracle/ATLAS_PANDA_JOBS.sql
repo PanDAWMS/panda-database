@@ -93,7 +93,7 @@ dbms_scheduler.create_job(
  repeat_interval => 'FREQ=WEEKLY; BYDAY=TUE; BYHOUR=11; BYMINUTE=0; BYSECOND=0;',
  auto_drop => FALSE,
  enabled => TRUE,
- comments =>  'Sustains at least 7 days of data sliding window on the ATLAS_PANDA.HARVERSTER_DIALOGS table. The table is daily partitioned using the automatic INTERVAL approach.');
+ comments =>  'Sustains at least 7 days of data sliding window on the ATLAS_PANDA.HARVESTER_DIALOGS table. The table is daily partitioned using the automatic INTERVAL approach.');
 END;
 /
 
@@ -108,7 +108,7 @@ dbms_scheduler.create_job(
  repeat_interval => 'FREQ=WEEKLY; BYDAY=TUE; BYHOUR=10; BYMINUTE=0; BYSECOND=0;',
  auto_drop => FALSE,
  enabled => TRUE,
- comments =>  'Sustains at least 10 days of data sliding window on the ATLAS_PANDA.HARVERSTER_METRICS table. The table is daily partitioned using the automatic INTERVAL approach.');
+ comments =>  'Sustains at least 10 days of data sliding window on the ATLAS_PANDA.HARVESTER_METRICS table. The table is daily partitioned using the automatic INTERVAL approach.');
 END;
 /
 

@@ -30,7 +30,7 @@ BEGIN
 		        EXECUTE 'GRANT SELECT on "'||obj_name||'" to doma_pandabigmon_r';
 		elsif obj_type IN ('VIEW', 'MATERIALIZED VIEW') THEN
 			privs := ' SELECT,INSERT,UPDATE,DELETE ';
-			FOR i IN 1..2 LOOP /*if fails on the first loop with error 01720, then goes to the EXEPTION and changes the statement */
+			FOR i IN 1..2 LOOP /*if fails on the first loop with error 01720, then goes to the EXCEPTION and changes the statement */
 				BEGIN
 					EXECUTE 'GRANT '|| privs ||' on "'|| obj_name||'" to doma_pandabigmon_w';
 				        EXECUTE 'GRANT SELECT on "'||obj_name||'" to doma_pandabigmon_r';
@@ -74,7 +74,7 @@ BEGIN
 		IF rec.obj_name NOT IN ('DO_GRANTS','GRANTS_UPDATE','GRANT_PRIVS4EXIST_OBJ') THEN
 			IF rec.obj_type IN ('VIEW', 'MATERIALIZED VIEW' ) THEN
 				privs := ' SELECT,INSERT,UPDATE,DELETE ';
-				FOR i IN 1..2 LOOP /*if fails on the first loop with error 01720, then goes to the EXEPTION and changes the statement */
+				FOR i IN 1..2 LOOP /*if fails on the first loop with error 01720, then goes to the EXCEPTION and changes the statement */
 					BEGIN
 						EXECUTE 'GRANT '|| privs ||' on "'||rec.obj_name||'" to doma_pandabigmon_w';
 					        EXECUTE 'GRANT SELECT on "'||rec.obj_name||'" to doma_pandabigmon_r';
