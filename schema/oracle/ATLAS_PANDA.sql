@@ -5361,7 +5361,7 @@ BEGIN
 		        execute immediate 'GRANT SELECT on "'||obj_name||'" to ATLAS_PANDA_READROLE';
 		elsif obj_type IN ('VIEW', 'MATERIALIZED VIEW') THEN
 			privs := ' SELECT,INSERT,UPDATE,DELETE ' ;
-			FOR i IN 1..2 LOOP /*if fails on the first loop with error 01720, then goes to the EXEPTION and changes the statement */
+			FOR i IN 1..2 LOOP /*if fails on the first loop with error 01720, then goes to the EXCEPTION and changes the statement */
 				BEGIN
 					execute immediate 'GRANT '|| privs ||' on "'|| obj_name||'" to ATLAS_PANDA_WRITEROLE';
 				        execute immediate 'GRANT SELECT on "'||obj_name||'" to ATLAS_PANDA_READROLE';
@@ -5403,7 +5403,7 @@ BEGIN
 		IF rec.obj_name NOT IN ('DO_GRANTS','GRANTS_UPDATE','GRANT_PRIVS4EXIST_OBJ') THEN
 			IF rec.obj_type IN ('VIEW', 'MATERIALIZED VIEW' ) THEN
 				privs := ' SELECT,INSERT,UPDATE,DELETE ' ;
-				FOR i IN 1..2 LOOP /*if fails on the first loop with error 01720, then goes to the EXEPTION and changes the statement */
+				FOR i IN 1..2 LOOP /*if fails on the first loop with error 01720, then goes to the EXCEPTION and changes the statement */
 					BEGIN
 						execute immediate 'GRANT '|| privs ||' on "'||rec.obj_name||'" to ATLAS_PANDA_WRITEROLE';
 					        execute immediate 'GRANT SELECT on "'||rec.obj_name||'" to ATLAS_PANDA_READROLE';
@@ -6358,7 +6358,7 @@ BEGIN
 -- ver 1.5, last update 2nd July 2013
 
 -- to easily identify the session and better view on resource usage by setting a dedicated module for the PanDA jobs
-DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Verify data copying and remove partitions if the all data has been copied!');
+DBMS_APPLICATION_INFO.SET_MODULE( module_name => 'PanDA scheduler job', action_name => 'Verify data copying and remove partitions if all the data has been copied!');
 DBMS_APPLICATION_INFO.SET_CLIENT_INFO ( client_info => sys_context('userenv', 'host') || ' ( ' || sys_context('userenv', 'ip_address') || ' )' );
 
 
