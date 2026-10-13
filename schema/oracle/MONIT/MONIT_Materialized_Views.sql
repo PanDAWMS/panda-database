@@ -1167,6 +1167,10 @@ GRANT SELECT ON atlas_panda.mv_monit_jobs_submitted TO atlas_panda_reader;
 GRANT SELECT ON atlas_panda.mv_monit_jobs_current   TO atlas_panda_reader;
 GRANT SELECT ON atlas_panda.mv_monit_jobs_completed TO atlas_panda_reader;
 
+GRANT SELECT ON atlas_panda.mv_monit_jobs_submitted TO atlas_monit_panda;
+GRANT SELECT ON atlas_panda.mv_monit_jobs_current   TO atlas_monit_panda;
+GRANT SELECT ON atlas_panda.mv_monit_jobs_completed TO atlas_monit_panda;
+
 
 -- Scheduler job to refresh the MONIT materialized views every 10 minutes
 BEGIN
@@ -1224,3 +1228,8 @@ END;
 GRANT SELECT ON atlas_panda.mv_monit_jobs_submitted TO atlas_panda_reader;
 GRANT SELECT ON atlas_panda.mv_monit_jobs_current   TO atlas_panda_reader;
 GRANT SELECT ON atlas_panda.mv_monit_jobs_completed TO atlas_panda_reader;
+
+-- Grant read access to atlas_monit_panda user (MONIT job accounts, Luca Canali/IT Monitoring)
+GRANT SELECT ON atlas_panda.mv_monit_jobs_submitted TO atlas_monit_panda;
+GRANT SELECT ON atlas_panda.mv_monit_jobs_current   TO atlas_monit_panda;
+GRANT SELECT ON atlas_panda.mv_monit_jobs_completed TO atlas_monit_panda;
