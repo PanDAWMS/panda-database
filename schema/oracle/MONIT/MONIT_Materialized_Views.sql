@@ -120,7 +120,13 @@ FROM (
             'YYYY-MM-DD HH24:MI:SS'
         ) AS "currenttime",
         container_name,
-        resource_type AS "job_resource_type"
+        resource_type AS "job_resource_type",
+        CASE
+            WHEN inputfiletype IS NULL OR TRIM(inputfiletype) IS NULL THEN 'UNKNOWN'
+            WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
+            WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
+            ELSE TRIM(inputfiletype)
+        END AS "inputfiletype_grouped"
     FROM atlas_panda.jobsactive4
     WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
@@ -240,7 +246,13 @@ FROM (
             'YYYY-MM-DD HH24:MI:SS'
         ) AS "currenttime",
         container_name,
-        resource_type AS "job_resource_type"
+        resource_type AS "job_resource_type",
+        CASE
+            WHEN inputfiletype IS NULL OR TRIM(inputfiletype) IS NULL THEN 'UNKNOWN'
+            WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
+            WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
+            ELSE TRIM(inputfiletype)
+        END AS "inputfiletype_grouped"
     FROM atlas_panda.jobsdefined4
     WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus IS NOT NULL
@@ -360,7 +372,13 @@ FROM (
             'YYYY-MM-DD HH24:MI:SS'
         ) AS "currenttime",
         container_name,
-        resource_type AS "job_resource_type"
+        resource_type AS "job_resource_type",
+        CASE
+            WHEN inputfiletype IS NULL OR TRIM(inputfiletype) IS NULL THEN 'UNKNOWN'
+            WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
+            WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
+            ELSE TRIM(inputfiletype)
+        END AS "inputfiletype_grouped"
     FROM atlas_panda.jobsarchived4
     WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND cloud <> 'OSG'
@@ -494,7 +512,13 @@ FROM (
             'YYYY-MM-DD HH24:MI:SS'
         ) AS "currenttime",
         container_name,
-        resource_type AS "job_resource_type"
+        resource_type AS "job_resource_type",
+        CASE
+            WHEN inputfiletype IS NULL OR TRIM(inputfiletype) IS NULL THEN 'UNKNOWN'
+            WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
+            WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
+            ELSE TRIM(inputfiletype)
+        END AS "inputfiletype_grouped"
     FROM atlas_panda.jobsactive4
     WHERE (
             statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - (2/24))
@@ -614,7 +638,13 @@ FROM (
             'YYYY-MM-DD HH24:MI:SS'
         ) AS "currenttime",
         container_name,
-        resource_type AS "job_resource_type"
+        resource_type AS "job_resource_type",
+        CASE
+            WHEN inputfiletype IS NULL OR TRIM(inputfiletype) IS NULL THEN 'UNKNOWN'
+            WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
+            WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
+            ELSE TRIM(inputfiletype)
+        END AS "inputfiletype_grouped"
     FROM atlas_panda.jobsdefined4
     WHERE jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
@@ -730,7 +760,13 @@ FROM (
             'YYYY-MM-DD HH24:MI:SS'
         ) AS "currenttime",
         container_name,
-        resource_type AS "job_resource_type"
+        resource_type AS "job_resource_type",
+        CASE
+            WHEN inputfiletype IS NULL OR TRIM(inputfiletype) IS NULL THEN 'UNKNOWN'
+            WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
+            WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
+            ELSE TRIM(inputfiletype)
+        END AS "inputfiletype_grouped"
     FROM atlas_panda.jobswaiting4
     WHERE jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
@@ -846,7 +882,13 @@ FROM (
             'YYYY-MM-DD HH24:MI:SS'
         ) AS "currenttime",
         container_name,
-        resource_type AS "job_resource_type"
+        resource_type AS "job_resource_type",
+        CASE
+            WHEN inputfiletype IS NULL OR TRIM(inputfiletype) IS NULL THEN 'UNKNOWN'
+            WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
+            WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
+            ELSE TRIM(inputfiletype)
+        END AS "inputfiletype_grouped"
     FROM atlas_panda.jobsarchived4
     WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - (2/24))
       AND jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
@@ -978,7 +1020,13 @@ FROM (
         container_name,
         resource_type AS "job_resource_type",
         gco2_global,
-        gco2_regional
+        gco2_regional,
+        CASE
+            WHEN inputfiletype IS NULL OR TRIM(inputfiletype) IS NULL THEN 'UNKNOWN'
+            WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
+            WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
+            ELSE TRIM(inputfiletype)
+        END AS "inputfiletype_grouped"
     FROM atlas_panda.jobsactive4
     WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus NOT IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
@@ -1097,7 +1145,13 @@ FROM (
         container_name,
         resource_type AS "job_resource_type",
         gco2_global,
-        gco2_regional
+        gco2_regional,
+        CASE
+            WHEN inputfiletype IS NULL OR TRIM(inputfiletype) IS NULL THEN 'UNKNOWN'
+            WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
+            WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
+            ELSE TRIM(inputfiletype)
+        END AS "inputfiletype_grouped"
     FROM atlas_panda.jobsarchived4
     WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus NOT IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
