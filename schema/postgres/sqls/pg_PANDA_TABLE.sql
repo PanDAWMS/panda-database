@@ -2970,6 +2970,16 @@ CREATE INDEX idx_worker_node_gpu_last_seen
 ALTER TABLE doma_panda.worker_node_gpus OWNER TO panda;
 
 
+CREATE TABLE IF NOT EXISTS doma_panda.worker_node_queue (
+  site        VARCHAR(128),
+  host_name   VARCHAR(128),
+  panda_queue VARCHAR(128),
+  last_seen   timestamp,
+  CONSTRAINT pk_worker_node_queue PRIMARY KEY (site, host_name, panda_queue)
+);
+ALTER TABLE doma_panda.worker_node_queue OWNER TO panda;
+
+
 CREATE TABLE cpu_benchmarks (
     "cpu_type" VARCHAR(128),
     "smt_enabled" SMALLINT,
