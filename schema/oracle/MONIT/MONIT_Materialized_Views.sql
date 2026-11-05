@@ -126,7 +126,11 @@ FROM (
             WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
-        END AS "inputfiletype_grouped"
+        END AS "inputfiletype_grouped",
+        NVL(
+            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
+            'UNKNOWN'
+        ) AS "pilot_version"
     FROM atlas_panda.jobsactive4
     WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
@@ -252,7 +256,11 @@ FROM (
             WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
-        END AS "inputfiletype_grouped"
+        END AS "inputfiletype_grouped",
+        NVL(
+            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
+            'UNKNOWN'
+        ) AS "pilot_version"
     FROM atlas_panda.jobsdefined4
     WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus IS NOT NULL
@@ -378,7 +386,11 @@ FROM (
             WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
-        END AS "inputfiletype_grouped"
+        END AS "inputfiletype_grouped",
+        NVL(
+            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
+            'UNKNOWN'
+        ) AS "pilot_version"
     FROM atlas_panda.jobsarchived4
     WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND cloud <> 'OSG'
@@ -518,7 +530,11 @@ FROM (
             WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
-        END AS "inputfiletype_grouped"
+        END AS "inputfiletype_grouped",
+        NVL(
+            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
+            'UNKNOWN'
+        ) AS "pilot_version"
     FROM atlas_panda.jobsactive4
     WHERE (
             statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - (2/24))
@@ -644,7 +660,11 @@ FROM (
             WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
-        END AS "inputfiletype_grouped"
+        END AS "inputfiletype_grouped",
+        NVL(
+            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
+            'UNKNOWN'
+        ) AS "pilot_version"
     FROM atlas_panda.jobsdefined4
     WHERE jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
@@ -766,7 +786,11 @@ FROM (
             WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
-        END AS "inputfiletype_grouped"
+        END AS "inputfiletype_grouped",
+        NVL(
+            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
+            'UNKNOWN'
+        ) AS "pilot_version"
     FROM atlas_panda.jobswaiting4
     WHERE jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
@@ -888,7 +912,11 @@ FROM (
             WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
-        END AS "inputfiletype_grouped"
+        END AS "inputfiletype_grouped",
+        NVL(
+            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
+            'UNKNOWN'
+        ) AS "pilot_version"
     FROM atlas_panda.jobsarchived4
     WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - (2/24))
       AND jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
@@ -1026,7 +1054,11 @@ FROM (
             WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
-        END AS "inputfiletype_grouped"
+        END AS "inputfiletype_grouped",
+        NVL(
+            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
+            'UNKNOWN'
+        ) AS "pilot_version"
     FROM atlas_panda.jobsactive4
     WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus NOT IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
@@ -1151,7 +1183,11 @@ FROM (
             WHEN INSTR(inputfiletype, ',') > 0 THEN TRIM(inputfiletype)
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
-        END AS "inputfiletype_grouped"
+        END AS "inputfiletype_grouped",
+        NVL(
+            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
+            'UNKNOWN'
+        ) AS "pilot_version"
     FROM atlas_panda.jobsarchived4
     WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus NOT IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
