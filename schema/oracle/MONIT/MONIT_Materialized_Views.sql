@@ -13,7 +13,7 @@ SELECT
   jeditasks.framework     AS "framework"
 FROM (
     SELECT
-        pandaid AS "pandaid",
+        jobsactive4.pandaid AS "pandaid",
         jobname AS "jobname",
         taskid AS "taskid",
         parentid AS "parentid",
@@ -127,11 +127,9 @@ FROM (
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
         END AS "inputfiletype_grouped",
-        NVL(
-            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
-            'UNKNOWN'
-        ) AS "pilot_version"
+        COALESCE(pv.pilot_version, 'UNKNOWN') AS "pilot_version"
     FROM atlas_panda.jobsactive4
+    LEFT JOIN atlas_panda.pilot_attributes pv ON pv.pandaid = jobsactive4.pandaid
     WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
@@ -143,7 +141,7 @@ FROM (
     UNION ALL
 
     SELECT
-        pandaid AS "pandaid",
+        jobsdefined4.pandaid AS "pandaid",
         jobname AS "jobname",
         taskid AS "taskid",
         parentid AS "parentid",
@@ -257,11 +255,9 @@ FROM (
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
         END AS "inputfiletype_grouped",
-        NVL(
-            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
-            'UNKNOWN'
-        ) AS "pilot_version"
+        COALESCE(pv.pilot_version, 'UNKNOWN') AS "pilot_version"
     FROM atlas_panda.jobsdefined4
+    LEFT JOIN atlas_panda.pilot_attributes pv ON pv.pandaid = jobsdefined4.pandaid
     WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus IS NOT NULL
       AND cloud <> 'OSG'
@@ -273,7 +269,7 @@ FROM (
     UNION ALL
 
     SELECT
-        pandaid AS "pandaid",
+        jobsarchived4.pandaid AS "pandaid",
         jobname AS "jobname",
         taskid AS "taskid",
         parentid AS "parentid",
@@ -387,11 +383,9 @@ FROM (
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
         END AS "inputfiletype_grouped",
-        NVL(
-            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
-            'UNKNOWN'
-        ) AS "pilot_version"
+        COALESCE(pv.pilot_version, 'UNKNOWN') AS "pilot_version"
     FROM atlas_panda.jobsarchived4
+    LEFT JOIN atlas_panda.pilot_attributes pv ON pv.pandaid = jobsarchived4.pandaid
     WHERE creationtime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND cloud <> 'OSG'
       AND NOT (
@@ -417,7 +411,7 @@ SELECT
 FROM (
     /* -------- jobsactive4 -------- */
     SELECT
-        pandaid AS "pandaid",
+        jobsactive4.pandaid AS "pandaid",
         jobname AS "jobname",
         taskid AS "taskid",
         parentid AS "parentid",
@@ -531,11 +525,9 @@ FROM (
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
         END AS "inputfiletype_grouped",
-        NVL(
-            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
-            'UNKNOWN'
-        ) AS "pilot_version"
+        COALESCE(pv.pilot_version, 'UNKNOWN') AS "pilot_version"
     FROM atlas_panda.jobsactive4
+    LEFT JOIN atlas_panda.pilot_attributes pv ON pv.pandaid = jobsactive4.pandaid
     WHERE (
             statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - (2/24))
          OR jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
@@ -547,7 +539,7 @@ FROM (
 
     /* -------- jobsdefined4 -------- */
     SELECT
-        pandaid AS "pandaid",
+        jobsdefined4.pandaid AS "pandaid",
         jobname AS "jobname",
         taskid AS "taskid",
         parentid AS "parentid",
@@ -661,11 +653,9 @@ FROM (
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
         END AS "inputfiletype_grouped",
-        NVL(
-            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
-            'UNKNOWN'
-        ) AS "pilot_version"
+        COALESCE(pv.pilot_version, 'UNKNOWN') AS "pilot_version"
     FROM atlas_panda.jobsdefined4
+    LEFT JOIN atlas_panda.pilot_attributes pv ON pv.pandaid = jobsdefined4.pandaid
     WHERE jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
 
@@ -673,7 +663,7 @@ FROM (
 
     /* -------- jobswaiting4 -------- */
     SELECT
-        pandaid AS "pandaid",
+        jobswaiting4.pandaid AS "pandaid",
         jobname AS "jobname",
         taskid AS "taskid",
         parentid AS "parentid",
@@ -787,11 +777,9 @@ FROM (
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
         END AS "inputfiletype_grouped",
-        NVL(
-            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
-            'UNKNOWN'
-        ) AS "pilot_version"
+        COALESCE(pv.pilot_version, 'UNKNOWN') AS "pilot_version"
     FROM atlas_panda.jobswaiting4
+    LEFT JOIN atlas_panda.pilot_attributes pv ON pv.pandaid = jobswaiting4.pandaid
     WHERE jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
 
@@ -799,7 +787,7 @@ FROM (
 
     /* -------- jobsarchived4 -------- */
     SELECT
-        pandaid AS "pandaid",
+        jobsarchived4.pandaid AS "pandaid",
         jobname AS "jobname",
         taskid AS "taskid",
         parentid AS "parentid",
@@ -913,11 +901,9 @@ FROM (
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
         END AS "inputfiletype_grouped",
-        NVL(
-            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
-            'UNKNOWN'
-        ) AS "pilot_version"
+        COALESCE(pv.pilot_version, 'UNKNOWN') AS "pilot_version"
     FROM atlas_panda.jobsarchived4
+    LEFT JOIN atlas_panda.pilot_attributes pv ON pv.pandaid = jobsarchived4.pandaid
     WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - (2/24))
       AND jobstatus IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
@@ -939,7 +925,7 @@ SELECT
 FROM (
     /* -------- jobsactive4 -------- */
     SELECT
-        pandaid AS "pandaid",
+        jobsactive4.pandaid AS "pandaid",
         jobname AS "jobname",
         COALESCE(taskid, -1) AS "taskid",
         parentid AS "parentid",
@@ -1055,11 +1041,9 @@ FROM (
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
         END AS "inputfiletype_grouped",
-        NVL(
-            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
-            'UNKNOWN'
-        ) AS "pilot_version"
+        COALESCE(pv.pilot_version, 'UNKNOWN') AS "pilot_version"
     FROM atlas_panda.jobsactive4
+    LEFT JOIN atlas_panda.pilot_attributes pv ON pv.pandaid = jobsactive4.pandaid
     WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus NOT IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
@@ -1068,7 +1052,7 @@ FROM (
 
     /* -------- jobsarchived4 -------- */
     SELECT
-        pandaid AS "pandaid",
+        jobsarchived4.pandaid AS "pandaid",
         jobname AS "jobname",
         COALESCE(taskid, -1) AS "taskid",
         parentid AS "parentid",
@@ -1184,11 +1168,9 @@ FROM (
             WHEN INSTR(inputfiletype, '_') > 0 THEN SUBSTR(inputfiletype, 1, INSTR(inputfiletype, '_') - 1)
             ELSE TRIM(inputfiletype)
         END AS "inputfiletype_grouped",
-        NVL(
-            SUBSTR(pilotid, INSTR(pilotid, '|', -1) + 1),
-            'UNKNOWN'
-        ) AS "pilot_version"
+        COALESCE(pv.pilot_version, 'UNKNOWN') AS "pilot_version"
     FROM atlas_panda.jobsarchived4
+    LEFT JOIN atlas_panda.pilot_attributes pv ON pv.pandaid = jobsarchived4.pandaid
     WHERE statechangetime >= (CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - 1)
       AND jobstatus NOT IN ('pending','defined','waiting','assigned','activated','sent','starting','throttled','running','holding','transferring','merging')
       AND cloud <> 'OSG'
