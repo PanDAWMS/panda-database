@@ -323,11 +323,12 @@ ALTER TABLE notifications_subscription ADD PRIMARY KEY (id);
 
 CREATE TABLE notifications_notificationlog (
 	id bigint NOT NULL,
+	user_id bigint NOT NULL,
 	jeditaskid bigint NOT NULL,
 	event_type varchar(64),
 	sent_at timestamp NOT NULL
 ) ;
-COMMENT ON TABLE notifications_notificationlog IS 'panda-ui: records that a lifecycle event has already been sent for a task, so the evaluator never sends the same event twice (ATLASPANDA-1401)';
+COMMENT ON TABLE notifications_notificationlog IS 'panda-ui: records that a lifecycle event has already been sent to a subscriber for a task, so the evaluator never sends the same event to the same subscriber twice (ATLASPANDA-1401)';
 ALTER TABLE notifications_notificationlog OWNER TO panda;
-CREATE UNIQUE INDEX notifications_notificationlog_jeditaskid_event_type_uniq ON notifications_notificationlog (jeditaskid, event_type);
+CREATE UNIQUE INDEX notifications_notificationlog_jeditaskid_event_type_uniq ON notifications_notificationlog (jeditaskid, event_type, user_id);
 ALTER TABLE notifications_notificationlog ADD PRIMARY KEY (id);
