@@ -308,3 +308,26 @@ ALTER TABLE rating OWNER TO panda;
 CREATE INDEX rating_added_idx ON rating (added);
 CREATE INDEX rating_jeditaskid_idx ON rating (jeditaskid);
 ALTER TABLE rating ADD PRIMARY KEY (ratingid);
+
+CREATE TABLE notifications_subscription (
+	id bigint NOT NULL,
+	user_id bigint NOT NULL,
+	jeditaskid bigint NOT NULL,
+	created_at timestamp NOT NULL
+) ;
+COMMENT ON TABLE notifications_subscription IS 'panda-ui: a user''s subscription to lifecycle notifications for one JEDI task (ATLASPANDA-1401)';
+ALTER TABLE notifications_subscription OWNER TO panda;
+CREATE UNIQUE INDEX notifications_subscription_user_id_jeditaskid_uniq ON notifications_subscription (user_id, jeditaskid);
+CREATE INDEX notifications_subscription_jeditaskid_idx ON notifications_subscription (jeditaskid);
+ALTER TABLE notifications_subscription ADD PRIMARY KEY (id);
+
+CREATE TABLE notifications_notificationlog (
+	id bigint NOT NULL,
+	jeditaskid bigint NOT NULL,
+	event_type varchar(64),
+	sent_at timestamp NOT NULL
+) ;
+COMMENT ON TABLE notifications_notificationlog IS 'panda-ui: records that a lifecycle event has already been sent for a task, so the evaluator never sends the same event twice (ATLASPANDA-1401)';
+ALTER TABLE notifications_notificationlog OWNER TO panda;
+CREATE UNIQUE INDEX notifications_notificationlog_jeditaskid_event_type_uniq ON notifications_notificationlog (jeditaskid, event_type);
+ALTER TABLE notifications_notificationlog ADD PRIMARY KEY (id);
