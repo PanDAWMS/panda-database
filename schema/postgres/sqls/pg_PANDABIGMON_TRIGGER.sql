@@ -345,3 +345,35 @@ CREATE TRIGGER rating_trigger
 	BEFORE INSERT ON rating FOR EACH ROW
 	EXECUTE PROCEDURE trigger_fct_rating_trigger();
 
+DROP TRIGGER IF EXISTS notifications_subscription_tr ON notifications_subscription CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_notifications_subscription_tr() RETURNS trigger AS $BODY$
+BEGIN
+	SELECT nextval('notifications_subscription_id_seq')
+	INTO STRICT NEW.id;
+RETURN NEW;
+END;
+$BODY$
+ LANGUAGE 'plpgsql';
+
+ALTER FUNCTION trigger_fct_notifications_subscription_tr() OWNER TO panda;
+
+CREATE TRIGGER notifications_subscription_tr
+	BEFORE INSERT ON notifications_subscription FOR EACH ROW
+	EXECUTE PROCEDURE trigger_fct_notifications_subscription_tr();
+
+DROP TRIGGER IF EXISTS notifications_notificationlog_tr ON notifications_notificationlog CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_notifications_notificationlog_tr() RETURNS trigger AS $BODY$
+BEGIN
+	SELECT nextval('notifications_notificationlog_id_seq')
+	INTO STRICT NEW.id;
+RETURN NEW;
+END;
+$BODY$
+ LANGUAGE 'plpgsql';
+
+ALTER FUNCTION trigger_fct_notifications_notificationlog_tr() OWNER TO panda;
+
+CREATE TRIGGER notifications_notificationlog_tr
+	BEFORE INSERT ON notifications_notificationlog FOR EACH ROW
+	EXECUTE PROCEDURE trigger_fct_notifications_notificationlog_tr();
+
