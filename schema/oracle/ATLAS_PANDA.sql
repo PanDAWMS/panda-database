@@ -1,6 +1,6 @@
 --------------------------------------------------------
 --  File created - Wednesday-October-19-2022   
---  Schema version: 0.1.8
+--  Schema version: 0.1.9
 --  IMPORTANT: Please always update version below 
 --  to match the current DB schema
 --------------------------------------------------------
@@ -3149,6 +3149,130 @@ COMMENT ON COLUMN "ATLAS_PANDA"."PILOT_ATTRIBUTES"."PANDAID" IS 'PandaID of the 
 COMMENT ON COLUMN "ATLAS_PANDA"."PILOT_ATTRIBUTES"."PILOT_VERSION" IS 'Version of the pilot running';
 COMMENT ON COLUMN "ATLAS_PANDA"."PILOT_ATTRIBUTES"."ATTRIBUTES" IS 'Serialized JSON dictionary of pilot attributes';
 COMMENT ON COLUMN "ATLAS_PANDA"."PILOT_ATTRIBUTES"."MODIFICATION_TIME" IS 'Timestamp of the last update, in UTC.';
+
+
+--------------------------------------------------------
+--  DDL for Sequence TASKS_COMMANDLOG_ID_SEQ
+--------------------------------------------------------
+
+CREATE SEQUENCE "ATLAS_PANDA"."TASKS_COMMANDLOG_ID_SEQ"
+  MINVALUE 1 MAXVALUE 999999999999 INCREMENT BY 1 START WITH 1 CACHE 20 NOORDER NOCYCLE;
+
+--------------------------------------------------------
+--  DDL for Table TASKS_COMMANDLOG
+--------------------------------------------------------
+
+CREATE TABLE "ATLAS_PANDA"."TASKS_COMMANDLOG" (
+  "COMMAND_ID"    NUMBER(12,0)       NOT NULL,
+  "JEDITASKID"    NUMBER(11,0)       NOT NULL,
+  "COMMAND"       VARCHAR2(64 BYTE)  NOT NULL,
+  "PARAMETERS"    CLOB,
+  "REQUESTER"     VARCHAR2(256 BYTE),
+  "PROD_ROLE"     NUMBER(1,0),
+  "CLIENT_ADDR"   VARCHAR2(64 BYTE),
+  "SERVER_HOST"   VARCHAR2(128 BYTE),
+  "COMMAND_TIME"  TIMESTAMP(6)       NOT NULL,
+  "STATUS"        VARCHAR2(16 BYTE)  NOT NULL,
+  "STATUS_TIME"   TIMESTAMP(6)       NOT NULL,
+  "STATUS_REASON" VARCHAR2(256 BYTE),
+  "RESPONSE"      CLOB,
+  "RESPONSE_TIME" TIMESTAMP(6),
+  CONSTRAINT "TASKS_COMMANDLOG_PARAMS_JSON" CHECK ("PARAMETERS" IS JSON (STRICT)),
+  CONSTRAINT "TASKS_COMMANDLOG_RESPONSE_JSON" CHECK ("RESPONSE" IS JSON (STRICT))
+)
+PARTITION BY RANGE ("COMMAND_TIME")
+INTERVAL (NUMTOYMINTERVAL(1, 'MONTH')) (
+    PARTITION "P_BASE" VALUES LESS THAN (TO_DATE('2026-12-01', 'YYYY-MM-DD'))
+);
+
+COMMENT ON TABLE "ATLAS_PANDA"."TASKS_COMMANDLOG" IS 'Task commands received through the PanDA API, one row per task per command, with what became of each command';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."COMMAND_ID" IS 'ID of the API request, from TASKS_COMMANDLOG_ID_SEQ. Shared by the rows of a request that targets several tasks';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."JEDITASKID" IS 'Task the command targets';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."COMMAND" IS 'Name of the API endpoint, e.g. retry or change_attribute';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."PARAMETERS" IS 'Arguments of the request other than the task ID, as JSON';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."REQUESTER" IS 'User name of the requester, the compact form of the DN';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."PROD_ROLE" IS '1 if the requester had a production role, otherwise 0';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."CLIENT_ADDR" IS 'Address of the client that sent the command';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."SERVER_HOST" IS 'PanDA server host that received the command';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."COMMAND_TIME" IS 'Time the command was received, in UTC';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."STATUS" IS 'Where the command is: received, responded, error, queued, accepted, rejected or superseded';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."STATUS_TIME" IS 'Time STATUS last changed, in UTC';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."STATUS_REASON" IS 'Why STATUS moved on from queued: the task status change, the reason JEDI rejected it, or the command that superseded it';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."RESPONSE" IS 'Response the API returned to the client, as JSON';
+COMMENT ON COLUMN "ATLAS_PANDA"."TASKS_COMMANDLOG"."RESPONSE_TIME" IS 'Time the API returned the response, in UTC';
+
+ALTER TABLE "ATLAS_PANDA"."TASKS_COMMANDLOG" ADD CONSTRAINT "TASKS_COMMANDLOG_PK"
+  PRIMARY KEY ("COMMAND_ID", "JEDITASKID", "COMMAND_TIME")
+  USING INDEX LOCAL (PARTITION "P_BASE") ENABLE;
+CREATE INDEX "ATLAS_PANDA"."TASKS_COMMANDLOG_TASKID_IDX"
+  ON "ATLAS_PANDA"."TASKS_COMMANDLOG" ("JEDITASKID") LOCAL;
+
+--------------------------------------------------------
+--  DDL for Procedure TASKS_COMMANDLOG_SL_WINDOW
+--------------------------------------------------------
+set define off;
+
+CREATE OR REPLACE PROCEDURE "ATLAS_PANDA"."TASKS_COMMANDLOG_SL_WINDOW" (MONTHS_OFFSET NUMBER DEFAULT 13) AUTHID DEFINER
+AS
+-- Procedure for sustaining a MONTHS_OFFSET months sliding window in the ATLAS_PANDA.TASKS_COMMANDLOG table,
+-- which has automatic INTERVAL partitioning NUMTOYMINTERVAL(1,'MONTH') on COMMAND_TIME.
+-- The default is to keep data for at least the last 13 months.
+
+resource_busy EXCEPTION;
+PRAGMA exception_init (resource_busy,-54);
+
+stmt VARCHAR2(4000);
+TYPE part_names IS TABLE OF VARCHAR2(30) INDEX BY BINARY_INTEGER;
+coll_parts part_names;
+messg VARCHAR2(10);
+
+BEGIN
+
+-- ver 1.0
+
+-- Note: Oracle does NOT allow dropping of the last remaining non-interval partition (ORA-14758)! That is why is better to have INTERVAL = 'YES' condition in the WHERE clause
+-- get the partitions older than the last MONTHS_OFFSET partitions (months)
+
+SELECT partition_name BULK COLLECT INTO coll_parts
+FROM USER_TAB_PARTITIONS
+WHERE table_name = 'TASKS_COMMANDLOG'
+AND INTERVAL = 'YES' AND partition_position <= (SELECT MAX(partition_position) - (MONTHS_OFFSET - 1) FROM USER_TAB_PARTITIONS WHERE table_name = 'TASKS_COMMANDLOG' );
+
+-- do NOT drop partitions that are within MONTHS_OFFSET months from now. In that case exit the procedure
+IF (coll_parts.COUNT <= 0) THEN
+	stmt:= 'USER DEFINED INFO: There are NOT partitions with data older than ' || to_char(MONTHS_OFFSET) || ' months for drop!';
+	-- this RAISE call is commented out as the procedure will be called from within a daily scheduler job and would be not good to be shown error on the shifters page
+	-- RAISE_APPLICATION_ERROR(-20101, stmt );
+	return;
+END IF;
+
+-- Verification and partition drop part --
+
+FOR j IN 1 .. coll_parts.COUNT LOOP
+
+	-- for each candidate partition check whether the MAX(command_time) is actually older than MONTHS_OFFSET months
+	stmt := 'SELECT (CASE WHEN MAX(command_time) < ADD_MONTHS(SYSDATE, -' || to_char(MONTHS_OFFSET) || ') THEN ''OK'' ELSE ''NOT OK'' END ) FROM ATLAS_PANDA.TASKS_COMMANDLOG PARTITION ( ' || coll_parts(j) || ')' ;
+	EXECUTE IMMEDIATE stmt INTO messg;
+
+	IF (messg = 'OK') THEN
+		stmt := 'ALTER TABLE ATLAS_PANDA.TASKS_COMMANDLOG DROP PARTITION ' || coll_parts(j) || ' UPDATE GLOBAL INDEXES';
+
+		-- loop until gets exclusive lock on the table
+		LOOP
+		   BEGIN
+			EXECUTE IMMEDIATE stmt;
+		     	EXIT;
+		   EXCEPTION
+    			WHEN resource_busy THEN DBMS_LOCK.sleep(1);
+		   END;
+		END LOOP;
+	END IF;
+
+END LOOP;
+
+END TASKS_COMMANDLOG_SL_WINDOW;
+
+/
 
 
 --------------------------------------------------------

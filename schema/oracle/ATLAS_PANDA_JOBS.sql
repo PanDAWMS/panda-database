@@ -335,3 +335,21 @@ BEGIN
     );
 END;
 /
+
+--------------------------------------------------------
+--  Scheduled job: run TASKS_COMMANDLOG_SL_WINDOW daily
+--------------------------------------------------------
+
+BEGIN
+    dbms_scheduler.create_job(
+        job_name        => 'PANDA_TASKS_COMMANDLOG_SLWINDOW',
+        job_type        => 'PLSQL_BLOCK',
+        job_action      => 'BEGIN ATLAS_PANDA.TASKS_COMMANDLOG_SL_WINDOW(13); END;',
+        start_date      => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=DAILY;INTERVAL=1',
+        auto_drop       => FALSE,
+        enabled         => TRUE,
+        comments        => 'Sustains 13 months of data sliding window on the TASKS_COMMANDLOG table! The table is partitioned monthly using the automatic INTERVAL approach'
+    );
+END;
+/
