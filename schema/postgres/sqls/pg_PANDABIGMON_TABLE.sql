@@ -332,3 +332,14 @@ COMMENT ON TABLE notifications_notificationlog IS 'panda-ui: records that a life
 ALTER TABLE notifications_notificationlog OWNER TO panda;
 CREATE UNIQUE INDEX notifications_notificationlog_jeditaskid_event_type_uniq ON notifications_notificationlog (jeditaskid, event_type, user_id);
 ALTER TABLE notifications_notificationlog ADD PRIMARY KEY (id);
+
+CREATE TABLE notifications_jobstatuscache (
+	pandaid bigint NOT NULL,
+	jeditaskid bigint NOT NULL,
+	status varchar(32) NOT NULL,
+	updated_at timestamp NOT NULL
+) ;
+COMMENT ON TABLE notifications_jobstatuscache IS 'panda-ui: local mirror of each job''s last-known status, kept in sync from panda-server job_status messages instead of querying the job tables on every notification check (ATLASPANDA-1401)';
+ALTER TABLE notifications_jobstatuscache OWNER TO panda;
+CREATE INDEX notifications_jobstatuscache_jeditaskid_idx ON notifications_jobstatuscache (jeditaskid);
+ALTER TABLE notifications_jobstatuscache ADD PRIMARY KEY (pandaid);
