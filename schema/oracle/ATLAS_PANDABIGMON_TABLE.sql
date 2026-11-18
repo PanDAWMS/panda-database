@@ -604,6 +604,32 @@ GRANT UPDATE ON atlas_pandabigmon.notifications_notificationlog TO "ATLAS_PANDAB
 
 
 --------------------------------------------------------
+--  DDL for Table notifications_jobstatuscache
+--------------------------------------------------------
+
+CREATE TABLE atlas_pandabigmon.notifications_jobstatuscache (
+    pandaid     NUMBER(19,0) NOT NULL,
+    jeditaskid  NUMBER(19,0) NOT NULL,
+    status      NVARCHAR2(32) NOT NULL,
+    updated_at  TIMESTAMP(6) NOT NULL,
+    CONSTRAINT pk_notifications_jobstatuscache PRIMARY KEY (pandaid)
+);
+
+COMMENT ON TABLE atlas_pandabigmon.notifications_jobstatuscache IS 'panda-ui: local mirror of each job''s last-known status, kept in sync from panda-server job_status messages instead of querying the job tables on every notification check (ATLASPANDA-1401)';
+
+GRANT SELECT ON atlas_pandabigmon.notifications_jobstatuscache TO "ATLAS_PANDABIGMON_R";
+GRANT DELETE ON atlas_pandabigmon.notifications_jobstatuscache TO "ATLAS_PANDABIGMON_R";
+GRANT INSERT ON atlas_pandabigmon.notifications_jobstatuscache TO "ATLAS_PANDABIGMON_R";
+GRANT UPDATE ON atlas_pandabigmon.notifications_jobstatuscache TO "ATLAS_PANDABIGMON_R";
+GRANT SELECT ON atlas_pandabigmon.notifications_jobstatuscache TO "ATLAS_PANDABIGMON_W";
+GRANT DELETE ON atlas_pandabigmon.notifications_jobstatuscache TO "ATLAS_PANDABIGMON_W";
+GRANT INSERT ON atlas_pandabigmon.notifications_jobstatuscache TO "ATLAS_PANDABIGMON_W";
+GRANT UPDATE ON atlas_pandabigmon.notifications_jobstatuscache TO "ATLAS_PANDABIGMON_W";
+
+CREATE INDEX atlas_pandabigmon.notifications_jobstatuscache_jtid_idx ON atlas_pandabigmon.notifications_jobstatuscache (jeditaskid);
+
+
+--------------------------------------------------------
 --  DDL for Index ALL_REQUESTS_URLVIEW_QTIME_IDX
 --------------------------------------------------------
 
