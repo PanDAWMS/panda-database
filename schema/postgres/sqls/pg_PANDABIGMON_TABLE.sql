@@ -22,7 +22,9 @@ CREATE TABLE all_requests (
 	referrer varchar(4000),
 	useragent varchar(400),
 	is_rejected smallint,
-	urlview varchar(300)
+	urlview varchar(300),
+    user_id bigint,
+    status smallint
 ) ;
 ALTER TABLE all_requests OWNER TO panda;
 CREATE INDEX all_requests_urlview_qtime_idx ON all_requests (urlview, qtime);
@@ -41,7 +43,9 @@ CREATE TABLE all_requests_daily (
 	mem decimal(10,2),
 	dbactivesess integer,
 	dbtotalsess integer,
-	id bigint
+	id bigint,
+    user_id bigint,
+    status smallint
 ) ;
 ALTER TABLE all_requests_daily OWNER TO panda;
 CREATE INDEX all_requests_daily_idx ON all_requests_daily (id);
